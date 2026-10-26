@@ -67,6 +67,9 @@ CORTES = {
         "paleta": {"fundo1": "#160f03", "fundo2": "#2d1f06", "luz": "#ffb52a", "destaque": "#ffd86b"},
         "trechos": [(77.0, 81.56), (0.0, 31.0), (42.0, 84.5)],
         "correcoes": {"pontou": "apontou", "dEle": "Dele"},
+        # estilo simples: emenda 1 = brilho com clique, emenda 2 = esmaecimento por preto
+        "transicoes": ["brilho", "preto"],
+        "pb": [{"de": ["eu", "tinha", "tudo"], "ate": ["mas", "deus", "chegou"]}],
         "enfase": ["errado", "certo", "casa", "família", "geografia", "chegou", "chamei", "maldição", "propósito", "palavra"],
         "hits": [
             {"fala": ["tinha", "tudo", "para", "dar", "errado"], "texto": "VOCÊ TINHA/TUDO PARA/DAR ERRADO", "modo": "frente", "dur": 1.9},

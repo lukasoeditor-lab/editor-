@@ -26,6 +26,8 @@ export type Plano = {
   legendas: Leg[];
   cortes: number[];
   camera: Camera;
+  transicoes?: { f: number; tipo: "brilho" | "preto" }[]; // f = quadro do corte de cena
+  pb?: { f0: number; f1: number }[]; // trechos em preto e branco
   estilo?: "simples"; // legenda palavra por palavra, sem motion design
   marca?: string; // @ no rodapé (estilo simples)
   sem?: string[]; // recursos desligados (diagnóstico de desempenho)

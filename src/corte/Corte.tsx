@@ -7,18 +7,22 @@ import { hitAtivo, modoEm, tremidaEm } from "./movimento";
 import { Original, Pessoa } from "./Pessoa";
 import { TextoGigante } from "./TextoGigante";
 import { LegendasSimples } from "./LegendasSimples";
+import { Transicoes, filtroCena } from "./Transicoes";
 import { type CorteProps } from "./tipos";
 
 export const Corte: React.FC<CorteProps> = ({ plano }) => {
+  const f = useCurrentFrame();
   if (plano.estilo === "simples") {
     return (
       <AbsoluteFill style={{ backgroundColor: "#000" }}>
-        <Original plano={plano} />
+        <AbsoluteFill style={{ filter: filtroCena(plano, f) }}>
+          <Original plano={plano} />
+        </AbsoluteFill>
         <LegendasSimples plano={plano} />
+        <Transicoes plano={plano} />
       </AbsoluteFill>
     );
   }
-  const f = useCurrentFrame();
   const modo = modoEm(plano, f);
   const tr = tremidaEm(plano, f);
   const hit = hitAtivo(plano, f);

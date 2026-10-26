@@ -20,7 +20,7 @@ import numpy as np
 
 SR = 48000
 ARQ_SFX = {"whoosh": "el_whoosh.mp3", "whoosh2": "el_whoosh2.mp3", "impacto": "el_impacto.mp3",
-           "impacto2": "el_impacto2.mp3", "estalo": "el_estalo.mp3", "riser": "el_riser.mp3"}
+           "impacto2": "el_impacto2.mp3", "estalo": "el_estalo.mp3", "riser": "el_riser.mp3", "clique": "el_clique.mp3"}
 MUSICA_ABAIXO_DA_VOZ_DB = 9.0   # antes do ducking
 DUCK_FALA = 0.5                 # ganho da música enquanto o pastor fala
 RECUO_VOZ_IMPACTO = 0.6         # ganho da voz logo após um impacto

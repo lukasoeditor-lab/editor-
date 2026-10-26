@@ -21,7 +21,7 @@ FOLGA_ANTES, FOLGA_DEPOIS = 0.12, 0.34
 LIMITE_RAW = [1e9]  # duração do bruto: nenhum trecho passa dela
 PROPRIOS = {"deus", "jeremias", "senhor", "jesus", "ele"}
 # instante do pico de cada efeito sonoro dentro do arquivo (medido), em segundos
-PICO = {"whoosh": 0.25, "whoosh2": 1.14, "impacto": 0.09, "impacto2": 0.02, "estalo": 0.13, "riser": 1.62}
+PICO = {"whoosh": 0.25, "whoosh2": 1.14, "impacto": 0.09, "impacto2": 0.02, "estalo": 0.13, "riser": 1.62, "clique": 0.03}
 CICLO_ZOOM = [1.0, 1.2, 1.0, 1.34, 1.08, 1.26, 1.0, 1.42]
 
 
@@ -272,8 +272,19 @@ def main():
     }
     if "--simples" in sys.argv:  # legenda palavra por palavra, sem textos gigantes, zoom nem efeitos
         i = sys.argv.index("--simples")
+        juncoes = list(plano["cortes"])
         plano.update({"estilo": "simples", "hits": [], "sfx": [], "cortes": [],
                       "zooms": [{"f": 0, "escala": 1.0, "seco": False}]})
+        # transições nas emendas, na ordem em que aparecem: "brilho" (com clique) ou "preto"
+        plano["transicoes"] = [{"f": f, "tipo": t} for f, t in zip(juncoes, cfg.get("transicoes", []))]
+        plano["sfx"] = [{"t": t["f"] / FPS - PICO["clique"], "arq": "clique", "vol": 1.0}
+                        for t in plano["transicoes"] if t["tipo"] == "brilho"]
+        # trechos em preto e branco: da primeira palavra de "de" até a primeira de "ate"
+        plano["pb"] = []
+        for r in cfg.get("pb", []):
+            a, b = achar_sequencia(novas, r["de"], 0), achar_sequencia(novas, r["ate"], 0)
+            if a >= 0 and b > a:
+                plano["pb"].append({"f0": frame(novas[a]["n0"]), "f1": frame(novas[b]["n0"])})
         if i + 1 < len(sys.argv) and sys.argv[i + 1].startswith("@"):
             plano["marca"] = sys.argv[i + 1]
         for l in plano["legendas"]:
