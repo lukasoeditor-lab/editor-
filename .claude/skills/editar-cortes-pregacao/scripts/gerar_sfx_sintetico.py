@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 SR = 48000
-OUT = Path(__file__).resolve().parent.parent / "public" / "sfx"
+OUT = Path.cwd() / "public" / "sfx"
 rng = np.random.default_rng(7)
 
 
