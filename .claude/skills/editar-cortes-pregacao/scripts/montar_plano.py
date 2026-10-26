@@ -193,7 +193,7 @@ def main():
         f0 = max(0, frame(novas[i]["n0"]) - 2)
         fim = min(duracao, f0 + frame(h["dur"]))
         hits.append({"f": f0, "fim": fim, "linhas": h["texto"].split("/"), "modo": h["modo"],
-                     "riser": bool(h.get("riser"))})
+                     "recorte": bool(h.get("recorte")), "riser": bool(h.get("riser"))})
     # evita sobreposição de textos gigantes
     for a, b in zip(hits, hits[1:]):
         a["fim"] = min(a["fim"], b["f"] - 1)

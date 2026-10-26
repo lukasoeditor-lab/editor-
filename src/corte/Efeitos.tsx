@@ -1,6 +1,6 @@
 import { AbsoluteFill, Loop, OffthreadVideo, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { FONTE_LEGENDA, FONTE_LEVE } from "./fontes";
-import { brilhoHit, flashEm } from "./movimento";
+import { brilhoHit, flashEm, hitAtivo } from "./movimento";
 import { type Plano } from "./tipos";
 
 export const Efeitos: React.FC<{ plano: Plano }> = ({ plano }) => {
@@ -12,6 +12,8 @@ export const Efeitos: React.FC<{ plano: Plano }> = ({ plano }) => {
   const entra = spring({ frame: f - 6, fps, config: { damping: 14, stiffness: 120 } });
   const pulso = 0.6 + 0.4 * Math.sin(f / 6);
   const prog = f / plano.duracao;
+  const hit = hitAtivo(plano, f);
+  const seloVisivel = hit ? interpolate(f - hit.f, [0, 3], [1, 0], { extrapolateRight: "clamp" }) : interpolate(f - 0, [0, 1], [1, 1]);
 
   return (
     <>
@@ -56,7 +58,7 @@ export const Efeitos: React.FC<{ plano: Plano }> = ({ plano }) => {
           alignItems: "center",
           gap: 10,
           transform: `translateY(${interpolate(entra, [0, 1], [-140, 0])}px)`,
-          opacity: entra,
+          opacity: entra * seloVisivel,
         }}
       >
         <div

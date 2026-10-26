@@ -31,6 +31,10 @@ export const tremidaEm = (plano: Plano, f: number) => {
   };
 };
 
+/** "recorte" durante os textos marcados com fundo novo; no resto do vídeo, a filmagem original. */
+export const modoEm = (plano: Plano, f: number): "recorte" | "orig" =>
+  plano.hits.some((h) => h.recorte && f >= h.f && f < h.fim) ? "recorte" : "orig";
+
 export const hitAtivo = (plano: Plano, f: number) =>
   plano.hits.find((h) => f >= h.f && f < h.fim);
 
@@ -41,6 +45,7 @@ export const flashEm = (plano: Plano, f: number) => {
     if (dt === 0 || dt === 1) v = 1;
     else if (dt === 2) v = Math.max(v, 0.3);
   }
+  for (const h of plano.hits) if (h.recorte && f === h.fim) v = Math.max(v, 0.6); // volta à filmagem original
   for (const c of plano.cortes) if (f === c) v = Math.max(v, 0.14);
   return v;
 };

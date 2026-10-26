@@ -4,6 +4,8 @@ trechos : partes do clipe que ficam (o resto é descartado; pausas longas dentro
 hits    : textos gigantes em momentos-chave. `fala` é a sequência de palavras faladas que dispara
           o texto (achada em ordem na transcrição); `texto` usa "/" para quebrar linha.
           modo "frente" cobre o pastor, "atras" fica atrás dele (efeito de profundidade).
+          recorte: True troca o fundo da igreja por um fundo novo durante o texto (use em poucos
+          destaques; no resto do vídeo vale a filmagem original).
 enfase  : palavras que viram palavra de emoção (serifada, grande) nas legendas.
 """
 
@@ -46,14 +48,14 @@ CORTES = {
         "enfase": ["romper", "chega", "chegarão", "viverá", "capacito", "levanto", "nações", "passaporte", "língua", "processos", "liberar"],
         "hits": [
             {"fala": ["vim", "liberar"], "texto": "EU VIM/LIBERAR", "modo": "frente", "dur": 1.5},
-            {"fala": ["viverá", "o", "que"], "texto": "VOCÊ VIVERÁ/O QUE OS SEUS/PAIS NÃO VIVERAM", "modo": "frente", "dur": 2.1},
+            {"fala": ["viverá", "o", "que"], "texto": "VOCÊ VIVERÁ/O QUE OS SEUS/PAIS NÃO VIVERAM", "modo": "frente", "dur": 2.1, "recorte": True},
             {"fala": ["já", "tá", "na", "faculdade"], "texto": "JÁ TÁ NA/FACULDADE", "modo": "atras", "dur": 1.6},
             {"fala": ["organiza", "passaporte"], "texto": "ORGANIZA/PASSAPORTE", "modo": "atras", "dur": 1.5},
-            {"fala": ["estuda", "outra", "língua"], "texto": "ESTUDA/OUTRA LÍNGUA", "modo": "frente", "dur": 1.5},
+            {"fala": ["estuda", "outra", "língua"], "texto": "ESTUDA/OUTRA LÍNGUA", "modo": "frente", "dur": 1.5, "recorte": True},
             {"fala": ["nações"], "texto": "NAÇÕES", "modo": "atras", "dur": 1.3},
             {"fala": ["acelerar", "os", "processos"], "texto": "EU IREI ACELERAR/OS PROCESSOS", "modo": "frente", "dur": 2.0, "riser": True},
-            {"fala": ["romper", "romper"], "texto": "ROMPER/ROMPER", "modo": "frente", "dur": 1.6},
-            {"fala": ["romper", "o", "que"], "texto": "ROMPER O QUE/OS SEUS NÃO/ROMPERAM", "modo": "frente", "dur": 2.4},
+            {"fala": ["romper", "romper"], "texto": "ROMPER/ROMPER", "modo": "frente", "dur": 1.6, "recorte": True},
+            {"fala": ["romper", "o", "que"], "texto": "ROMPER O QUE/OS SEUS NÃO/ROMPERAM", "modo": "frente", "dur": 2.4, "recorte": True},
         ],
         "marquee_padrao": "ROMPER",
     },

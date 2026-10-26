@@ -4,6 +4,7 @@ export type Hit = {
   fim: number;
   linhas: string[];
   modo: "frente" | "atras";
+  recorte: boolean; // true: fundo novo atrás do pastor recortado; false: filmagem original
   riser: boolean;
 };
 export type PalavraLeg = { f0: number; f1: number; txt: string; enfase: boolean };
