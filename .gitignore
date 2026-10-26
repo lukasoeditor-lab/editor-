@@ -3,3 +3,4 @@ out
 public/cortes/*/pessoa.webm
 public/cortes/*/camera.json
 public/cortes/*/plano_final.json
+__pycache__/
