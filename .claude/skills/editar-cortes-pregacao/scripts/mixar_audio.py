@@ -2,7 +2,7 @@
 
 Uso: python3 -I mixar_audio.py X pasta_trabalho pasta_musicas pasta_sfx video_mudo.mp4 saida.mp4
 
-- voz: pasta_trabalho/voz_X.wav (áudio do trecho já sem pausas)
+- voz: pasta_trabalho/iso_X.mp3 (voz isolada, preferida) ou voz_X.wav (áudio do trecho já sem pausas)
 - música: segundo plano["musica"]: arquivo, início (s), modo "continuo" ou "loop" (+ corte_em)
     loop: toca de `inicio` até `inicio+corte_em`, volta ao começo e repete até o fim do vídeo,
     com crossfade curto na emenda (a música tem uma batida forte depois do ponto de corte).
@@ -77,7 +77,10 @@ def main():
     dur = plano["duracao"] / plano["fps"]
     n = int(round(dur * SR))
 
-    voz = decodificar(trab / f"voz_{cid}.wav")[:n]
+    # prefere a voz isolada (sem banda, bateria, guitarra e ruído) quando existir: iso_X.mp3
+    iso = trab / f"iso_{cid}.mp3"
+    voz = decodificar(iso if iso.exists() else trab / f"voz_{cid}.wav")[:n]
+    print(f"{cid}: voz {'isolada' if iso.exists() else 'ORIGINAL (sem isolamento)'}")
     voz = np.pad(voz, ((0, n - len(voz)), (0, 0)))
     # a gravação ao vivo vem muito alta (perto de 0 dBFS): baixa a voz para sobrar espaço aos efeitos
     voz *= 10 ** ((-20.0 - lufs(voz)) / 20)
