@@ -1,7 +1,9 @@
 import { loadFont } from "@remotion/fonts";
 import {
   AbsoluteFill,
+  Audio,
   OffthreadVideo,
+  Sequence,
   interpolate,
   random,
   staticFile,
@@ -22,6 +24,14 @@ const HITS = [
 ];
 // End of "...meu lugar" (4.6s): zoom and words go away
 const HITS_END = 138;
+
+// Sound effects: the whoosh swells into each hit, impact + snap land on it
+const WHOOSH_LEAD_FRAMES = 13;
+const SFX = [
+  { file: "sfx/whoosh.wav", offset: -WHOOSH_LEAD_FRAMES, volume: 0.5 },
+  { file: "sfx/impacto.wav", offset: 0, volume: 0.9 },
+  { file: "sfx/estalo.wav", offset: 0, volume: 0.45 },
+];
 
 const SNAP_FRAMES = 2;
 const SHAKE_FRAMES = 8;
@@ -53,6 +63,17 @@ const faceAt = (frame: number) => {
     x: interpolate(frame, frames, FACE_TRACK.map(([, x]) => x), opts),
     y: interpolate(frame, frames, FACE_TRACK.map(([, , y]) => y), opts),
   };
+};
+
+// The source audio is already mastered to 0 dB, so dip it under each impact to avoid clipping
+const duckedVolume = (f: number) => {
+  const dips = HITS.map((h) =>
+    interpolate(f, [h.frame - 2, h.frame, h.frame + 10, h.frame + 18], [1, 0.55, 0.55, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }),
+  );
+  return Math.min(...dips);
 };
 
 const activeHit = (frame: number) => {
@@ -109,7 +130,7 @@ export const VideoVertical: React.FC = () => {
           filter: filters.trim() || undefined,
         }}
       >
-        <OffthreadVideo src={staticFile("video.mp4")} />
+        <OffthreadVideo src={staticFile("video.mp4")} volume={duckedVolume} />
       </AbsoluteFill>
 
       {hit ? (
@@ -138,6 +159,14 @@ export const VideoVertical: React.FC = () => {
       ) : null}
 
       <AbsoluteFill style={{ backgroundColor: "white", opacity: flash }} />
+
+      {HITS.flatMap((h) =>
+        SFX.map((sfx) => (
+          <Sequence key={`${h.frame}-${sfx.file}`} from={h.frame + sfx.offset} layout="none">
+            <Audio src={staticFile(sfx.file)} volume={sfx.volume} />
+          </Sequence>
+        )),
+      )}
     </AbsoluteFill>
   );
 };
