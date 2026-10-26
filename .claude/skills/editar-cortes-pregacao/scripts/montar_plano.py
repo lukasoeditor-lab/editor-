@@ -18,6 +18,7 @@ from cortes_config import CORTES, COMUM  # noqa: E402
 FPS = 30
 PAUSA_MAX = 1.2           # só pausas longas viram corte; o ritmo vem de zoom e texto, sem comer fala
 FOLGA_ANTES, FOLGA_DEPOIS = 0.12, 0.34
+LIMITE_RAW = [1e9]  # duração do bruto: nenhum trecho passa dela
 PROPRIOS = {"deus", "jeremias", "senhor", "jesus", "ele"}
 # instante do pico de cada efeito sonoro dentro do arquivo (medido), em segundos
 PICO = {"whoosh": 0.25, "whoosh2": 1.14, "impacto": 0.09, "impacto2": 0.02, "estalo": 0.13, "riser": 1.62}
@@ -84,7 +85,7 @@ def spans_de_corte(palavras, trechos):
     # alinha ao quadro para que áudio e vídeo tenham exatamente a mesma duração
     out = []
     for a, b in spans:
-        fa, fb = frame(a), frame(b)
+        fa, fb = frame(a), frame(min(b, LIMITE_RAW[0]))
         if fb - fa >= 6:
             out.append((fa / FPS, fb / FPS))
     return out
@@ -185,6 +186,7 @@ def main():
     cid, trab, saida = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     cfg = CORTES[cid]
     saida.mkdir(parents=True, exist_ok=True)
+    LIMITE_RAW[0] = float(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=duration", "-of", "csv=p=0", str(trab / f"raw_{cid}.mp4")], capture_output=True, text=True).stdout.strip()) - 0.034
     palavras = carregar_palavras(trab / f"tr_{cid}.json", cfg.get("correcoes"))
     spans = spans_de_corte(palavras, cfg["trechos"])
     novas, cortes_t, total = remapear(palavras, spans)

@@ -6,7 +6,7 @@ import { LARGURA, type Hit, type Plano } from "./tipos";
 
 const tamanhoFonte = (linhas: string[]) => {
   const maior = Math.max(...linhas.map((l) => l.length));
-  const porLargura = 960 / (maior * 0.47);
+  const porLargura = 900 / (maior * 0.5);
   const porAltura = 820 / (linhas.length * 1.07);
   return Math.min(250, porLargura, porAltura);
 };
