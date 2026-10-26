@@ -15,7 +15,7 @@ const planoVazio: CorteProps = {
     hits: [],
     legendas: [],
     cortes: [],
-    camera: { janela: [700, 1000], fonte: [1920, 1080], frames: [[0, 0, 350, 950]] },
+    camera: { janela: [700, 1000], fonte: [1920, 1080], frames: [[0, 0, 350, 950, 300]] },
   },
 };
 

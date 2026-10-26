@@ -4,8 +4,8 @@ Uso: python3 -I preparar_pessoa.py entrada.mp4 pasta_saida [modelo_rvm.onnx]
 
 Gera em pasta_saida:
   pessoa.webm   janela móvel (JANELA_W x JANELA_H) com o pastor recortado (VP9 com alpha)
-  camera.json   por quadro: [x0, y0, cx, yb] em pixels do vídeo original
-                (x0,y0 = canto da janela; cx = centro horizontal do pastor; yb = linha da base do corpo)
+  camera.json   por quadro: [x0, y0, cx, yb, yt] em pixels do vídeo original
+                (x0,y0 = canto da janela; cx = centro horizontal da cabeça; yb = base do corpo; yt = topo da cabeça)
 
 Etapa 1: matting em baixa resolução no quadro inteiro, só para achar o pastor (a pessoa
 com mais movimento, com bônus de continuidade) e suavizar o caminho da câmera.
@@ -22,7 +22,7 @@ import numpy as np
 import onnxruntime as ort
 
 JANELA_W, JANELA_H = 700, 1000
-ESCALA_BASE = 1.95  # igual a ESCALA_BASE em src/corte/Pessoa.tsx
+ESCALA_BASE = 2.0  # igual a ESCALA_BASE em src/corte/Pessoa.tsx
 SIGMA_X, SIGMA_Y = 7.0, 10.0  # suavização da câmera, em quadros
 
 
@@ -64,7 +64,7 @@ def achar_pastor(entrada, modelo):
     f = W / sw
     rvm = Rvm(modelo, 1.0)
     antes = []  # cinza dos últimos quadros, para medir movimento
-    cx_l, yb_l = [], []
+    cx_l, yb_l, yt_l = [], [], []
     prev = None
     while True:
         ok, fr = cap.read()
@@ -90,6 +90,7 @@ def achar_pastor(entrada, modelo):
         if melhor is None:
             cx_l.append(cx_l[-1] if cx_l else W / 2)
             yb_l.append(yb_l[-1] if yb_l else H * 0.8)
+            yt_l.append(yt_l[-1] if yt_l else H * 0.2)
             continue
         m = (lab == melhor)
         massa = (a * m)
@@ -100,22 +101,30 @@ def achar_pastor(entrada, modelo):
         w = a[ys, xs]
         # centro horizontal pela cabeça e ombros (a faixa de cima do corpo), não pelo braço esticado
         topo = np.percentile(ys, 3)
-        faixa = ys <= topo + 0.45 * max(yb - topo, 1)
-        cx = float(np.average(xs[faixa], weights=w[faixa])) if faixa.any() else float(np.average(xs, weights=w))
+        faixa = ys <= topo + 0.30 * max(yb - topo, 1)
+        if faixa.any():
+            ordem = np.argsort(xs[faixa])
+            acumw = np.cumsum(w[faixa][ordem])
+            cx = float(xs[faixa][ordem][np.searchsorted(acumw, acumw[-1] / 2)])
+        else:
+            cx = float(np.average(xs, weights=w))
         cy = float(np.average(ys, weights=w))
         prev = (cx, cy)
         cx_l.append(cx * f)
         yb_l.append(yb * f)
+        yt_l.append(float(topo) * f)
     cap.release()
     # a janela vertical (1080 px de tela = 1080/ESCALA px do vídeo) não pode passar da borda da imagem
     meia = 1080 / ESCALA_BASE / 2
     cx_s = np.clip(suavizar(cx_l, SIGMA_X), meia, W - meia)
     yb_s = suavizar(np.median(np.lib.stride_tricks.sliding_window_view(
         np.pad(yb_l, 7, mode="edge"), 15), axis=1), SIGMA_Y)
-    return cx_s, yb_s, (W, H)
+    yt_s = suavizar(np.median(np.lib.stride_tricks.sliding_window_view(
+        np.pad(yt_l, 7, mode="edge"), 15), axis=1), SIGMA_Y)
+    return cx_s, yb_s, yt_s, (W, H)
 
 
-def recortar(entrada, saida, modelo, cx, yb, W, H, fps):
+def recortar(entrada, saida, modelo, cx, yb, yt, W, H, fps):
     """Etapa 2: matting na janela em volta do pastor e gravação do webm com alpha."""
     saida.mkdir(parents=True, exist_ok=True)
     cap = cv2.VideoCapture(str(entrada))
@@ -147,7 +156,7 @@ def recortar(entrada, saida, modelo, cx, yb, W, H, fps):
         a = a * ((yy >= 0) & (yy < H) & (xx >= 0) & (xx < W))
         rgba = np.dstack([janela, (a * 255).astype(np.uint8)])
         ff.stdin.write(rgba.tobytes())
-        cam.append([x0, y0, round(float(cx[i]), 2), round(float(yb[i]), 2)])
+        cam.append([x0, y0, round(float(cx[i]), 2), round(float(yb[i]), 2), round(float(yt[i]), 2)])
         i += 1
     ff.stdin.close()
     ff.wait()
@@ -163,7 +172,7 @@ if __name__ == "__main__":
     cap = cv2.VideoCapture(str(entrada))
     fps = cap.get(cv2.CAP_PROP_FPS)
     cap.release()
-    cx, yb, (W, H) = achar_pastor(entrada, modelo)
+    cx, yb, yt, (W, H) = achar_pastor(entrada, modelo)
     print("etapa 1 ok:", len(cx), "quadros", flush=True)
-    n = recortar(entrada, saida, modelo, cx, yb, W, H, round(fps))
+    n = recortar(entrada, saida, modelo, cx, yb, yt, W, H, round(fps))
     print("etapa 2 ok:", n, "quadros", flush=True)

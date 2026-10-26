@@ -53,7 +53,7 @@ CORTES = {
             {"fala": ["organiza", "passaporte"], "texto": "ORGANIZA/PASSAPORTE", "modo": "atras", "dur": 1.5},
             {"fala": ["estuda", "outra", "língua"], "texto": "ESTUDA/OUTRA LÍNGUA", "modo": "frente", "dur": 1.5, "recorte": True},
             {"fala": ["nações"], "texto": "NAÇÕES", "modo": "atras", "dur": 1.3},
-            {"fala": ["acelerar", "os", "processos"], "texto": "EU IREI ACELERAR/OS PROCESSOS", "modo": "frente", "dur": 2.0, "riser": True},
+            {"fala": ["acelerar", "os", "processos"], "texto": "EU IREI/ACELERAR/OS PROCESSOS", "modo": "frente", "dur": 2.0, "riser": True},
             {"fala": ["romper", "romper"], "texto": "ROMPER/ROMPER", "modo": "frente", "dur": 1.6, "recorte": True},
             {"fala": ["romper", "o", "que"], "texto": "ROMPER O QUE/OS SEUS NÃO/ROMPERAM", "modo": "frente", "dur": 2.4, "recorte": True},
         ],

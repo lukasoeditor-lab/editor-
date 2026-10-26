@@ -3,8 +3,8 @@ import { modoEm, tremidaEm, zoomEm } from "./movimento";
 import { type Plano } from "./tipos";
 
 // pixels do vídeo original -> pixels da tela vertical (igual a ESCALA_BASE em preparar_pessoa.py)
-export const ESCALA_BASE = 1.95;
-const ALTURA_VISIVEL = 1920 / ESCALA_BASE; // altura do vídeo original que cabe na tela
+export const ESCALA_BASE = 2.0;
+const ALTURA_VISIVEL = 1920 / ESCALA_BASE; // 960: deixa de fora a legenda embutida no pé da transmissão // altura do vídeo original que cabe na tela
 
 // Modo "orig": filmagem original reenquadrada na vertical, pastor centralizado.
 const PIVO_ORIG = { x: 540, y: 760 };
@@ -15,12 +15,11 @@ const PIVO_REC = { x: 540, y: 1180 };
 type Pos = { left: number; top: number; escala: number };
 
 /** Onde fica, na tela, o ponto (px, py) do vídeo original, já com zoom. */
-const projetar = (plano: Plano, f: number, modo: "recorte" | "orig") => {
+export const projetar = (plano: Plano, f: number, modo: "recorte" | "orig") => {
   const [, , cx, yb] = plano.camera.frames[Math.min(f, plano.camera.frames.length - 1)];
-  const [, fonteH] = plano.camera.fonte;
   const z = zoomEm(plano, f);
   if (modo === "orig") {
-    const y0 = Math.min(Math.max(yb - ALTURA_VISIVEL * 0.88, 0), fonteH - ALTURA_VISIVEL);
+    const y0 = Math.min(Math.max(yb - ALTURA_VISIVEL * 0.88, 0), 10);
     return (px: number, py: number): Pos => ({
       left: PIVO_ORIG.x + (540 + (px - cx) * ESCALA_BASE - PIVO_ORIG.x) * z,
       top: PIVO_ORIG.y + ((py - y0) * ESCALA_BASE - PIVO_ORIG.y) * z,

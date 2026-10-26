@@ -12,7 +12,7 @@ export type Leg = { f0: number; f1: number; palavras: PalavraLeg[] };
 export type Camera = {
   janela: [number, number];
   fonte: [number, number];
-  frames: [number, number, number, number][]; // x0, y0, cx, yb (pixels do vídeo original)
+  frames: [number, number, number, number, number][]; // x0, y0, cx, yb, yt (pixels do vídeo original)
 };
 export type Plano = {
   fps: number;

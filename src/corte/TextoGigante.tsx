@@ -1,6 +1,7 @@
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { FONTE_GIGANTE } from "./fontes";
 import { modoEm, tremidaEm } from "./movimento";
+import { projetar } from "./Pessoa";
 import { LARGURA, type Hit, type Plano } from "./tipos";
 
 const tamanhoFonte = (linhas: string[]) => {
@@ -66,14 +67,14 @@ export const TextoGigante: React.FC<{ plano: Plano; modo: "frente" | "atras" }> 
   const fs = tamanhoFonte(hit.linhas);
   const altura = hit.linhas.length * fs * 1.07;
   // fica abaixo do selo do topo; o texto "atrás" desce um pouco para ficar atrás da cabeça
-  const recorte = modoEm(plano, f) === "recorte";
-  const y = recorte
-    ? modo === "frente"
-      ? Math.max(560, 340 + altura / 2)
-      : Math.max(760, 340 + altura / 2)
-    : modo === "frente"
-      ? Math.max(900, 340 + altura / 2)
-      : Math.max(540, 340 + altura / 2);
+  const cena = modoEm(plano, f);
+  const recorte = cena === "recorte";
+  // topo da cabeça na tela: o texto "atrás" encosta nele para a cabeça cobrir só a parte de baixo
+  const yt = plano.camera.frames[Math.min(f, plano.camera.frames.length - 1)][4];
+  const topoCabeca = projetar(plano, f, cena)(0, yt).top;
+  const y = modo === "atras" ? Math.max(300 + altura / 2, topoCabeca + 120 - altura / 2) : recorte
+    ? Math.max(560, 340 + altura / 2)
+    : Math.max(900, 340 + altura / 2);
   return (
     <AbsoluteFill
       style={{
