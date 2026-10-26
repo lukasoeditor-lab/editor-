@@ -70,6 +70,22 @@ montar a edição. Os números de tempo abaixo vieram da análise de um corte de
 - **Música de fundo:** só usar arquivo enviado pelo usuário (pedir confirmação de licença). Fica
   ~20 dB abaixo da voz. Não tente identificar a música.
 
+## Lição do corte C: a voz sumiu
+
+Na primeira mixagem a voz foi baixada para -20 LUFS (a gravação ao vivo vem em -10) mas os efeitos
+continuaram com volume absoluto, uns 20 dB acima da voz: o vídeo parecia "mudo, só fundo". Agora
+`mixar_audio.py` escala os efeitos pelo pico da voz e **para com erro se a voz não estiver pelo menos
+6 dB acima de música+efeitos**. Antes de entregar, confira também a correlação entre o arquivo final e a
+voz isolada (deve ser > 0,8; no corte C deu 0,99). Música de fundo é opcional (`--sem-musica`):
+o usuário pediu só a voz no corte C.
+
+## Fundo novo só em destaques
+
+O padrão é a filmagem original reenquadrada na vertical (câmera virtual seguindo a cabeça do pastor,
+sem passar da borda da imagem e sem mostrar a legenda embutida do rodapé). O fundo novo (pastor recortado)
+vale só nos textos marcados com `"recorte": True` na configuração. Trechos em que o pastor fica na
+borda da imagem da transmissão devem ser descartados do corte (não dá para centralizar).
+
 ## Ambiente (armadilhas já encontradas)
 
 - **Chrome do Remotion não baixa** (rede bloqueada): `remotion.config.ts` aponta para o

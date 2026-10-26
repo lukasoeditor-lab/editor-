@@ -24,6 +24,7 @@ ARQ_SFX = {"whoosh": "el_whoosh.mp3", "whoosh2": "el_whoosh2.mp3", "impacto": "e
 MUSICA_ABAIXO_DA_VOZ_DB = 9.0   # antes do ducking
 DUCK_FALA = 0.5                 # ganho da música enquanto o pastor fala
 RECUO_VOZ_IMPACTO = 0.6         # ganho da voz logo após um impacto
+GANHO_EFEITOS = 0.45            # efeitos são acentos: ficam abaixo da voz
 XFADE = 0.45                    # emenda do laço da música, segundos
 
 
@@ -85,6 +86,7 @@ def main():
     # a gravação ao vivo vem muito alta (perto de 0 dBFS): baixa a voz para sobrar espaço aos efeitos
     voz *= 10 ** ((-20.0 - lufs(voz)) / 20)
 
+    sem_musica = "--sem-musica" in sys.argv
     # música
     m = plano["musica"]
     ini = float(m.get("inicio", 0))
@@ -93,13 +95,16 @@ def main():
     else:
         seg = decodificar(musicas / m["arquivo"], ini, dur + 3)
     mus = laco(seg, n)
+    if sem_musica:
+        mus = np.zeros_like(mus)
     f_in, f_out = int(1.0 * SR), int(2.6 * SR)
     mus[:f_in] *= np.linspace(0, 1, f_in)[:, None]
     mus[-f_out:] *= np.linspace(1, 0, f_out)[:, None]
 
     # nível da música em relação à voz + ducking pela fala
     alvo = lufs(voz) - MUSICA_ABAIXO_DA_VOZ_DB
-    mus *= 10 ** ((alvo - lufs(mus)) / 20)
+    if not sem_musica:
+        mus *= 10 ** ((alvo - lufs(mus)) / 20)
     envv = np.sqrt(np.convolve((voz.mean(1)) ** 2, np.ones(int(0.05 * SR)) / int(0.05 * SR), "same"))
     fala = np.clip(envv / (np.percentile(envv, 90) * 0.35 + 1e-9), 0, 1)
     ganho = suavizar(1.0 - (1.0 - DUCK_FALA) * fala, 0.04, 0.35)
@@ -118,10 +123,12 @@ def main():
     # efeitos
     efx = np.zeros((n, 2), np.float32)
     cache = {}
+    pico_voz = float(np.percentile(np.abs(voz), 99.5))
     for s in plano["sfx"]:
         if s["arq"] not in cache:
             cache[s["arq"]] = decodificar(sfx_dir / ARQ_SFX[s["arq"]])
-        x = cache[s["arq"]] * s["vol"]
+        # o pico do efeito fica na altura do pico da voz (vol = fração disso), nunca muito acima dela
+        x = cache[s["arq"]] / max(float(np.abs(cache[s["arq"]]).max()), 1e-6) * s["vol"] * pico_voz * GANHO_EFEITOS
         i0 = int(round(s["t"] * SR))
         if i0 < 0:
             x, i0 = x[-i0:], 0
@@ -130,6 +137,11 @@ def main():
             efx[i0:j] += x[: j - i0]
 
     mix = voz + mus + efx
+    rms = lambda x: float(np.sqrt((x ** 2).mean()) + 1e-12)
+    razao = 20 * np.log10(rms(voz) / rms(mus + efx))
+    print(f"{cid}: voz está {razao:.1f} dB acima de música+efeitos (precisa ser >= 6)")
+    if razao < 6:
+        raise SystemExit("a voz está coberta pela música/efeitos: reduza os volumes")
     pico = float(np.abs(mix).max())
     if pico > 0.97:
         mix *= 0.97 / pico
