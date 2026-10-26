@@ -31,7 +31,7 @@ export const Legendas: React.FC<{ plano: Plano }> = ({ plano }) => {
           justifyContent: "center",
           alignItems: "baseline",
           alignContent: "center",
-          columnGap: 22,
+          columnGap: 44,
           opacity: op,
           transform: `translateY(${subida}px) scale(${escala})`,
         }}

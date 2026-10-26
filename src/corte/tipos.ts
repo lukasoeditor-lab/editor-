@@ -25,6 +25,7 @@ export type Plano = {
   legendas: Leg[];
   cortes: number[];
   camera: Camera;
+  sem?: string[]; // recursos desligados (diagnóstico de desempenho)
 };
 export type CorteProps = { plano: Plano };
 

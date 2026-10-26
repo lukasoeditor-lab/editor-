@@ -6,8 +6,8 @@ import { LARGURA, type Hit, type Plano } from "./tipos";
 const tamanhoFonte = (linhas: string[]) => {
   const maior = Math.max(...linhas.map((l) => l.length));
   const porLargura = 960 / (maior * 0.47);
-  const porAltura = 820 / (linhas.length * 0.98);
-  return Math.min(300, porLargura, porAltura);
+  const porAltura = 820 / (linhas.length * 1.07);
+  return Math.min(250, porLargura, porAltura);
 };
 
 const Linhas: React.FC<{ hit: Hit; plano: Plano; cor?: string; deslocX?: number; sombra?: boolean }> = ({
@@ -38,7 +38,7 @@ const Linhas: React.FC<{ hit: Hit; plano: Plano; cor?: string; deslocX?: number;
             style={{
               fontFamily: FONTE_GIGANTE,
               fontSize: fs,
-              lineHeight: 0.98,
+              lineHeight: 1.07,
               letterSpacing: 2,
               color: cor ?? (ultima ? plano.paleta.destaque : "#fff"),
               opacity: op,
@@ -63,7 +63,10 @@ export const TextoGigante: React.FC<{ plano: Plano; modo: "frente" | "atras" }> 
   const tr = tremidaEm(plano, f);
   const dt = f - hit.f;
   const aberr = dt < 8 ? (8 - dt) * 1.4 : 0;
-  const y = modo === "frente" ? 610 : 880;
+  const fs = tamanhoFonte(hit.linhas);
+  const altura = hit.linhas.length * fs * 1.07;
+  // fica abaixo do selo do topo; o texto "atrás" desce um pouco para ficar atrás da cabeça
+  const y = modo === "frente" ? Math.max(560, 340 + altura / 2) : Math.max(760, 340 + altura / 2);
   return (
     <AbsoluteFill
       style={{

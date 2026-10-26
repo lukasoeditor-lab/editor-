@@ -36,23 +36,22 @@ CORTES = {
         "marquee_padrao": "ROMPER",
     },
     # ---- C: "Você viverá o que os seus não viveram" (profecia) ----
+    # Só os trechos em que o pastor aparece longe da borda da imagem da transmissão.
     "C": {
         "musica": {"arquivo": "cantforget.mp3", "inicio": 0.0, "modo": "loop", "corte_em": 35.0},
         "paleta": {"fundo1": "#040b1f", "fundo2": "#0a1a44", "luz": "#2a7bff", "destaque": "#4de1ff"},
-        "trechos": [(0.6, 63.95), (72.7, 84.0)],
-        "enfase": ["romper", "chega", "chegarão", "viverá", "capacito", "levanto", "nações", "passaporte", "língua", "processos"],
+        "trechos": [(14.7, 24.9), (49.3, 63.95), (72.7, 84.0)],
+        # a voz isolada foi gerada sobre a primeira versão do corte; este mapa permite fatiá-la
+        "iso_antigo": {"trechos": [(0.6, 63.95), (72.7, 84.0)]},
+        "enfase": ["romper", "chega", "chegarão", "viverá", "capacito", "levanto", "nações", "passaporte", "língua", "processos", "liberar"],
         "hits": [
-            {"fala": ["vão", "romper"], "texto": "VÃO/ROMPER", "modo": "frente", "dur": 1.6},
-            {"fala": ["teu", "filho", "chega"], "texto": "TEU FILHO/CHEGA", "modo": "atras", "dur": 1.4},
-            {"fala": ["teus", "netos", "chegarão"], "texto": "TEUS NETOS/CHEGARÃO", "modo": "atras", "dur": 1.6},
-            {"fala": ["viverá", "o", "que"], "texto": "VOCÊ VIVERÁ/O QUE ELES/NÃO VIVERAM", "modo": "frente", "dur": 2.0},
+            {"fala": ["vim", "liberar"], "texto": "EU VIM/LIBERAR", "modo": "frente", "dur": 1.5},
+            {"fala": ["viverá", "o", "que"], "texto": "VOCÊ VIVERÁ/O QUE OS SEUS/PAIS NÃO VIVERAM", "modo": "frente", "dur": 2.1},
             {"fala": ["já", "tá", "na", "faculdade"], "texto": "JÁ TÁ NA/FACULDADE", "modo": "atras", "dur": 1.6},
-            {"fala": ["tu", "vai", "sair"], "texto": "TU VAI/SAIR", "modo": "frente", "dur": 1.2},
-            {"fala": ["eu", "capacito"], "texto": "EU CAPACITO/EU LEVANTO", "modo": "frente", "dur": 1.9},
             {"fala": ["organiza", "passaporte"], "texto": "ORGANIZA/PASSAPORTE", "modo": "atras", "dur": 1.5},
             {"fala": ["estuda", "outra", "língua"], "texto": "ESTUDA/OUTRA LÍNGUA", "modo": "frente", "dur": 1.5},
             {"fala": ["nações"], "texto": "NAÇÕES", "modo": "atras", "dur": 1.3},
-            {"fala": ["acelerar", "os", "processos"], "texto": "EU VOU ACELERAR/OS PROCESSOS", "modo": "frente", "dur": 2.0, "riser": True},
+            {"fala": ["acelerar", "os", "processos"], "texto": "EU IREI ACELERAR/OS PROCESSOS", "modo": "frente", "dur": 2.0, "riser": True},
             {"fala": ["romper", "romper"], "texto": "ROMPER/ROMPER", "modo": "frente", "dur": 1.6},
             {"fala": ["romper", "o", "que"], "texto": "ROMPER O QUE/OS SEUS NÃO/ROMPERAM", "modo": "frente", "dur": 2.4},
         ],

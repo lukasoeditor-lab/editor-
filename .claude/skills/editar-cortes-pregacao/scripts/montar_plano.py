@@ -102,6 +102,30 @@ def montar_edicao(raw, saida, spans):
                     "-preset", "fast", "-c:a", "aac", "-b:a", "192k", str(saida)], check=True)
 
 
+def fatiar_iso_antigo(palavras, cfg, spans, origem, destino):
+    """Reaproveita a voz isolada de uma edição anterior: corta, na mesma sequência, os trechos novos."""
+    antigos = spans_de_corte(palavras, cfg["iso_antigo"]["trechos"])
+    acum, mapa = 0.0, []
+    for a, b in antigos:
+        mapa.append((a, b, acum))
+        acum += b - a
+    partes = []
+    for a, b in spans:
+        for oa, ob, off in mapa:
+            if a >= oa - 0.04 and b <= ob + 0.04:
+                partes.append((off + max(a - oa, 0.0), off + max(a - oa, 0.0) + (b - a)))
+                break
+        else:
+            raise SystemExit(f"trecho {a:.2f}-{b:.2f} não está dentro da edição antiga da voz isolada")
+    f = []
+    for i, (a, b) in enumerate(partes):
+        f.append(f"[0:a]atrim=start={a:.4f}:end={b:.4f},asetpts=PTS-STARTPTS,"
+                 f"afade=t=in:st=0:d=0.02,afade=t=out:st={b - a - 0.02:.4f}:d=0.02[a{i}]")
+    f.append("".join(f"[a{i}]" for i in range(len(partes))) + f"concat=n={len(partes)}:v=0:a=1[a]")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(origem), "-filter_complex", ";".join(f),
+                    "-map", "[a]", "-c:a", "libmp3lame", "-b:a", "192k", str(destino)], check=True)
+
+
 def achar_sequencia(palavras, tokens, a_partir):
     alvo = [norm(t) for t in tokens]
     for i in range(a_partir, len(palavras) - len(alvo) + 1):
@@ -153,6 +177,10 @@ def main():
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(trab / f"ed_{cid}.mp4"), "-vn", "-ac", "2",
                         "-ar", "48000", str(trab / f"voz_{cid}.wav")], check=True)
     duracao = frame(total)
+    antigo = trab / f"iso_antigo_{cid}.mp3"
+    if cfg.get("iso_antigo") and antigo.exists():
+        fatiar_iso_antigo(palavras, cfg, spans, antigo, trab / f"iso_{cid}.mp3")
+        print("  voz isolada fatiada a partir da edição antiga")
 
     # textos gigantes
     hits, cursor = [], 0

@@ -36,16 +36,16 @@ export const Fundo: React.FC<{ plano: Plano }> = ({ plano }) => {
         }}
       />
       {/* faixas de luz girando */}
-      <AbsoluteFill
+      {!plano.sem?.includes("raios") && <AbsoluteFill
         style={{
           background: `conic-gradient(from ${f * 0.22}deg at 50% 38%, ${hexA(p.luz, 0)} 0deg, ${hexA(p.luz, 0.3)} 9deg, ${hexA(p.luz, 0)} 22deg, ${hexA(p.luz, 0)} 62deg, ${hexA(p.destaque, 0.22)} 74deg, ${hexA(p.destaque, 0)} 90deg, ${hexA(p.luz, 0)} 150deg, ${hexA(p.luz, 0.26)} 163deg, ${hexA(p.luz, 0)} 178deg, ${hexA(p.luz, 0)} 230deg, ${hexA(p.destaque, 0.2)} 244deg, ${hexA(p.destaque, 0)} 262deg, ${hexA(p.luz, 0)} 360deg)`,
           filter: "blur(26px)",
           mixBlendMode: "screen",
           opacity: 0.85,
         }}
-      />
+      />}
       {/* palavra gigante contornada, em movimento */}
-      {linhas.map((y, i) => {
+      {!plano.sem?.includes("marquee") && linhas.map((y, i) => {
         const dir = i % 2 ? 1 : -1;
         const desloc = dir * t * 70 - (dir > 0 ? 3400 : 0);
         return (
@@ -69,7 +69,7 @@ export const Fundo: React.FC<{ plano: Plano }> = ({ plano }) => {
         );
       })}
       {/* partículas subindo */}
-      {Array.from({ length: 44 }, (_, i) => {
+      {!plano.sem?.includes("particulas") && Array.from({ length: 44 }, (_, i) => {
         const x = random(`px${i}`) * LARGURA;
         const vel = 40 + random(`pv${i}`) * 90;
         const y = ALTURA + 40 - ((t * vel + random(`po${i}`) * 2200) % (ALTURA + 120));

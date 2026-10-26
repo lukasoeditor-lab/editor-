@@ -34,7 +34,7 @@ export const Efeitos: React.FC<{ plano: Plano }> = ({ plano }) => {
         style={{ background: "radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(0,0,0,0.7) 100%)" }}
       />
       {/* granulação de filme */}
-      <AbsoluteFill style={{ mixBlendMode: "overlay", opacity: 0.2 }}>
+      {!plano.sem?.includes("grao") && <AbsoluteFill style={{ mixBlendMode: "overlay", opacity: 0.2 }}>
         <Loop durationInFrames={90}>
           <OffthreadVideo
             src={staticFile("grao.mp4")}
@@ -42,13 +42,13 @@ export const Efeitos: React.FC<{ plano: Plano }> = ({ plano }) => {
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </Loop>
-      </AbsoluteFill>
+      </AbsoluteFill>}
 
       {/* selo no topo */}
       <div
         style={{
           position: "absolute",
-          top: 168,
+          top: 130,
           left: 0,
           width: "100%",
           display: "flex",

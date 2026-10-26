@@ -3,11 +3,11 @@ import { tremidaEm, zoomEm } from "./movimento";
 import { type Plano } from "./tipos";
 
 // escala base: pixels do vídeo original -> pixels da tela vertical
-export const ESCALA_BASE = 2.6;
+export const ESCALA_BASE = 1.95;
 // ponto da tela onde fica a base do corpo do pastor (fora da tela, para esconder o corte do púlpito)
-const ANCORA = { x: 540, y: 1990 };
+const ANCORA = { x: 540, y: 1975 };
 // ponto em torno do qual o zoom acontece (altura do rosto)
-const PIVO = { x: 540, y: 1060 };
+const PIVO = { x: 540, y: 1180 };
 
 export const posicaoPessoa = (plano: Plano, f: number) => {
   const cam = plano.camera.frames[Math.min(f, plano.camera.frames.length - 1)];
@@ -32,6 +32,17 @@ export const Pessoa: React.FC<{ plano: Plano }> = ({ plano }) => {
   const p = plano.paleta;
   return (
     <AbsoluteFill>
+      {/* halo de luz atrás do pastor (mais barato que uma sombra grande no vídeo) */}
+      <div
+        style={{
+          position: "absolute",
+          left: left + tr.x + (jw * escala) / 2 - 700,
+          top: top + tr.y + jh * escala * 0.5 - 800,
+          width: 1400,
+          height: 1600,
+          background: `radial-gradient(closest-side, ${p.luz}88, ${p.luz}00)`,
+        }}
+      />
       <div
         style={{
           position: "absolute",
@@ -39,9 +50,9 @@ export const Pessoa: React.FC<{ plano: Plano }> = ({ plano }) => {
           top: top + tr.y,
           width: jw * escala,
           height: jh * escala,
-          filter: `saturate(1.3) contrast(1.12) brightness(1.04) drop-shadow(0 0 2px ${p.destaque}) drop-shadow(0 0 34px ${p.luz}99)${
-            borrao ? ` blur(${borrao}px)` : ""
-          }`,
+          filter: `saturate(1.3) contrast(1.12) brightness(1.04)${
+            plano.sem?.includes("sombra") ? "" : ` drop-shadow(0 0 2px ${p.destaque})`
+          }${borrao ? ` blur(${borrao}px)` : ""}`,
         }}
       >
         <OffthreadVideo

@@ -22,6 +22,7 @@ import numpy as np
 import onnxruntime as ort
 
 JANELA_W, JANELA_H = 700, 1000
+ESCALA_BASE = 1.95  # igual a ESCALA_BASE em src/corte/Pessoa.tsx
 SIGMA_X, SIGMA_Y = 7.0, 10.0  # suavização da câmera, em quadros
 
 
@@ -96,13 +97,19 @@ def achar_pastor(entrada, modelo):
         acum = np.cumsum(linhas) / max(linhas.sum(), 1e-6)
         yb = int(np.searchsorted(acum, 0.97))
         ys, xs = np.nonzero(m)
-        cx = float(np.average(xs, weights=a[ys, xs]))
-        cy = float(np.average(ys, weights=a[ys, xs]))
+        w = a[ys, xs]
+        # centro horizontal pela cabeça e ombros (a faixa de cima do corpo), não pelo braço esticado
+        topo = np.percentile(ys, 3)
+        faixa = ys <= topo + 0.45 * max(yb - topo, 1)
+        cx = float(np.average(xs[faixa], weights=w[faixa])) if faixa.any() else float(np.average(xs, weights=w))
+        cy = float(np.average(ys, weights=w))
         prev = (cx, cy)
         cx_l.append(cx * f)
         yb_l.append(yb * f)
     cap.release()
-    cx_s = suavizar(cx_l, SIGMA_X)
+    # a janela vertical (1080 px de tela = 1080/ESCALA px do vídeo) não pode passar da borda da imagem
+    meia = 1080 / ESCALA_BASE / 2
+    cx_s = np.clip(suavizar(cx_l, SIGMA_X), meia, W - meia)
     yb_s = suavizar(np.median(np.lib.stride_tricks.sliding_window_view(
         np.pad(yb_l, 7, mode="edge"), 15), axis=1), SIGMA_Y)
     return cx_s, yb_s, (W, H)
