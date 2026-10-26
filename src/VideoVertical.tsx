@@ -25,12 +25,13 @@ const HITS = [
 // End of "...meu lugar" (4.6s): zoom and words go away
 const HITS_END = 138;
 
-// Sound effects: the whoosh swells into each hit, impact + snap land on it
-const WHOOSH_LEAD_FRAMES = 13;
+// Sound effects (generated with ElevenLabs): each file starts early by the time
+// its loudest point sits into the file, so the peak lands on the hit frame.
+// Peaks measured: whoosh 0.25s, impact 0.09s, snap 0.13s.
 const SFX = [
-  { file: "sfx/whoosh.wav", offset: -WHOOSH_LEAD_FRAMES, volume: 0.5 },
-  { file: "sfx/impacto.wav", offset: 0, volume: 0.9 },
-  { file: "sfx/estalo.wav", offset: 0, volume: 0.45 },
+  { file: "sfx/el_whoosh.mp3", offset: -8, volume: 0.5 },
+  { file: "sfx/el_impacto.mp3", offset: -3, volume: 0.85 },
+  { file: "sfx/el_estalo.mp3", offset: -4, volume: 0.4 },
 ];
 
 const SNAP_FRAMES = 2;
