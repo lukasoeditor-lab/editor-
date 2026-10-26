@@ -11,10 +11,6 @@ export const RemotionRoot: React.FC = () => {
       fps={30}
       width={1080}
       height={1920}
-      defaultProps={{
-        title: "TÍTULO DO VÍDEO",
-        caption: "Legenda de exemplo aparece aqui",
-      }}
     />
   );
 };

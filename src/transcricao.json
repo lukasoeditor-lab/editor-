@@ -1,0 +1,258 @@
+[
+ {
+  "start": 0.0,
+  "end": 1.38,
+  "text": "Pode até estar em pecado.",
+  "words": [
+   {
+    "start": 0.0,
+    "end": 0.22,
+    "word": " Pode"
+   },
+   {
+    "start": 0.22,
+    "end": 0.38,
+    "word": " até"
+   },
+   {
+    "start": 0.38,
+    "end": 0.7,
+    "word": " estar"
+   },
+   {
+    "start": 0.7,
+    "end": 0.86,
+    "word": " em"
+   },
+   {
+    "start": 0.86,
+    "end": 1.38,
+    "word": " pecado."
+   }
+  ]
+ },
+ {
+  "start": 1.38,
+  "end": 4.6,
+  "text": "Mas está dizendo aqui não é o meu lugar.",
+  "words": [
+   {
+    "start": 1.38,
+    "end": 1.66,
+    "word": " Mas"
+   },
+   {
+    "start": 1.66,
+    "end": 1.8,
+    "word": " está"
+   },
+   {
+    "start": 1.8,
+    "end": 2.16,
+    "word": " dizendo"
+   },
+   {
+    "start": 2.16,
+    "end": 2.64,
+    "word": " aqui"
+   },
+   {
+    "start": 2.64,
+    "end": 3.16,
+    "word": " não"
+   },
+   {
+    "start": 3.16,
+    "end": 3.46,
+    "word": " é"
+   },
+   {
+    "start": 3.46,
+    "end": 3.68,
+    "word": " o"
+   },
+   {
+    "start": 3.68,
+    "end": 3.98,
+    "word": " meu"
+   },
+   {
+    "start": 3.98,
+    "end": 4.6,
+    "word": " lugar."
+   }
+  ]
+ },
+ {
+  "start": 5.92,
+  "end": 8.12,
+  "text": "Pode até estar caído.",
+  "words": [
+   {
+    "start": 5.92,
+    "end": 6.52,
+    "word": " Pode"
+   },
+   {
+    "start": 6.52,
+    "end": 6.72,
+    "word": " até"
+   },
+   {
+    "start": 6.72,
+    "end": 7.12,
+    "word": " estar"
+   },
+   {
+    "start": 7.12,
+    "end": 8.12,
+    "word": " caído."
+   }
+  ]
+ },
+ {
+  "start": 8.72,
+  "end": 10.08,
+  "text": "Mas grita como Davi.",
+  "words": [
+   {
+    "start": 8.48,
+    "end": 8.78,
+    "word": " Mas"
+   },
+   {
+    "start": 8.78,
+    "end": 9.32,
+    "word": " grita"
+   },
+   {
+    "start": 9.32,
+    "end": 9.52,
+    "word": " como"
+   },
+   {
+    "start": 9.52,
+    "end": 10.08,
+    "word": " Davi."
+   }
+  ]
+ },
+ {
+  "start": 10.14,
+  "end": 12.48,
+  "text": "Não retira de mim o teu espírito.",
+  "words": [
+   {
+    "start": 10.14,
+    "end": 10.56,
+    "word": " Não"
+   },
+   {
+    "start": 10.56,
+    "end": 11.16,
+    "word": " retira"
+   },
+   {
+    "start": 11.16,
+    "end": 11.32,
+    "word": " de"
+   },
+   {
+    "start": 11.32,
+    "end": 11.38,
+    "word": " mim"
+   },
+   {
+    "start": 11.38,
+    "end": 11.54,
+    "word": " o"
+   },
+   {
+    "start": 11.54,
+    "end": 11.7,
+    "word": " teu"
+   },
+   {
+    "start": 11.7,
+    "end": 12.48,
+    "word": " espírito."
+   }
+  ]
+ },
+ {
+  "start": 12.64,
+  "end": 13.82,
+  "text": "Me arranca daqui.",
+  "words": [
+   {
+    "start": 12.64,
+    "end": 12.96,
+    "word": " Me"
+   },
+   {
+    "start": 12.96,
+    "end": 13.62,
+    "word": " arranca"
+   },
+   {
+    "start": 13.62,
+    "end": 13.82,
+    "word": " daqui."
+   }
+  ]
+ },
+ {
+  "start": 14.34,
+  "end": 15.92,
+  "text": "Levanta alguém para me ajudar.",
+  "words": [
+   {
+    "start": 14.34,
+    "end": 14.94,
+    "word": " Levanta"
+   },
+   {
+    "start": 14.94,
+    "end": 15.06,
+    "word": " alguém"
+   },
+   {
+    "start": 15.06,
+    "end": 15.4,
+    "word": " para"
+   },
+   {
+    "start": 15.4,
+    "end": 15.56,
+    "word": " me"
+   },
+   {
+    "start": 15.56,
+    "end": 15.92,
+    "word": " ajudar."
+   }
+  ]
+ },
+ {
+  "start": 16.0,
+  "end": 16.86,
+  "text": "Eu quero Deus.",
+  "words": [
+   {
+    "start": 16.0,
+    "end": 16.18,
+    "word": " Eu"
+   },
+   {
+    "start": 16.18,
+    "end": 16.64,
+    "word": " quero"
+   },
+   {
+    "start": 16.64,
+    "end": 16.86,
+    "word": " Deus."
+   }
+  ]
+ }
+]
