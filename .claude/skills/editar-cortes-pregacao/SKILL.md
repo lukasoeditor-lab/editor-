@@ -79,6 +79,21 @@ continuaram com volume absoluto, uns 20 dB acima da voz: o vídeo parecia "mudo,
 voz isolada (deve ser > 0,8; no corte C deu 0,99). Música de fundo é opcional (`--sem-musica`):
 o usuário pediu só a voz no corte C.
 
+## Lição do feedback do corte C: contexto, cortes e legenda
+
+- **Duração e estrutura:** 1 a 1,5 min. Abra com um gancho (a frase de impacto antecipada, ~4 s), depois
+  contexto, virada (clímax) e desfecho. Corte curto de 35 s sem contexto foi reprovado.
+- **Cortes sem comer fala:** só pausas > 1,2 s viram corte; o ritmo vem de zoom e texto. O fim de cada trecho
+  vai até o fim da palavra + 0,34 s (sem passar da próxima palavra) e a emenda tem fade de 30 ms.
+  Limite de trecho só é movido quando cai dentro de uma palavra (senão "minha" do início sumia).
+- **Legenda não pode pular de altura:** sempre uma linha só, altura fixa, reduzida em conjunto se for larga.
+  Antes, frases de 2 linhas (palavra de emoção grande) mudavam de posição e pareciam "em cima, depois embaixo".
+- **Texto da legenda:** conferir a transcrição inteira e usar `correcoes` em `cortes_config.py`
+  (ex.: "pontou" -> "apontou"); nomes próprios (Deus, Jeremias, Senhor) com maiúscula.
+- **Escolha do trecho:** olhe uma folha de contatos do bruto. Descarte onde o pastor sai do quadro ou fica
+  na borda (no corte A, de 31 s a 42 s do bruto), cortando em limite de frase.
+- **Voz isolada:** isole a voz do áudio já editado (não fatie uma isolada de edição antiga, pode dessincronizar).
+
 ## Fundo novo só em destaques
 
 O padrão é a filmagem original reenquadrada na vertical (câmera virtual seguindo a cabeça do pastor,

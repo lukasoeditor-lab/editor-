@@ -16,8 +16,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 from cortes_config import CORTES, COMUM  # noqa: E402
 
 FPS = 30
-PAUSA_MAX = 0.55          # pausas maiores que isso viram corte seco
-FOLGA_ANTES, FOLGA_DEPOIS = 0.08, 0.16
+PAUSA_MAX = 1.2           # só pausas longas viram corte; o ritmo vem de zoom e texto, sem comer fala
+FOLGA_ANTES, FOLGA_DEPOIS = 0.12, 0.34
+PROPRIOS = {"deus", "jeremias", "senhor", "jesus", "ele"}
 # instante do pico de cada efeito sonoro dentro do arquivo (medido), em segundos
 PICO = {"whoosh": 0.25, "whoosh2": 1.14, "impacto": 0.09, "impacto2": 0.02, "estalo": 0.13, "riser": 1.62}
 CICLO_ZOOM = [1.0, 1.2, 1.0, 1.34, 1.08, 1.26, 1.0, 1.42]
@@ -37,13 +38,24 @@ def frame(t):
     return int(round(t * FPS))
 
 
-def carregar_palavras(tr):
+def carregar_palavras(tr, correcoes=None):
     segs = json.load(open(tr))
-    return [{"t0": w["start"], "t1": w["end"], "raw": w["word"].strip()} for s in segs for w in s["words"]]
+    c = {norm(k): v for k, v in (correcoes or {}).items()}
+    out = []
+    for s in segs:
+        for w in s["words"]:
+            raw = w["word"].strip()
+            n = norm(raw)
+            if n in c:
+                raw = re.sub(r"[A-Za-zÀ-ÿ]+", c[n], raw, count=1)
+            out.append({"t0": w["start"], "t1": w["end"], "raw": raw})
+    return out
 
 
 def ajustar_limite(palavras, t, lado):
-    """Leva t para o meio da lacuna entre palavras mais próxima, para não cortar palavra."""
+    """Se t cair no meio de uma palavra, leva para a lacuna mais próxima; senão mantém."""
+    if not any(w["t0"] < t < w["t1"] for w in palavras):
+        return t
     melhor, dist = t, 1e9
     for a, b in zip(palavras, palavras[1:]):
         meio = (a["t1"] + b["t0"]) / 2
@@ -59,12 +71,16 @@ def spans_de_corte(palavras, trechos):
         ws = [w for w in palavras if w["t0"] >= a - 0.01 and w["t1"] <= b + 0.05]
         if not ws:
             continue
-        ini = max(a, ws[0]["t0"] - FOLGA_ANTES)
+        i0 = palavras.index(ws[0])
+        ant = palavras[i0 - 1]["t1"] + 0.02 if i0 > 0 else 0.0
+        ini = max(ant, ws[0]["t0"] - FOLGA_ANTES)
         for prev, w in zip(ws, ws[1:]):
             if w["t0"] - prev["t1"] > PAUSA_MAX:
-                spans.append((ini, prev["t1"] + FOLGA_DEPOIS))
-                ini = w["t0"] - FOLGA_ANTES
-        spans.append((ini, min(b, ws[-1]["t1"] + FOLGA_DEPOIS)))
+                spans.append((ini, prev["t1"] + 0.45))
+                ini = w["t0"] - 0.45
+        j = palavras.index(ws[-1])
+        prox = palavras[j + 1]["t0"] - 0.03 if j + 1 < len(palavras) else 1e9
+        spans.append((ini, min(ws[-1]["t1"] + FOLGA_DEPOIS, max(prox, ws[-1]["t1"] + 0.04))))
     # alinha ao quadro para que áudio e vídeo tenham exatamente a mesma duração
     out = []
     for a, b in spans:
@@ -78,7 +94,7 @@ def remapear(palavras, spans):
     novos, acum = [], 0.0
     for a, b in spans:
         for w in palavras:
-            if a - 0.001 <= w["t0"] < b:
+            if a - 0.001 <= w["t0"] and w["t1"] <= b + 0.08:
                 novos.append({**w, "n0": acum + (w["t0"] - a), "n1": min(acum + (w["t1"] - a), acum + (b - a))})
         acum += b - a
     cortes, ac = [], 0.0
@@ -94,7 +110,7 @@ def montar_edicao(raw, saida, spans):
         d = b - a
         f.append(f"[0:v]trim=start_frame={frame(a)}:end_frame={frame(b)},setpts=PTS-STARTPTS[v{i}]")
         f.append(f"[0:a]atrim=start={a:.4f}:end={b:.4f},asetpts=PTS-STARTPTS,"
-                 f"afade=t=in:st=0:d=0.02,afade=t=out:st={d - 0.02:.4f}:d=0.02[a{i}]")
+                 f"afade=t=in:st=0:d=0.03,afade=t=out:st={d - 0.03:.4f}:d=0.03[a{i}]")
     ins = "".join(f"[v{i}][a{i}]" for i in range(len(spans)))
     f.append(f"{ins}concat=n={len(spans)}:v=1:a=1[v][a]")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-filter_complex", ";".join(f),
@@ -159,7 +175,7 @@ def legendas(palavras, enfase_set):
             w = palavras[j]
             e = (not usou) and norm(w["raw"]) in enfase_set
             usou = usou or e
-            ps.append({"f0": frame(w["n0"]), "f1": frame(w["n1"]), "txt": limpa(w["raw"]).lower(),
+            ps.append({"f0": frame(w["n0"]), "f1": frame(w["n1"]), "txt": (limpa(w["raw"]).capitalize() if norm(w["raw"]) in PROPRIOS else limpa(w["raw"]).lower()),
                        "enfase": e})
         saida.append({"f0": f0, "f1": f1, "palavras": ps})
     return saida
@@ -169,7 +185,7 @@ def main():
     cid, trab, saida = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     cfg = CORTES[cid]
     saida.mkdir(parents=True, exist_ok=True)
-    palavras = carregar_palavras(trab / f"tr_{cid}.json")
+    palavras = carregar_palavras(trab / f"tr_{cid}.json", cfg.get("correcoes"))
     spans = spans_de_corte(palavras, cfg["trechos"])
     novas, cortes_t, total = remapear(palavras, spans)
     if "--reusar" not in sys.argv or not (trab / f"ed_{cid}.mp4").exists():

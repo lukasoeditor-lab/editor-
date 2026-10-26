@@ -90,13 +90,14 @@ def main():
     # música
     m = plano["musica"]
     ini = float(m.get("inicio", 0))
-    if m["modo"] == "loop":
-        seg = decodificar(musicas / m["arquivo"], ini, float(m["corte_em"]))
-    else:
-        seg = decodificar(musicas / m["arquivo"], ini, dur + 3)
-    mus = laco(seg, n)
     if sem_musica:
-        mus = np.zeros_like(mus)
+        mus = np.zeros((n, 2), np.float32)
+    else:
+        if m["modo"] == "loop":
+            seg = decodificar(musicas / m["arquivo"], ini, float(m["corte_em"]))
+        else:
+            seg = decodificar(musicas / m["arquivo"], ini, dur + 3)
+        mus = laco(seg, n)
     f_in, f_out = int(1.0 * SR), int(2.6 * SR)
     mus[:f_in] *= np.linspace(0, 1, f_in)[:, None]
     mus[-f_out:] *= np.linspace(1, 0, f_out)[:, None]

@@ -16,24 +16,29 @@ export const Legendas: React.FC<{ plano: Plano }> = ({ plano }) => {
   const subida = interpolate(s, [0, 1], [26, 0]);
   const op = interpolate(dt, [0, 2], [0, 1], { extrapolateRight: "clamp" });
   const { destaque } = plano.paleta;
+  // uma linha só, sempre na mesma altura: se a frase for larga demais, reduz tudo em conjunto
+  const larguraEstimada =
+    leg.palavras.reduce((s, w) => s + w.txt.length * (w.enfase ? 150 * 0.5 : 68 * 0.64), 0) +
+    44 * (leg.palavras.length - 1);
+  const ajuste = Math.min(1, 960 / larguraEstimada);
 
   return (
     <AbsoluteFill style={{ transform: `translate(${tr.x * 0.5}px, ${tr.y * 0.5}px)` }}>
       <div
         style={{
           position: "absolute",
-          top: 1400,
-          left: 50,
-          width: 980,
-          minHeight: 220,
+          top: 1420,
+          left: 40,
+          width: 1000,
+          height: 200,
           display: "flex",
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
+          whiteSpace: "nowrap",
           justifyContent: "center",
           alignItems: "baseline",
-          alignContent: "center",
           columnGap: 44,
           opacity: op,
-          transform: `translateY(${subida}px) scale(${escala})`,
+          transform: `translateY(${subida}px) scale(${escala * ajuste})`,
         }}
       >
         {leg.palavras.map((w, i) => {
