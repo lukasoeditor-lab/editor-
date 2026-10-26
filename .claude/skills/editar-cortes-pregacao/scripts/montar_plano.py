@@ -270,6 +270,15 @@ def main():
         "cortes": [frame(t) for t in cortes_t],
         "musica": cfg["musica"],
     }
+    if "--simples" in sys.argv:  # legenda palavra por palavra, sem textos gigantes, zoom nem efeitos
+        i = sys.argv.index("--simples")
+        plano.update({"estilo": "simples", "hits": [], "sfx": [], "cortes": [],
+                      "zooms": [{"f": 0, "escala": 1.0, "seco": False}]})
+        if i + 1 < len(sys.argv) and sys.argv[i + 1].startswith("@"):
+            plano["marca"] = sys.argv[i + 1]
+        for l in plano["legendas"]:
+            for w in l["palavras"]:
+                w["txt"] = w["txt"].upper()
     (saida / "plano.json").write_text(json.dumps(plano, ensure_ascii=False))
     print(f"{cid}: {len(spans)} trechos, {duracao} quadros ({duracao / FPS:.1f}s), {len(hits)} textos, "
           f"{len(zooms)} zooms, {len(legs)} legendas, {len(sfx)} sons")

@@ -26,6 +26,8 @@ export type Plano = {
   legendas: Leg[];
   cortes: number[];
   camera: Camera;
+  estilo?: "simples"; // legenda palavra por palavra, sem motion design
+  marca?: string; // @ no rodapé (estilo simples)
   sem?: string[]; // recursos desligados (diagnóstico de desempenho)
 };
 export type CorteProps = { plano: Plano };

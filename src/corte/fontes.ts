@@ -10,3 +10,9 @@ export const FONTE_GIGANTE = "Anton, Impact, sans-serif";
 export const FONTE_LEGENDA = "PoppinsX, Poppins, Arial Black, sans-serif";
 export const FONTE_LEVE = "PoppinsS, Poppins, Arial, sans-serif";
 export const FONTE_EMOCAO = "PlayfairI, Georgia, serif";
+
+// estilo "simples" (legenda palavra por palavra, tipo Helvetica Bold)
+loadFont({ family: "InterB", url: staticFile("fonts/Inter-Bold.otf"), weight: "700" });
+loadFont({ family: "InterS", url: staticFile("fonts/Inter-SemiBold.otf"), weight: "600" });
+export const FONTE_SIMPLES = "InterB, Helvetica Neue, Helvetica, Arial, sans-serif";
+export const FONTE_MARCA = "InterS, Helvetica Neue, Helvetica, Arial, sans-serif";

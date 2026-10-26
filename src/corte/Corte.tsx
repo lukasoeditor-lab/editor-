@@ -6,9 +6,18 @@ import { Legendas } from "./Legendas";
 import { hitAtivo, modoEm, tremidaEm } from "./movimento";
 import { Original, Pessoa } from "./Pessoa";
 import { TextoGigante } from "./TextoGigante";
+import { LegendasSimples } from "./LegendasSimples";
 import { type CorteProps } from "./tipos";
 
 export const Corte: React.FC<CorteProps> = ({ plano }) => {
+  if (plano.estilo === "simples") {
+    return (
+      <AbsoluteFill style={{ backgroundColor: "#000" }}>
+        <Original plano={plano} />
+        <LegendasSimples plano={plano} />
+      </AbsoluteFill>
+    );
+  }
   const f = useCurrentFrame();
   const modo = modoEm(plano, f);
   const tr = tremidaEm(plano, f);
