@@ -23,7 +23,8 @@ Cada evento tem `"tipo"`. Palavras são `["texto", tempo_da_fala]`.
 
 | Tipo | Campos | Visual |
 |---|---|---|
-| `cap` | `w`: lista de palavras/grupos; `cor: "amarelo"` opcional | legenda de 1 linha no peito; cada grupo entra no tempo da fala |
+| **`frase`** (padrão) | `w`: `[texto, tempo, "s"?]`; `coluna`, `ancora`, `max_bloco`, `modo`, `impacto` | **legenda dinâmica**: bloco estreito alinhado à esquerda que cresce palavra por palavra; `"s"` = palavra-chave em serifa na própria linha; detalhes em [legenda-dinamica.md](legenda-dinamica.md) |
+| `cap` | `w`: lista de palavras/grupos; `cor: "amarelo"` opcional | legenda de 1 linha no peito (estilo antigo; use só para uma fala curta) |
 | `emph` | `lead`: frase curta em cima; `serif`: palavra-chave; `impacto`, `glitch`, `tamanho` | frase pequena + palavra grande em serifa itálica; `impacto` treme e dispara o hit grave; `glitch` separa as cores |
 | `scatter` | `w`: `[texto, tempo, x, y]`; `serifa_ultima` | palavras em pontos diferentes da tela (1080×1920) |
 | `beat` | `w` (com x, y), `t0`, `t1` | interlúdio em fundo escuro com palavras espalhadas e flash de entrada |

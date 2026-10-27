@@ -31,7 +31,7 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 2. **Transcrever e escolher 3 cortes.** `uv run scripts/video/corte_pregacao/preparar_corte.py ... --transcrever` ou o `faster-whisper` direto. Critério dos cortes e como ler a transcrição: `references/pipeline.md` §2. Entregue ao Lukas uma tabela com tempo, resumo, por que viraliza.
 3. **Escolher os trechos de cada corte** (início e fim em segundos do original, cortando o que não ajuda a ideia) e **corrigir a transcrição** (o Whisper erra nomes bíblicos e gíria; use a fala real).
 4. **Preparar:** `uv run scripts/video/corte_pregacao/preparar_corte.py pregacao.mp4 04-projetos/AAAA-MM-DD-corte1/preparo --trechos "940.4:953.8,954.1:958.8" --isolar-voz --modelo-voz <UVR-MDX-NET-Voc_FT.onnx>`. Faz: recorte vertical que segue o pregador, pausas longas cortadas, voz isolada e normalizada em −16 LUFS.
-5. **Escrever o roteiro** (`roteiro.json`): quais palavras viram destaque e onde entram os efeitos. Modelo e tipos de evento: `references/roteiro.md` e `assets/roteiro.exemplo.json`. Regras: no máximo 1 a 3 destaques por frase; popup de notificação no primeiro terço; 1 interlúdio preto por corte, no máximo 2; fecho limpo.
+5. **Escrever o roteiro** (`roteiro.json`): use **`frase`** (a legenda dinâmica das referências: bloco estreito que cresce palavra por palavra, palavra-chave em serifa; ver `references/legenda-dinamica.md`). `uv run scripts/video/corte_pregacao/roteirizar.py palavras.json roteiro.json --ini ... --fim ...` monta as frases sozinho; depois corrija o texto, escolha as palavras-chave e ponha os efeitos. Tipos de evento: `references/roteiro.md`; exemplo: `assets/roteiro.exemplo.json`. Regras: no máximo 1 a 3 destaques por frase; popup de notificação no primeiro terço; 1 interlúdio preto por corte, no máximo 2; fecho limpo.
 6. **Gerar o projeto:** `uv run scripts/video/corte_pregacao/gerar_projeto.py roteiro.json preparo/ projeto/ --hf "<comando do hyperframes>"`. Cria o HyperFrames com legenda, efeitos, SFX da biblioteca (`05-biblioteca/som/sfx`), música e a cor de cinema (`media-treatment`).
 7. **Conferir:** `npx hyperframes check --json` (zero erros) e `snapshot --at ...` em cada efeito. **Olhe os quadros** antes de renderizar.
 8. **Renderizar** (`hyperframes render . -o ../render.mp4 -q looks`), em segundo plano e destacado do terminal (leva ~0,5 s por quadro com a grade: um corte de 50 s sai em ~20 min em 4 núcleos).
@@ -40,6 +40,8 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 
 ## Regras que valem sempre
 
+- **Legenda = evento `frase`** (bloco estreito alinhado à esquerda, tracking −0,04em, palavra-chave em serifa na própria linha). **Não** usar legenda de uma linha com franja colorida: esse foi o erro do corte 2 v1.
+- **Sem som por palavra:** nas referências nenhuma palavra tem efeito sonoro (medido). O som está na música, nas trocas de plano/flashes, no popup e no impacto de abertura.
 - **Texto acompanha a fala**, nunca antes. Nada cobre o rosto.
 - **Sem cartões brancos.** O vídeo fica na tela; o destaque é tipografia, cor e flash curto (3 a 4 quadros).
 - **Cor com sentido:** vermelho (#DC2427) só em título; amarelo (#F7D903) só na fala do "outro" em P&B.

@@ -4,6 +4,11 @@
 
 **Como usar:** uma entrada por aprendizado, a mais nova no topo: data, projeto, o que aconteceu e o que fazer da próxima vez. Quando o aprendizado vira um número fixo, ele sobe para [regras.md](regras.md) e aqui fica só o link.
 
+## 2026-10-27 — Legenda dinâmica: aprender a mecânica, não só a aparência
+- **Projeto:** corte 2 (Cara de crente)
+- **O que aconteceu:** a v1 usou a legenda antiga (uma linha com franja colorida) e o Lukas notou que não era o estilo das referências. Medindo quadro a quadro: a legenda das referências é um bloco estreito alinhado à esquerda que cresce palavra por palavra, com a palavra-chave em serifa itálica na própria linha; o "fantasma" cinza que aparece é só a entrada da palavra. E não há som por palavra (120 nascimentos medidos, nenhum ganho de energia).
+- **Da próxima vez:** montar a legenda com o evento `frase` (`references/legenda-dinamica.md`), comparar os quadros com a referência lado a lado antes de renderizar e não inventar som por palavra.
+
 ## 2026-10-27 — Estilo "cara de IA" vs. estilo profissional dos cortes
 - **Projeto:** cortes da pregação "A Unção de Davi" (corte 1 e 2) e análise das 5 referências do Lukas
 - **O que aconteceu:** o corte 1 saiu com cartões brancos/coloridos e animação feita com PIL; o Lukas disse que parecia IA e pediu o estilo das referências (vídeo sempre na tela, legenda mínima, palavra-chave em serifa itálica, flashes curtos, cor com sentido).

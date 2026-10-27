@@ -1,9 +1,8 @@
 {
- "_leia": "Corte 2 (Cara de crente): tempos em segundos do vídeo original; veja a skill corte-de-pregacao.",
  "estilo": "A",
  "rotulo_topo": "ALÉM DO PÚLPITO",
  "logo": "CAMINHO/DO/PNG-DO-@.png",
- "cauda": 1.5,
+ "cauda": 4.0,
  "musica": {
   "arquivo": "05-biblioteca/musica/SUA-MUSICA.mp3",
   "inicio": 0,
@@ -11,143 +10,205 @@
  },
  "eventos": [
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "é rei,",
+     "é",
      940.42
+    ],
+    [
+     "rei,",
+     940.72
     ]
    ]
   },
   {
-   "tipo": "emph",
-   "lead": [
+   "tipo": "frase",
+   "w": [
     [
-     "tem cara de",
+     "tem",
      941.82
+    ],
+    [
+     "cara",
+     942.1
+    ],
+    [
+     "de",
+     942.76
+    ],
+    [
+     "crente",
+     942.96,
+     "s"
     ]
-   ],
-   "serif": [
-    "crente",
-    942.96
    ]
   },
   {
-   "tipo": "emph",
-   "lead": [
+   "tipo": "frase",
+   "w": [
     [
-     "mas Deus está",
+     "mas",
      943.9
+    ],
+    [
+     "Deus",
+     944.12
+    ],
+    [
+     "está",
+     944.36
+    ],
+    [
+     "rejeitando",
+     944.58,
+     "s"
     ]
-   ],
-   "serif": [
-    "rejeitando",
-    944.58
    ],
    "impacto": true
   },
   {
-   "tipo": "cap",
+   "tipo": "flash",
+   "t": 945.9,
+   "modo": "luz"
+  },
+  {
+   "tipo": "frase",
    "w": [
     [
      "cantando",
      946.1
     ],
     [
-     "de crente,",
+     "de",
      946.84
-    ]
-   ]
-  },
-  {
-   "tipo": "scatter",
-   "w": [
+    ],
+    [
+     "crente,",
+     947.02
+    ],
     [
      "mas",
-     947.82,
-     150,
-     880
+     947.82
     ],
     [
      "Deus",
-     947.96,
-     640,
-     960
+     947.96
     ],
     [
      "está",
-     948.24,
-     250,
-     1070
+     948.24
     ],
     [
      "rejeitando",
      948.42,
-     110,
-     1200
+     "s"
     ]
    ],
-   "serifa_ultima": true
+   "max_bloco": 5
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "o vocabulário",
+     "o",
      949.7
     ],
     [
-     "é de crente,",
+     "vocabulário",
+     949.76
+    ],
+    [
+     "é",
      950.54
+    ],
+    [
+     "de",
+     950.68
+    ],
+    [
+     "crente,",
+     950.78
     ]
    ]
   },
   {
-   "tipo": "cap",
+   "tipo": "notificacao",
+   "t": 951.2,
+   "dur": 2.6,
+   "nome": "Pregue",
+   "texto": "Aproveita pra me seguir!"
+  },
+  {
+   "tipo": "frase",
    "w": [
     [
-     "mas é",
+     "mas",
      951.44
+    ],
+    [
+     "é",
+     951.54
     ],
     [
      "misericórdia,",
      951.6
-    ]
-   ]
-  },
-  {
-   "tipo": "cap",
-   "w": [
+    ],
     [
-     "sangue de Jesus",
+     "sangue",
      952.52
     ],
     [
-     "tem poder,",
+     "de",
+     952.82
+    ],
+    [
+     "Jesus",
+     952.9
+    ],
+    [
+     "tem",
      953.06
+    ],
+    [
+     "poder,",
+     953.26,
+     "s"
     ]
    ]
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "mas tu sabe",
+     "mas",
      954.06
-    ]
-   ]
-  },
-  {
-   "tipo": "emph",
-   "lead": [
+    ],
     [
-     "que tu está",
+     "tu",
+     954.2
+    ],
+    [
+     "sabe",
+     954.44
+    ],
+    [
+     "que",
      954.94
+    ],
+    [
+     "tu",
+     955.14
+    ],
+    [
+     "está",
+     955.3
+    ],
+    [
+     "desviado",
+     955.42,
+     "s"
     ]
-   ],
-   "serif": [
-    "desviado",
-    955.42
    ],
    "impacto": true
   },
@@ -195,135 +256,172 @@
    "t1": 958.7
   },
   {
-   "tipo": "list",
-   "linhas": [
-    [
-     [
-      "tu",
-      959.16
-     ],
-     [
-      "não",
-      959.3
-     ],
-     [
-      "canta",
-      959.44
-     ],
-     [
-      "mais,",
-      959.92
-     ]
-    ],
-    [
-     [
-      "tu",
-      960.42
-     ],
-     [
-      "não",
-      960.54
-     ],
-     [
-      "prega",
-      960.62
-     ],
-     [
-      "mais,",
-      961.14
-     ]
-    ],
-    [
-     [
-      "não",
-      961.56
-     ],
-     [
-      "evangeliza",
-      961.64
-     ],
-     [
-      "mais",
-      962.48
-     ]
-    ]
-   ]
+   "tipo": "flash",
+   "t": 959.0,
+   "modo": "branco"
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "você gosta",
+     "tu",
+     959.16
+    ],
+    [
+     "não",
+     959.3
+    ],
+    [
+     "canta",
+     959.44
+    ],
+    [
+     "mais,",
+     959.92
+    ],
+    [
+     "tu",
+     960.42
+    ],
+    [
+     "não",
+     960.54
+    ],
+    [
+     "prega",
+     960.62
+    ],
+    [
+     "mais,",
+     961.14
+    ],
+    [
+     "não",
+     961.56
+    ],
+    [
+     "evangeliza",
+     961.64,
+     "s"
+    ],
+    [
+     "mais",
+     962.48
+    ]
+   ],
+   "coluna": 0.42,
+   "max_bloco": 7
+  },
+  {
+   "tipo": "frase",
+   "w": [
+    [
+     "você",
      963.3
     ],
     [
-     "até de ouvir",
+     "gosta",
+     963.58
+    ],
+    [
+     "até",
      963.9
+    ],
+    [
+     "de",
+     964.26
+    ],
+    [
+     "ouvir",
+     964.4
+    ],
+    [
+     "musiquinha",
+     964.68,
+     "s"
+    ],
+    [
+     "gospel,",
+     965.24
     ]
    ]
   },
   {
-   "tipo": "emph",
-   "lead": [],
-   "serif": [
-    "musiquinha gospel",
-    964.68
-   ],
-   "tamanho": 118
-  },
-  {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "gosta até",
+     "gosta",
      966.42
     ],
     [
-     "de ouvir",
-     967.14
-    ]
-   ]
-  },
-  {
-   "tipo": "cap",
-   "w": [
+     "até",
+     966.74
+    ],
     [
-     "algumas reflexões",
+     "de",
+     967.14
+    ],
+    [
+     "ouvir",
+     967.28
+    ],
+    [
+     "algumas",
      967.56
     ],
     [
-     "de pastores,",
+     "reflexões",
+     967.92,
+     "s"
+    ],
+    [
+     "de",
      968.84
+    ],
+    [
+     "pastores,",
+     969.12
     ]
    ]
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "mas a sua",
+     "mas",
      970.28
+    ],
+    [
+     "a",
+     970.42
+    ],
+    [
+     "sua",
+     970.6
     ],
     [
      "comunhão",
      970.9
-    ]
-   ]
-  },
-  {
-   "tipo": "emph",
-   "lead": [
+    ],
     [
-     "com Deus foi",
+     "com",
      971.42
+    ],
+    [
+     "Deus",
+     971.64
+    ],
+    [
+     "foi",
+     971.84
+    ],
+    [
+     "rompida",
+     972.1,
+     "s"
     ]
    ],
-   "serif": [
-    "rompida",
-    972.1
-   ],
-   "impacto": true,
-   "glitch": true
+   "impacto": true
   },
   {
    "tipo": "beat",
@@ -358,90 +456,147 @@
    "serifa_ultima": true
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "está aí no",
+     "está",
      987.12
     ],
     [
-     "capítulo 15",
-     987.66
-    ]
-   ]
-  },
-  {
-   "tipo": "emph",
-   "lead": [
+     "aí",
+     987.44
+    ],
     [
-     "você rejeitou a",
-     988.5
+     "no",
+     987.56
+    ],
+    [
+     "capítulo",
+     987.66
+    ],
+    [
+     "15",
+     988.08
     ]
-   ],
-   "serif": [
-    "palavra",
-    990.74
    ]
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "de Deus,",
+     "você",
+     988.5
+    ],
+    [
+     "rejeitou",
+     989.24
+    ],
+    [
+     "a",
+     990.32
+    ],
+    [
+     "palavra",
+     990.74,
+     "s"
+    ],
+    [
+     "de",
      991.18
     ],
     [
-     "versículo 23,",
-     991.88
+     "Deus,",
+     991.48
     ]
    ]
   },
   {
-   "tipo": "emph",
-   "lead": [
+   "tipo": "frase",
+   "w": [
     [
-     "o Senhor também te",
+     "versículo",
+     991.88
+    ],
+    [
+     "23,",
+     992.24
+    ],
+    [
+     "o",
      993.16
+    ],
+    [
+     "Senhor",
+     993.24
+    ],
+    [
+     "também",
+     993.6
+    ],
+    [
+     "te",
+     994.18
+    ],
+    [
+     "rejeitará",
+     994.36,
+     "s"
     ]
-   ],
-   "serif": [
-    "rejeitará",
-    994.36
    ],
    "impacto": true
   },
   {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "se você",
+     "se",
      1009.6
     ],
     [
-     "rejeita a",
+     "você",
+     1009.82
+    ],
+    [
+     "rejeita",
      1010.2
+    ],
+    [
+     "a",
+     1011.26
+    ],
+    [
+     "palavra",
+     1011.44,
+     "s"
+    ],
+    [
+     "de",
+     1011.7
+    ],
+    [
+     "Deus,",
+     1011.94
     ]
    ]
   },
   {
-   "tipo": "emph",
-   "lead": [],
-   "serif": [
-    "palavra de Deus,",
-    1011.44
-   ],
-   "tamanho": 118
-  },
-  {
-   "tipo": "cap",
+   "tipo": "frase",
    "w": [
     [
-     "o Deus",
+     "o",
      1012.5
     ],
     [
-     "da palavra",
+     "Deus",
+     1012.6
+    ],
+    [
+     "da",
      1013.18
+    ],
+    [
+     "palavra",
+     1013.44
     ]
    ]
   },
@@ -455,6 +610,18 @@
     "você",
     1015.3
    ]
+  },
+  {
+   "tipo": "flash",
+   "t": 1016.9,
+   "modo": "filme"
+  },
+  {
+   "tipo": "assinatura",
+   "t": 1017.3,
+   "texto": "Pregue",
+   "sub": "ALÉM DO PÚLPITO"
   }
- ]
+ ],
+ "_leia": "Corte 2 (Cara de crente) no estilo A com legenda dinâmica (eventos \"frase\"). Tempos em segundos do vídeo original."
 }

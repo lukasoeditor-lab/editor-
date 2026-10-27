@@ -37,11 +37,11 @@
 
 | Recurso | Onde | Como |
 |---|---|---|
-| Legenda sans | peito do pastor, centro horizontal, ~55% da altura | negrito, minúscula, entrelinha apertada (≈0,9), letras quase encostadas; ~4,5 a 6% da largura do quadro (≈ 42 px em 720 px); branca com sombra suave |
+| Legenda sans | **bloco estreito alinhado à esquerda** (coluna ≈ 30% da largura), âncora que muda a cada frase (x 25–70%, y 50–66%) | negrito, minúscula, entrelinha apertada (≈0,88), tracking ≈ −0,04em; ~5% da largura do quadro (≈ 37 px em 720 px); branca com sombra suave; 2º bloco abaixo e à direita nas frases longas |
 | Entrada de palavra | cada palavra no instante em que é falada | fade de 3–4 quadros, sobe uns 6–10 px; as palavras anteriores ficam; o bloco inteiro some quando a frase muda |
 | Serifa itálica (palavra-chave) | no meio do bloco, ~2× o tamanho da sans | entra com desfoque ~10–14 px e opacidade baixa e fica nítida em ~8 quadros (0,27 s); brilho suave em volta; sem tremida |
 | Posição das palavras | blocos de 1 a 4 linhas | a próxima palavra cai na linha de baixo ou ao lado; às vezes a palavra fica "solta" longe do bloco |
-| Palavra apagada | fim de frase | a última palavra fica em cinza claro, com desfoque, quase transparente, antes de sumir |
+| Entrada em fantasma | cada palavra nova | por ~0,2 s a palavra aparece cinza e desfocada antes de ficar nítida (não é saída); o bloco inteiro some de uma vez quando a frase acaba |
 | Popup de notificação | topo, ~85% da largura, ~5% da altura, margem ~1,5% | desce com leve overshoot e desfoque; avatar redondo + nome em negrito + texto curto; some sozinho. Serve de CTA ("seguir") sem interromper a fala |
 | Troca de plano | 6 vezes em 36 s | enquadramento muda (mais aberto/mais fechado) em ~4 quadros com mistura rápida; o texto continua |
 | Fecho | 36,5–41,4 s | queima de filme (2 a 4 quadros) → preto → assinatura desenhada → parada; nada mais |

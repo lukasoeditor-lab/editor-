@@ -26,6 +26,7 @@
 
 | Comando | O que faz |
 |---|---|
+| `uv run scripts/video/corte_pregacao/roteirizar.py <palavras.json> <roteiro.json> --ini <s> --fim <s> [--destaques "a,b"]` | monta as frases (`frase`) da legenda dinâmica a partir da transcrição |
 | `uv run scripts/video/corte_pregacao/preparar_corte.py <pregacao.mp4> <pasta> --trechos "ini:fim,..." [--isolar-voz --modelo-voz <onnx>] [--transcrever]` | recorte vertical que segue o pregador, pausas cortadas, voz isolada e `palavras.json` |
 | `uv run scripts/video/corte_pregacao/gerar_projeto.py <roteiro.json> <preparo> <projeto> [--hf "<comando>"]` | gera o projeto HyperFrames (legenda, efeitos, SFX, música, cor de cinema) |
 | `uv run scripts/video/corte_pregacao/misturar_audio.py <projeto/index.html> <render.mp4> <final.mp4>` | refaz a mistura de áudio com limitador baixo e cola no vídeo renderizado |

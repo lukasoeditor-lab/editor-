@@ -41,9 +41,9 @@ Medidos nas 5 referências do Lukas ([estilos-pregue](../03-referencias/analises
 
 | Regra | Valor de partida |
 |---|---|
-| Legenda | 4,5 a 6% da largura (≈ 50–65 px em 1080 px), minúscula, bold 700–800 (estilo B: 300), entrelinha ~0,95, sem caixa; do peito para baixo, nunca no rosto |
+| Legenda | bloco **estreito alinhado à esquerda** (coluna ≈ 30% da largura) que cresce palavra por palavra; 4,5 a 6% da largura (≈ 57 px em 1080 px), minúscula, bold 800 (estilo B: 300 justificada), **tracking −0,04em**, entrelinha 0,88, sem caixa e sem franja colorida; do peito para baixo (46% a 72% da altura), nunca no rosto; 2º bloco abaixo e à direita se passar de ~6 palavras; a posição muda a cada frase |
 | Palavra-chave | serifa itálica 1,8 a 2,2× a legenda; entrada com desfoque 14 px → 0, `scale 1,25 → 1`, 0,27 s `expo.out`; 1 a 3 por frase |
-| Entrada de palavra | no quadro em que é falada; 0,14 s com desfoque 6–9 px e subida de 8–16 px |
+| Entrada de palavra | no quadro em que é falada; 0,22 s com desfoque 8 px e subida de 8 px; a frase some inteira, de uma vez, quando a seguinte começa. **Sem efeito sonoro por palavra** (medido nas referências) |
 | Troca de plano / flash | 3 a 4 quadros (≈ 0,13 s) com flash de luz; sem dissolve longo |
 | Plano | troca de enquadramento a cada ~6 s (zoom 1,0 ↔ 1,16/1,24; palavra-chave até 1,3 em 1080p de câmera aberta) |
 | Popup de notificação | topo, ~85% da largura, 2,5–3 s; dentro do primeiro terço do vídeo |

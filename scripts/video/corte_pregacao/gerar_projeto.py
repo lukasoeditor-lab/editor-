@@ -33,10 +33,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from _estudio import SFX  # noqa: E402
 
 CHROMA = "text-shadow:-2px 0 rgba(255,45,85,.9), 2px 0 rgba(30,220,255,.9), 0 4px 18px rgba(0,8,40,.55);"
+# posições (fração da largura, da altura) onde o bloco de legenda nasce; alternam de frase em frase
+ANCORAS = [(0.30, 0.55), (0.50, 0.58), (0.36, 0.62), (0.58, 0.54), (0.26, 0.60), (0.54, 0.64)]
 ESTILOS = {
     # legenda: peso, tamanho, margem entre palavras
-    "A": dict(cap_peso=800, cap_tam=62, cap_margem=12, lead_tam=58),
-    "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56),
+    "A": dict(cap_peso=800, cap_tam=62, cap_margem=12, lead_tam=58, frase_tam=57, frase_peso=800, frase_track="-0.04em", frase_lh=0.88),
+    "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56, frase_tam=54, frase_peso=300, frase_track="-0.01em", frase_lh=1.05),
 }
 # nível de cada tipo de efeito (volume relativo à biblioteca, que já está nivelada)
 VOLUME_SFX = {"impacto": 0.9, "whoosh": 0.5, "whoosh-grande": 0.5, "pop": 0.3, "glitch": 0.5, "riser": 0.6,
@@ -125,7 +127,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
     # janela de cada evento
     for e in ev:
         k = e["tipo"]
-        if k in ("cap", "scatter"):
+        if k in ("cap", "scatter", "frase"):
             e["_t0"] = tm(e["w"][0][1]) - 0.06
         elif k == "emph":
             e["_t0"] = tm((e["lead"][0][1] if e.get("lead") else e["serif"][1])) - 0.06
@@ -133,7 +135,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             e["_t0"] = tm(e["linhas"][0][0][1]) - 0.05
             e["_t1"] = tm(e["linhas"][-1][-1][1]) + 1.15
         elif k == "final":
-            e["_t0"], e["_t1"] = tm(e["serif1"][1]) - 0.05, TOTAL
+            ass = [x for x in ev if x["tipo"] == "assinatura"]
+            e["_t0"], e["_t1"] = tm(e["serif1"][1]) - 0.05, (tm(ass[0]["t"]) if ass else TOTAL)
         elif k == "beat":
             e["_t0"], e["_t1"] = tm(e["t0"]), tm(e["t1"])
         elif k == "notificacao":
@@ -144,10 +147,10 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             e["_t0"], e["_t1"] = tm(e["t"]), TOTAL
         else:  # flash, gridcut, bw: sem janela de texto
             e["_t0"] = tm(e.get("t", e.get("t0", 0)))
-    textuais = [e for e in ev if e["tipo"] in ("cap", "emph", "scatter", "list", "final", "beat", "notificacao", "titulo", "assinatura")]
+    textuais = [e for e in ev if e["tipo"] in ("cap", "frase", "emph", "scatter", "list", "final", "beat", "notificacao", "titulo", "assinatura")]
     textuais.sort(key=lambda e: e["_t0"])
     for i, e in enumerate(textuais):
-        if "_t1" not in e or e["tipo"] in ("cap", "emph", "scatter"):
+        if "_t1" not in e or e["tipo"] in ("cap", "frase", "emph", "scatter"):
             prox = textuais[i + 1]["_t0"] if i + 1 < len(textuais) else TOTAL
             e["_t1"] = round(min(prox - 0.03, e["_t0"] + 3.2), 3)
         e["_t1"] = round(max(e["_t1"], e["_t0"] + 0.3), 3)
@@ -162,10 +165,16 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
     def ajustar(txt, por_em, largura_max, maximo):
         return int(min(maximo, largura_max / (max(len(txt), 1) * por_em)))
 
+    def pop_frase(idn, t, chave=False):
+        if chave:
+            return (f'tl.fromTo("#{idn}",{{opacity:0,scale:1.16,filter:"blur(14px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.27,ease:"expo.out"}},{t:.3f});')
+        return (f'tl.fromTo("#{idn}",{{opacity:0,y:8,filter:"blur(8px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.22,ease:"power2.out"}},{t:.3f});')
+
     html, js = [], []
+    n_frase = 0
     for ei, e in enumerate(ev):
         k, cid = e["tipo"], f"e{ei}"
-        if k not in ("cap", "emph", "scatter", "beat", "list", "final", "notificacao", "titulo", "assinatura"):
+        if k not in ("cap", "frase", "emph", "scatter", "beat", "list", "final", "notificacao", "titulo", "assinatura"):
             continue
         t0, t1 = e["_t0"], e["_t1"]
         inner, anims = "", []
@@ -176,6 +185,73 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
                 sp += f'<span class="w" id="{cid}w{j}"{cor}>{txt}</span>'
                 anims.append(pop(f"{cid}w{j}", max(tm(ts) - 0.02, t0)))
             inner = f'<div class="cap">{sp}</div>'
+        elif k == "frase":
+            # legenda dinâmica das referências: bloco estreito alinhado à esquerda que cresce palavra por palavra;
+            # palavras com 3º item "s" são a palavra-chave em serifa itálica (linha própria, ~2,2x maior)
+            modo = e.get("modo", roteiro.get("modo_frase", "coluna"))
+            ancora = e.get("ancora") or ANCORAS[n_frase % len(ANCORAS)]
+            n_frase += 1
+            col = float(e.get("coluna", 0.30 if modo == "coluna" else 0.80)) * L
+            ax, ay = ancora[0] * L, ancora[1] * A
+            tam = est["frase_tam"]
+            palavras = e["w"]
+            corte = e.get("max_bloco", 6)
+            grupos, atual, peso = [], [], 0
+            for w in palavras:
+                atual.append(w)
+                peso += 2 if len(w) > 2 and w[2] == "s" else 1
+                if peso >= corte and w is not palavras[-1]:
+                    grupos.append(atual); atual, peso = [], 0
+            grupos.append(atual)
+
+            def medir(g):
+                """altura estimada do bloco (px) e maior largura de palavra-chave (px)"""
+                linhas, larg, h, maior = 0, 0.0, 0.0, 0.0
+                for w in g:
+                    chave = len(w) > 2 and w[2] == "s"
+                    if chave:
+                        if larg:
+                            h += tam * est["frase_lh"]; larg = 0.0
+                        wc = len(w[0]) * 0.5 * 2.2 * tam
+                        maior = max(maior, wc)
+                        h += 2.2 * tam * 1.08
+                    else:
+                        wc = len(w[0]) * 0.54 * tam + 0.2 * tam
+                        if larg and larg + wc > col:
+                            h += tam * est["frase_lh"]; larg = 0.0
+                        larg += wc
+                if larg:
+                    h += tam * est["frase_lh"]
+                return h, maior
+
+            geo = [medir(g) for g in grupos]
+            total = sum(h for h, _ in geo) + 0.35 * tam * (len(grupos) - 1)
+            ay = min(max(ay, 0.46 * A), 0.72 * A - total)
+            blocos, idx, y_atual = "", 0, ay
+            for gi, g in enumerate(grupos):
+                h, maior = geo[gi]
+                gx = ax + gi * col * 0.35
+                gx = min(gx, L - max(col, maior) - 50)
+                gx = max(gx, 50)
+                sp = ""
+                for w in g:
+                    chave = len(w) > 2 and w[2] == "s"
+                    ajuste = ""
+                    if chave:
+                        disp = L - gx - 50
+                        fs = min(2.2 * tam, disp / max(len(w[0]) * 0.5, 1))
+                        if fs < 2.2 * tam:
+                            ajuste = f' style="font-size:{fs:.0f}px"'
+                    sep = "" if modo == "espalhada" else " "
+                    sp += f'<span class="w{" sr" if chave else ""}" id="{cid}w{idx}"{ajuste}>{w[0]}</span>{sep}'
+                    anims.append(pop_frase(f"{cid}w{idx}", max(tm(w[1]) - 0.02, t0), chave))
+                    idx += 1
+                if modo == "espalhada":
+                    blocos += f'<div class="fr esp" data-layout-allow-overlap style="left:{(L - col) / 2:.0f}px;top:{y_atual:.0f}px;width:{col:.0f}px">{sp}</div>'
+                else:
+                    blocos += f'<div class="fr" data-layout-allow-overlap style="left:{gx:.0f}px;top:{y_atual:.0f}px;width:{col:.0f}px">{sp}</div>'
+                y_atual += h + 0.35 * tam
+            inner = blocos
         elif k == "emph":
             lead = ""
             for j, (txt, ts) in enumerate(e.get("lead", [])):
@@ -236,7 +312,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             anims.append(f'tl.fromTo("#{cid}sb",{{opacity:0,y:12}},{{opacity:.85,y:0,duration:0.6,ease:"power3.out"}},{t0 + 1.7:.3f});')
         html.append(f'<div class="ev clip" id="{cid}" data-start="{t0:.3f}" data-duration="{t1 - t0:.3f}">{inner}</div>')
         js += anims
-        if k not in ("final", "assinatura"):
+        if k not in ("assinatura",) and not (k == "final" and t1 >= TOTAL - 0.01):
             js.append(f'tl.to("#{cid}",{{opacity:0,duration:0.08,ease:"power2.in"}},{max(t1 - 0.08, t0 + 0.1):.3f});')
             js.append(f'tl.set("#{cid}",{{opacity:0}},{t1:.3f});')
 
@@ -256,6 +332,11 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   .lst {{ position:absolute; font-weight:{est['cap_peso']}; font-size:72px; white-space:nowrap; line-height:1; {CHROMA} }}
   .lst .w {{ margin-right:18px; }}
   .fin {{ text-shadow:-3px 0 rgba(255,45,85,.9), 3px 0 rgba(30,220,255,.9), 0 6px 30px rgba(0,8,40,.6); }}
+  .fr {{ position:absolute; color:#fff; font-family:'Inter','Montserrat',sans-serif; font-weight:{est['frase_peso']}; font-size:{est['frase_tam']}px; line-height:{est['frase_lh']}; letter-spacing:{est['frase_track']}; text-align:left; text-shadow:0 2px 12px rgba(0,0,0,.35); }}
+  .fr .w {{ display:inline-block; margin-right:.2em; }}
+  .fr .sr {{ display:block; margin:.06em 0 .02em -.04em; font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:2.2em; line-height:1; letter-spacing:-0.02em; text-shadow:0 0 16px rgba(255,255,255,.38), 0 3px 16px rgba(0,0,0,.35); }}
+  .fr.esp {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:0 .4em; text-align:justify; }}
+  .fr.esp .w {{ margin-right:0; }}
   .notif {{ position:absolute; left:90px; right:90px; top:150px; height:150px; border-radius:42px; background:rgba(255,255,255,.96); display:flex; align-items:center; gap:24px; padding:0 30px; box-shadow:0 18px 50px rgba(0,0,0,.35); color:#101828; font-family:'Inter',sans-serif; }}
   .notif .av {{ width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af); color:#fff; font-weight:800; font-size:44px; display:flex; align-items:center; justify-content:center; flex:none; }}
   .notif .nt {{ display:flex; flex-direction:column; line-height:1.2; flex:1; }}
@@ -377,12 +458,16 @@ window.__timelines["type"] = tl;
             sfx(f"sx-pu{i}", "whoosh", t + 0.05, 0.6, indice=n_wh); n_wh += 1
     for ei, e in enumerate(ev):
         k = e["tipo"]
+        if k == "frase" and e.get("impacto"):
+            chaves = [w for w in e["w"] if len(w) > 2 and w[2] == "s"]
+            if chaves:
+                sfx(f"sx-hit{ei}", "impacto", tm(chaves[0][1]) + 0.03, 1.0, indice=ei, fade_out=0.4)
         if k == "emph" and e.get("impacto"):
             sfx(f"sx-hit{ei}", "impacto", tm(e["serif"][1]) + 0.03, 1.0, indice=ei, fade_out=0.4)
-        if k in ("scatter", "beat"):
+        if k in ("scatter", "beat") and roteiro.get("som_por_palavra", False):
             for j, w in enumerate(e["w"]):
                 sfx(f"sx-pop{ei}{j}", "pop", tm(w[1]) - 0.02, 0.8, indice=j)
-        if k == "list":
+        if k == "list" and roteiro.get("som_por_palavra", False):
             for li, linha in enumerate(e["linhas"]):
                 sfx(f"sx-pop{ei}{li}", "pop", tm(linha[0][1]) - 0.02, 0.8, indice=li)
         if k == "beat":

@@ -37,7 +37,7 @@ Todos os cinco masters ficam entre **−14,1 e −14,4 LUFS** (LRA 2 a 3,8), o q
 |---|---|---|
 | Legenda sans | texto minúsculo, Inter 700 (ou Montserrat 700), `letter-spacing: -0.02em`, entrelinha 0,95 | tamanho 4,8% da largura; sombra 0 3px 14px rgba(0,0,0,.55); cada palavra `fromTo` opacidade 0→1, `y` +8→0, `blur(6px)→0`, 0,14 s `power3.out` |
 | Palavra-chave serifa | Playfair Display Italic 700, 1,8 a 2,2× o tamanho da sans | entra com `blur(14px)→0`, `scale 1.25→1`, 0,27 s `expo.out`; brilho `text-shadow: 0 0 18px rgba(255,255,255,.35)` |
-| Palavra apagada | última palavra do grupo | `opacity .35` + `blur(3px)` nos últimos 0,2 s antes de sumir |
+| Entrada de palavra | cada palavra no instante da fala | `opacity 0→1`, `y +8→0`, `blur(8px)→0` em 0,22 s; o "fantasma" cinza visto em quadros soltos é só essa entrada |
 | Popup de notificação | banner branco arredondado, avatar + nome + texto | topo; desce 0,3 s com overshoot 8% e `blur(8px)→0`; fica 2,5–3 s; sai subindo em 0,25 s |
 | Flash de luz | gradiente radial quente (#FFD27A → #FF6A00 → transparente) em `mix-blend-mode: screen` | opacidade 0→0,9→0 em 4 quadros sobre o corte |
 | Queima de filme | flash laranja/vermelho com borda cromática (vermelho/ciano 2 px) em 5 quadros | no fim do vídeo, antes do preto |
@@ -54,7 +54,8 @@ Todos os cinco masters ficam entre **−14,1 e −14,4 LUFS** (LRA 2 a 3,8), o q
 |---|---|---|
 | Abertura (título ou primeira palavra) | impacto grave curto + cauda | +15 a +17 dB, ~0,4 s |
 | Troca de plano / flash | whoosh curto (0,2–0,5 s) + toque seco | +2 a +4 dB |
-| Palavra-chave em serifa | quase nada ou um "hit" grave baixo (sem tonal) | +1 a +2 dB |
+| Palavra-chave em serifa | **nada** (34 palavras testadas: sem ganho de energia) | 0 dB |
+| Cada palavra da legenda | **nada** (120 testadas: sem ganho de energia) | 0 dB |
 | Popup de notificação | som de notificação curto (tonal agudo) | +6 dB |
 | Fecho (queima de filme) | transiente + cauda, depois silêncio com a música caindo | +3 dB, queda de 6 a 10 dB |
 | Cama de música | contínua, estável | voz −14 LUFS; música 10 a 15 dB abaixo da voz (nos cortes verticais da referência a música ficou mais alta, ~3 a 6 dB abaixo: use isso só em trailer) |
