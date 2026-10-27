@@ -1,3 +1,5 @@
+
+# --- pacote de edição (video-editor-agent) ---
 # Secrets
 .env
 
@@ -38,3 +40,36 @@ tools/video-qa/src/__tests__/fixtures/gen/
 
 # local deny-list for scripts/scrub-check.sh (names of clients, people, private repos)
 scripts/scrub-denylist.local.txt
+
+# --- modelo estudio-ia ---
+# Python
+.venv/
+
+# Ligação das skills (o instalador recria)
+.claude/skills
+
+# Mídia pesada: fica no disco ou no Drive, nunca no git
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.m4v
+*.avi
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.aep
+*.aep Logs/
+*.prproj
+*.psd
+*.zip
+04-projetos/*/render/
+04-projetos/*/motor/node_modules/
+
+# Locais
+.ai-memory.local.toml
+*.log
+Thumbs.db
