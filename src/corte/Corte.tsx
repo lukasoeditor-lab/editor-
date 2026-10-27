@@ -6,6 +6,7 @@ import { Legendas } from "./Legendas";
 import { hitAtivo, modoEm, tremidaEm } from "./movimento";
 import { Original, Pessoa } from "./Pessoa";
 import { TextoGigante } from "./TextoGigante";
+import { Cartoes } from "./Cartoes";
 import { LegendasSimples } from "./LegendasSimples";
 import { Transicoes, filtroCena } from "./Transicoes";
 import { type CorteProps } from "./tipos";
@@ -18,6 +19,7 @@ export const Corte: React.FC<CorteProps> = ({ plano }) => {
         <AbsoluteFill style={{ filter: filtroCena(plano, f) }}>
           <Original plano={plano} />
         </AbsoluteFill>
+        <Cartoes plano={plano} />
         <LegendasSimples plano={plano} />
         <Transicoes plano={plano} />
       </AbsoluteFill>

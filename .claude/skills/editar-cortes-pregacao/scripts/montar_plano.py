@@ -182,6 +182,42 @@ def legendas(palavras, enfase_set):
     return saida
 
 
+def montar_cartoes(novas, cfgs, duracao):
+    """Cada cartão: {"fala": [palavras que disparam], "texto": "a sua/narrativa*v/ela precisa/ser*/muito_forte*"}.
+    Linhas separadas por "/", palavras por espaço ("_" junta duas num bloco). Sufixo `*` = palavra grande em serifa
+    itálica (preta), `*v` vinho, `*a` azul; sem sufixo = palavra pequena em sans. A ordem do texto é a ordem da fala."""
+    cartoes, cursor = [], 0
+    for c in cfgs:
+        i = achar_sequencia(novas, c["fala"], cursor)
+        if i < 0:
+            print("  ! cartão não encontrado:", c["fala"])
+            continue
+        pos, linhas, ult_f = i, [], frame(novas[i]["n0"])
+        for lin in c["texto"].split("/"):
+            toks = []
+            for raw in lin.split():
+                cor, grande = "preto", raw.endswith("*") or raw[-2:] in ("*v", "*a")
+                txt = raw
+                if grande:
+                    cor = {"*v": "vinho", "*a": "azul"}.get(raw[-2:], "preto")
+                    txt = raw[:-2] if raw[-2:] in ("*v", "*a") else raw[:-1]
+                alvo = norm(txt.split("_")[0])
+                j = next((k for k in range(pos, min(pos + 14, len(novas))) if norm(novas[k]["raw"]) == alvo), -1)
+                if j >= 0:
+                    ult_f, pos = frame(novas[j]["n0"]), j + 1
+                else:
+                    ult_f += 6
+                toks.append({"txt": txt, "f0": ult_f, "g": grande, "cor": cor})
+            linhas.append(toks)
+        f0 = max(0, frame(novas[i]["n0"]) - 1)
+        f1 = min(duracao, frame(novas[min(pos, len(novas)) - 1]["n1"]) + int(0.35 * FPS))
+        cursor = pos
+        cartoes.append({"f0": f0, "f1": f1, "linhas": linhas})
+    for a, b in zip(cartoes, cartoes[1:]):  # um cartão nunca invade o seguinte
+        a["f1"] = min(a["f1"], b["f0"] - 2)
+    return cartoes
+
+
 def main():
     cid, trab, saida = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     cfg = CORTES[cid]
@@ -290,6 +326,22 @@ def main():
         for l in plano["legendas"]:
             for w in l["palavras"]:
                 w["txt"] = w["txt"].upper()
+    if "--editorial" in sys.argv:  # cartões tipográficos em fundo branco + estouro de luz + zoom a cada frase
+        plano["cartoes"] = montar_cartoes(novas, cfg.get("cartoes", []), duracao)
+        trans = [t for t in plano.get("transicoes", []) if t["tipo"] != "luz"]
+        for c in plano["cartoes"]:
+            trans += [{"f": c["f0"], "tipo": "luz"}, {"f": c["f1"], "tipo": "luz"}]
+            plano["sfx"] += [{"t": c["f0"] / FPS - PICO["whoosh"], "arq": "whoosh", "vol": 0.45},
+                             {"t": c["f1"] / FPS - PICO["clique"], "arq": "clique", "vol": 0.8}]
+        plano["transicoes"] = sorted(trans, key=lambda t: t["f"])
+        plano["sfx"].sort(key=lambda s: s["t"])
+        # reenquadra (zoom seco) no começo de frases, fora dos cartões, nunca repetindo o enquadramento
+        niveis, k, ult = [1.0, 1.16, 1.0, 1.24, 1.08], 1, 0
+        plano["zooms"] = [{"f": 0, "escala": 1.0, "seco": False}]
+        for l in plano["legendas"]:
+            if l["f0"] - ult >= 85 and not any(c["f0"] - 20 <= l["f0"] < c["f1"] + 8 for c in plano["cartoes"]):
+                plano["zooms"].append({"f": l["f0"], "escala": niveis[k % len(niveis)], "seco": True})
+                k, ult = k + 1, l["f0"]
     (saida / "plano.json").write_text(json.dumps(plano, ensure_ascii=False))
     print(f"{cid}: {len(spans)} trechos, {duracao} quadros ({duracao / FPS:.1f}s), {len(hits)} textos, "
           f"{len(zooms)} zooms, {len(legs)} legendas, {len(sfx)} sons")

@@ -1,5 +1,6 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { FONTE_MARCA, FONTE_SIMPLES } from "./fontes";
+import { cartaoAtivo } from "./Cartoes";
 import { type Plano } from "./tipos";
 
 // Legenda de 1 a 3 palavras, no meio do vídeo. Cada palavra entra com um borrão que some
@@ -9,15 +10,18 @@ const SAIDA = 3;
 
 export const LegendasSimples: React.FC<{ plano: Plano }> = ({ plano }) => {
   const f = useCurrentFrame();
-  const leg = plano.legendas.find((l) => f >= l.f0 && f < l.f1);
+  const noCartao = !!cartaoAtivo(plano, f);
+  const leg = noCartao ? undefined : plano.legendas.find((l) => f >= l.f0 && f < l.f1);
   const saida = leg ? interpolate(f, [leg.f1 - SAIDA, leg.f1], [1, 0], { extrapolateLeft: "clamp" }) : 0;
   return (
     <AbsoluteFill>
-      <AbsoluteFill
-        style={{
-          background: "linear-gradient(to bottom, rgba(0,0,0,0) 72%, rgba(0,0,0,0.55) 100%)",
-        }}
-      />
+      {!noCartao && (
+        <AbsoluteFill
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0) 72%, rgba(0,0,0,0.55) 100%)",
+          }}
+        />
+      )}
       {leg && (
         <div
           style={{
@@ -53,7 +57,7 @@ export const LegendasSimples: React.FC<{ plano: Plano }> = ({ plano }) => {
           })}
         </div>
       )}
-      {plano.marca && (
+      {plano.marca && !noCartao && (
         <div
           style={{
             position: "absolute",

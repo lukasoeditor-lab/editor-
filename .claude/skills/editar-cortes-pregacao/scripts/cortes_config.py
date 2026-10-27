@@ -70,6 +70,12 @@ CORTES = {
         # estilo simples: emenda 1 = brilho com clique, emenda 2 = esmaecimento por preto
         "transicoes": ["brilho", "preto"],
         "pb": [{"de": ["eu", "tinha", "tudo"], "ate": ["mas", "deus", "chegou"]}],
+        # cartões tipográficos (--editorial). `*` grande, `*v` vinho, `*a` azul, sem sufixo = pequeno
+        "cartoes": [
+            {"fala": ["pela", "casa"], "texto": "pela casa*v/pela família*/pela geografia*a"},
+            {"fala": ["será", "que", "deus"], "texto": "será_que/deus*v/está falando/com_alguém*a/aqui hoje"},
+            {"fala": ["mas", "deus", "chegou"], "texto": "mas/deus*v/chegou*"},
+        ],
         "enfase": ["errado", "certo", "casa", "família", "geografia", "chegou", "chamei", "maldição", "propósito", "palavra"],
         "hits": [
             {"fala": ["tinha", "tudo", "para", "dar", "errado"], "texto": "VOCÊ TINHA/TUDO PARA/DAR ERRADO", "modo": "frente", "dur": 1.9},

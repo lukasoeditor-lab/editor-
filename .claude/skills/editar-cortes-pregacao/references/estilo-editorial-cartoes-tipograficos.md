@@ -48,3 +48,18 @@ fundo branco. Precisa de material de terceiros: **pedir ao usuário o clipe ou a
 3. Trocar de plano a cada 2 a 4 s; usar P&B só em 1 trecho de ênfase.
 4. Transições: estouro de luz com clique ao entrar/sair do cartão, nunca fade lento.
 5. Conferir quadros-chave em folha de contato antes de renderizar.
+
+## Ferramenta pronta (implementada e testada no corte A)
+Comando: `montar_plano.py X pasta_trabalho pasta_saida --reusar --simples @arroba --editorial`
+- **Cartões** (`src/corte/Cartoes.tsx`): em `cortes_config.py`, `"cartoes": [{"fala": [palavras que disparam], "texto": "pela casa*v/pela família*/pela geografia*a"}]`.
+  Linhas separadas por `/`; `*` = palavra grande em serifa itálica preta, `*v` vinho, `*a` azul, sem sufixo = pequena em sans;
+  `_` junta duas palavras num bloco. Cada palavra entra no instante exato em que é dita.
+- **Estouro de luz** (`Luz` em `Transicoes.tsx`): faixa de luz + branco, na entrada e na saída de cada cartão, com whoosh
+  na entrada e clique na saída (automático).
+- **P&B**: `"pb": [{"de": [...], "ate": [...]}]`. **Brilho com clique / preto**: `"transicoes": ["brilho", "preto"]` por emenda.
+- **Zoom seco** alternado a cada ~3 s fora dos cartões. **Legenda** palavra por palavra e some durante o cartão.
+- Escolha dos cartões: 1 por ideia-chave, 3 a 6 por minuto, cada um com 3 a 5 linhas, no máximo 3 cores. O cartão é
+  decidido por mim lendo a transcrição (não é automático).
+- Fluxo para um vídeo novo (ex.: evento): transcrever (`transcrever.py`), escolher trechos, cartões e P&B em
+  `cortes_config.py`, `preparar_pessoa.py` (câmera que segue o orador), `montar_plano.py ... --editorial`,
+  `juntar_plano.py`, `remotion render Corte`, `mixar_audio.py --sem-musica`, conferir quadros e enviar.

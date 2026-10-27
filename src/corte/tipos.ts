@@ -14,6 +14,8 @@ export type Camera = {
   fonte: [number, number];
   frames: [number, number, number, number, number][]; // x0, y0, cx, yb, yt (pixels do vídeo original)
 };
+export type Token = { txt: string; f0: number; g: boolean; cor: "preto" | "vinho" | "azul" }; // g: palavra grande em serifa itálica
+export type Cartao = { f0: number; f1: number; linhas: Token[][] };
 export type Plano = {
   fps: number;
   duracao: number;
@@ -26,8 +28,9 @@ export type Plano = {
   legendas: Leg[];
   cortes: number[];
   camera: Camera;
-  transicoes?: { f: number; tipo: "brilho" | "preto" }[]; // f = quadro do corte de cena
+  transicoes?: { f: number; tipo: "brilho" | "preto" | "luz" }[]; // f = quadro do corte de cena
   pb?: { f0: number; f1: number }[]; // trechos em preto e branco
+  cartoes?: Cartao[]; // cartões tipográficos em fundo branco
   estilo?: "simples"; // legenda palavra por palavra, sem motion design
   marca?: string; // @ no rodapé (estilo simples)
   sem?: string[]; // recursos desligados (diagnóstico de desempenho)

@@ -48,6 +48,33 @@ export const filtroCena = (plano: Plano, f: number) => {
   return `grayscale(${pb}) contrast(${1 + 0.35 * pb}) brightness(${1 + 0.9 * br}) blur(${br * 6}px)`;
 };
 
+const LUZ_ANTES = 5;
+const LUZ_DEPOIS = 6;
+// faixa de luz vertical que atravessa o quadro em ~11 quadros, em torno do corte
+const Luz: React.FC<{ f: number; centro: number }> = ({ f, centro }) => {
+  const p = interpolate(f, [centro - LUZ_ANTES, centro + LUZ_DEPOIS], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  if (p <= 0 || p >= 1) return null;
+  const x = interpolate(p, [0, 1], [-420, 1500]);
+  const brilho = Math.sin(p * Math.PI);
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: -100,
+          height: 2120,
+          left: x - 260,
+          width: 520,
+          background: "linear-gradient(90deg, rgba(255,214,150,0) 0%, rgba(255,236,200,0.75) 30%, #fff 50%, rgba(255,236,200,0.75) 70%, rgba(255,214,150,0) 100%)",
+          filter: "blur(26px)",
+          opacity: brilho,
+        }}
+      />
+      <AbsoluteFill style={{ background: "#fff", opacity: Math.pow(Math.max(0, 1 - Math.abs(p - 0.5) * 2.6), 1.6) }} />
+    </AbsoluteFill>
+  );
+};
+
 export const Transicoes: React.FC<{ plano: Plano }> = ({ plano }) => {
   const f = useCurrentFrame();
   const br = intensidadeBrilho(plano, f);
@@ -61,6 +88,9 @@ export const Transicoes: React.FC<{ plano: Plano }> = ({ plano }) => {
         }}
       />
       <AbsoluteFill style={{ background: "#000", opacity: pr }} />
+      {(plano.transicoes ?? []).filter((t) => t.tipo === "luz").map((t, i) => (
+        <Luz key={i} f={f} centro={t.f} />
+      ))}
     </AbsoluteFill>
   );
 };
