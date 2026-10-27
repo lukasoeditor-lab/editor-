@@ -8,7 +8,7 @@ description: Edita cortes verticais de pregação (Reels, TikTok, Shorts, 1080x1
 Receita testada neste projeto. O projeto Remotion já existe na raiz do repositório
 (`src/VideoVertical.tsx` é o exemplo funcional; `public/` guarda vídeo, fonte e sons).
 
-O estilo visual e sonoro completo está em `references/estilo-visual-e-sonoro.md`. Leia antes de
+O estilo visual e sonoro completo está em `references/estilo-visual-e-sonoro.md`. Para cortes de nível profissional (cartões tipográficos em fundo branco, inserts, P&B e estouro de luz), leia também `references/estilo-editorial-cartoes-tipograficos.md`. Leia antes de
 montar a edição. Os números de tempo abaixo vieram da análise de um corte de referência de 74 s.
 
 ## Fluxo
