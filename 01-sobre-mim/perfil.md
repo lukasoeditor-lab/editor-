@@ -9,9 +9,9 @@
 
 ## Quem sou
 
-- Nome ou apelido:
-- O que faço (trabalho, negócio, área):
-- Onde publico (Instagram, TikTok, YouTube, cliente):
+- Nome ou apelido: Lukas
+- O que faço (trabalho, negócio, área): editor de vídeos e CEO da Pregue – Além do Púlpito. Edito vídeos, organizo o perfil de pastores e pregadores e ajudo eles a se posicionarem na internet.
+- Onde publico (Instagram, TikTok, YouTube, cliente): Instagram, TikTok e YouTube Shorts.
 
 ## O que eu crio
 

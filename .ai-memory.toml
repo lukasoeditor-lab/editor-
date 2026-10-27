@@ -1,0 +1,4 @@
+# ai-memory: fixa a memória deste estúdio num projeto só, para o Claude Code
+# e o Codex caírem no mesmo lugar.
+workspace = "default"
+project = "lukas-estudio"
