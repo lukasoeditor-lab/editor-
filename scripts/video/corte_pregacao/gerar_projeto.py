@@ -37,7 +37,7 @@ CHROMA = "text-shadow:-2px 0 rgba(255,45,85,.9), 2px 0 rgba(30,220,255,.9), 0 4p
 ANCORAS = [(0.30, 0.55), (0.50, 0.58), (0.36, 0.62), (0.58, 0.54), (0.26, 0.60), (0.54, 0.64)]
 ESTILOS = {
     # legenda: peso, tamanho, margem entre palavras
-    "A": dict(cap_peso=800, cap_tam=62, cap_margem=12, lead_tam=58, frase_tam=57, frase_peso=800, frase_track="-0.04em", frase_lh=0.88),
+    "A": dict(cap_peso=800, cap_tam=62, cap_margem=12, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88),
     "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56, frase_tam=54, frase_peso=300, frase_track="-0.01em", frase_lh=1.05),
 }
 # nível de cada tipo de efeito (volume relativo à biblioteca, que já está nivelada)
@@ -167,7 +167,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
 
     def pop_frase(idn, t, chave=False):
         if chave:
-            return (f'tl.fromTo("#{idn}",{{opacity:0,scale:1.16,filter:"blur(14px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.27,ease:"expo.out"}},{t:.3f});')
+            return (f'tl.fromTo("#{idn}",{{opacity:0,scale:1.2,filter:"blur(20px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.4,ease:"expo.out"}},{t:.3f});')
         return (f'tl.fromTo("#{idn}",{{opacity:0,y:8,filter:"blur(8px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.22,ease:"power2.out"}},{t:.3f});')
 
     html, js = [], []
@@ -188,10 +188,11 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
         elif k == "frase":
             # legenda dinâmica das referências: bloco estreito alinhado à esquerda que cresce palavra por palavra;
             # palavras com 3º item "s" são a palavra-chave em serifa itálica (linha própria, ~2,2x maior)
+            SERIF = 2.8
             modo = e.get("modo", roteiro.get("modo_frase", "coluna"))
             ancora = e.get("ancora") or ANCORAS[n_frase % len(ANCORAS)]
             n_frase += 1
-            col = float(e.get("coluna", 0.30 if modo == "coluna" else 0.80)) * L
+            col = float(e.get("coluna", 0.42 if modo == "coluna" else 0.80)) * L
             ax, ay = ancora[0] * L, ancora[1] * A
             tam = est["frase_tam"]
             palavras = e["w"]
@@ -212,9 +213,9 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
                     if chave:
                         if larg:
                             h += tam * est["frase_lh"]; larg = 0.0
-                        wc = len(w[0]) * 0.5 * 2.2 * tam
+                        wc = len(w[0]) * 0.5 * SERIF * tam
                         maior = max(maior, wc)
-                        h += 2.2 * tam * 1.08
+                        h += SERIF * tam * 1.08
                     else:
                         wc = len(w[0]) * 0.54 * tam + 0.2 * tam
                         if larg and larg + wc > col:
@@ -239,8 +240,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
                     ajuste = ""
                     if chave:
                         disp = L - gx - 50
-                        fs = min(2.2 * tam, disp / max(len(w[0]) * 0.5, 1))
-                        if fs < 2.2 * tam:
+                        fs = min(SERIF * tam, disp / max(len(w[0]) * 0.5, 1))
+                        if fs < SERIF * tam:
                             ajuste = f' style="font-size:{fs:.0f}px"'
                     sep = "" if modo == "espalhada" else " "
                     sp += f'<span class="w{" sr" if chave else ""}" id="{cid}w{idx}"{ajuste}>{w[0]}</span>{sep}'
@@ -334,7 +335,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   .fin {{ text-shadow:-3px 0 rgba(255,45,85,.9), 3px 0 rgba(30,220,255,.9), 0 6px 30px rgba(0,8,40,.6); }}
   .fr {{ position:absolute; color:#fff; font-family:'Inter','Montserrat',sans-serif; font-weight:{est['frase_peso']}; font-size:{est['frase_tam']}px; line-height:{est['frase_lh']}; letter-spacing:{est['frase_track']}; text-align:left; text-shadow:0 2px 12px rgba(0,0,0,.35); }}
   .fr .w {{ display:inline-block; margin-right:.2em; }}
-  .fr .sr {{ display:block; margin:.06em 0 .02em -.04em; font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:2.2em; line-height:1; letter-spacing:-0.02em; text-shadow:0 0 16px rgba(255,255,255,.38), 0 3px 16px rgba(0,0,0,.35); }}
+  .fr .sr {{ display:block; margin:.06em 0 .02em -.04em; font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:2.8em; line-height:.92; letter-spacing:-0.02em; text-shadow:0 0 16px rgba(255,255,255,.38), 0 3px 16px rgba(0,0,0,.35); }}
   .fr.esp {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:0 .4em; text-align:justify; }}
   .fr.esp .w {{ margin-right:0; }}
   .notif {{ position:absolute; left:90px; right:90px; top:150px; height:150px; border-radius:42px; background:rgba(255,255,255,.96); display:flex; align-items:center; gap:24px; padding:0 30px; box-shadow:0 18px 50px rgba(0,0,0,.35); color:#101828; font-family:'Inter',sans-serif; }}

@@ -7,9 +7,9 @@
 ## O mecanismo (Estilo A)
 
 1. **Uma frase = um bloco.** O bloco nasce quando a 1ª palavra é falada e some inteiro, de uma vez (corte seco), quando a frase seguinte começa. Nada de rolagem.
-2. **Coluna estreita, alinhada à esquerda.** Largura ≈ 28–32% do quadro (≈ 310 px em 1080). As palavras quebram sozinhas em 2 a 4 linhas, com entrelinha apertada (≈ 0,88). Palavras anteriores **não se mexem** quando entra a próxima.
-3. **Fonte da legenda:** grotesca bold bem fechada (Inter / Helvetica Now ExtraBold), minúscula, **tracking −0,04em** (letras quase encostando), espaço entre palavras ≈ 0,2 em, branca com sombra suave (sem franja colorida), altura ≈ 5% da largura do quadro (≈ 57 px em 1080).
-4. **Palavra-chave:** serifa itálica de contraste alto (Playfair Display Italic 700), **2,2×** o corpo da legenda, na **própria linha** (quebra o fluxo: as palavras seguintes continuam abaixo dela), brilho branco difuso em volta. Entra com desfoque 14 px → 0 e escala 1,16 → 1 em ~0,27 s.
+2. **Coluna estreita, alinhada à esquerda.** Largura do corpo ≈ 42% do quadro (frases curtas ficam em 1 linha). As palavras quebram sozinhas em 2 a 4 linhas, com entrelinha apertada (≈ 0,88). Palavras anteriores **não se mexem** quando entra a próxima.
+3. **Fonte da legenda:** grotesca bold bem fechada (Inter / Helvetica Now ExtraBold), minúscula, **tracking −0,04em** (letras quase encostando), espaço entre palavras ≈ 0,2 em, branca com sombra suave (sem franja colorida), altura ≈ 6,7% da largura do quadro (≈ 72 px em 1080; medido lado a lado com r5 em 27/10, 57 px saía pequeno demais).
+4. **Palavra-chave:** serifa itálica de contraste alto (Playfair Display Italic 700), **2,8×** o corpo da legenda (≈ 200 px; ocupa até ~60% da largura), na **própria linha** (quebra o fluxo: as palavras seguintes continuam abaixo dela), brilho branco difuso em volta. Entra com desfoque 20 px → 0 e escala 1,2 → 1 em ~0,4 s.
 5. **Palavra comum:** entra com desfoque 8 px → 0, opacidade 0 → 1 e subida de 8 px em ~0,22 s. Quando se vê um quadro intermediário, a palavra aparece "fantasma" (cinza e desfocada): é só a entrada, não um efeito de saída.
 6. **Segundo bloco.** Frases com mais de ~6 palavras abrem um segundo bloco **abaixo e deslocado para a direita** do primeiro ("quando somente você" + "tem que tocar o céu"). Nunca cobrem o rosto.
 7. **Âncora que muda.** A posição do bloco muda de frase para frase (x entre 25% e 70% da largura, y entre 50% e 66% da altura, do peito para baixo), sempre longe do rosto e acima do @ do perfil.
