@@ -1,125 +1,106 @@
 ---
 name: editar-cortes-pregacao
-description: Edita cortes verticais de pregação (Reels, TikTok, Shorts, 1080x1920, 30 fps) em Remotion no estilo dinâmico de referência, com cortes e zoom no rosto, legendas e textos animados (motion design), cor e vinheta, e efeitos sonoros sincronizados com a fala. Use quando o usuário enviar um vídeo de pregador/pastor/ministração e pedir para editar, criar um corte, legendar, "deixar dinâmico", "no estilo do vídeo que te mandei", adicionar efeitos sonoros, zoom, texto gigante, ou copiar o estilo de outro corte.
+description: Edita cortes verticais (Reels, TikTok, Shorts, 1080x1920, 30 fps) de pregação, palestra e evento em Remotion, em três estilos - motion design (texto gigante, zoom seco, fundo trocado, efeitos sonoros), legenda simples palavra por palavra, e editorial profissional (cartões tipográficos em fundo branco, estouro de luz, preto e branco). Faz transcrição com tempo por palavra, escolha de trechos com gancho, contexto e clímax, câmera que centraliza o orador, voz isolada e mixagem. Use quando o usuário enviar vídeo de pregador, pastor, palestrante ou evento e pedir para editar, cortar, legendar, deixar dinâmico, copiar o estilo de um vídeo de referência, fazer cartões de texto, transições ou efeitos sonoros.
 ---
 
-# Editar cortes de pregação (Remotion)
+# Editar cortes de pregação, palestra e evento (Remotion)
 
-Receita testada neste projeto. O projeto Remotion já existe na raiz do repositório
-(`src/VideoVertical.tsx` é o exemplo funcional; `public/` guarda vídeo, fonte e sons).
+Receita testada neste projeto. O projeto Remotion está na raiz do repositório (`src/corte/` é a composição
+`Corte`; `public/` guarda fontes, sons e os planos de cada corte em `public/cortes/X/`).
 
-O estilo visual e sonoro completo está em `references/estilo-visual-e-sonoro.md`. Para cortes de nível profissional (cartões tipográficos em fundo branco, inserts, P&B e estouro de luz), leia também `references/estilo-editorial-cartoes-tipograficos.md`. Leia antes de
-montar a edição. Os números de tempo abaixo vieram da análise de um corte de referência de 74 s.
+Leia antes de montar: `references/estilo-visual-e-sonoro.md` (motion design) e
+`references/estilo-editorial-cartoes-tipograficos.md` (estilo editorial, com a receita dos cartões).
 
-## Fluxo
+## Escolha do estilo (o que o usuário pedir vale mais que o padrão)
 
-1. **Entender o pedido.** Confirme: vídeo-base, música de fundo (se houver), título/textos, se há
-   trechos específicos (ex.: "preto e branco de 1 a 6 s"). O que o usuário pedir expressamente
-   vale mais que o estilo padrão.
-2. **Preparar.** Copie o vídeo para `public/video.mp4`. Meça com `ffprobe` (duração, fps,
-   resolução) e ajuste `durationInFrames` em `src/Root.tsx` (duração × 30). Composição:
-   1080x1920, 30 fps.
-3. **Transcrever com tempo por palavra** (obrigatório antes de qualquer efeito):
-   ```
-   ffmpeg -y -i public/video.mp4 -vn -ac 1 -ar 16000 audio.wav
-   python3 -I .claude/skills/editar-cortes-pregacao/scripts/transcrever.py audio.wav src/transcricao.json
-   ```
-   Mostre a transcrição ao usuário **antes de criar legendas** e peça correção de palavras erradas.
-4. **Sincronizar pela fala, não pelo relógio.** Cada efeito cai na palavra-chave, no tempo da
-   transcrição. Se o tempo pedido pelo usuário não bate com a fala, use o da fala e **avise a
-   diferença e o motivo**. Para confirmar uma palavra em tempo exato, transcreva fatias curtas do
-   áudio (com 0,5 s de silêncio antes e depois).
-5. **Localizar o rosto** com frames de contato e grade (`drawgrid`) para ancorar o zoom
-   (`transformOrigin`). Câmeras em movimento tiram o rosto do quadro: rastreie por pontos-chave e
-   interpole (`FACE_TRACK` em `src/VideoVertical.tsx`). Avise o usuário nos trechos sem rosto.
-6. **Montar a edição** seguindo o guia de estilo (itens abaixo).
-7. **Prévia curta primeiro** (6–10 s com som), mande ao usuário e só então renderize tudo. Use
-   `SendUserFile`.
-8. **Conferir tecnicamente** o que não dá para ouvir/ver: quadros-chave em folha de contato,
-   volume por trecho (`volumedetect`), amostras estouradas (>= 32700) antes/depois.
-9. **Commit e push** na branch indicada pela sessão. Se o push for recusado (403), é permissão do
-   app do GitHub no repositório: oriente o usuário a reconectar em https://claude.ai/connect-github.
+| Estilo | Quando | Como |
+|---|---|---|
+| **Motion design** | "dinâmico", texto gigante, zoom, efeitos | `montar_plano.py X ...` (hits, zooms, sfx, destaques com `recorte`) |
+| **Simples** | "só a legenda", "sem motion design" | `--simples @arroba`: filmagem original + legenda palavra por palavra com borrão + marca no rodapé |
+| **Editorial** | "profissional", "fundo branco com o texto", estilo de referência do usuário | `--simples @arroba --editorial`: cartões tipográficos, estouro de luz, P&B, zoom a cada frase |
+
+Transições pedidas pelo usuário (em `cortes_config.py`): `"transicoes": ["brilho", "preto"]` (uma por emenda:
+brilho com clique, esmaecimento por preto), `"pb": [{"de": [...], "ate": [...]}]` (preto e branco entre duas falas).
+
+## Pipeline de um corte (live, palestra ou evento)
+
+1. **Entender o pedido** e escolher o estilo. Duração: **1 a 1,5 min**, com gancho (a frase de impacto antecipada
+   por ~4 s), contexto, virada (clímax) e desfecho. Corte curto sem contexto foi reprovado.
+2. **Transcrever com tempo por palavra** (`scripts/transcrever.py`, faster-whisper large-v3, áudio como array numpy).
+   Ler a transcrição inteira, corrigir palavras erradas em `correcoes` e pôr nomes próprios com maiúscula.
+3. **Escolher os trechos** olhando uma folha de contatos do bruto. Descartar onde o orador sai do quadro ou fica
+   na borda (não dá para centralizar). Cortar em limite de frase.
+4. **Configurar** `scripts/cortes_config.py`: `trechos`, `hits` (motion design), `cartoes` (editorial), `transicoes`, `pb`,
+   `enfase`, `correcoes`.
+5. **Recorte e câmera**: `ffmpeg -i ed_X.mp4 -an -c copy public/cortes/X/base.mp4`, depois
+   `preparar_pessoa.py base.mp4 public/cortes/X rvm.onnx` (~10 min; gera `pessoa.webm` e `camera.json`, câmera
+   centralizada na cabeça do orador).
+6. **Plano**: `montar_plano.py X pasta_trabalho public/cortes/X [--reusar] [--simples @arroba] [--editorial]` e
+   `juntar_plano.py public/cortes/X` (gera `plano_final.json`).
+7. **Conferir quadros** com `npx remotion still Corte out/q.png --props=public/cortes/X/plano_final.json --frame=N`
+   e uma folha de contatos. Fazer isso antes de renderizar tudo.
+8. **Render**: `npx remotion render Corte out/X_mudo.mp4 --props=public/cortes/X/plano_final.json --crf=18 --concurrency=4`
+   (~12 min para 78 s; para prévia use `--frames=A-B`).
+9. **Áudio**: isolar a voz (ElevenLabs, ver abaixo) → `iso_X.mp3` na pasta de trabalho, depois
+   `mixar_audio.py X trab musicas sfx out/X_mudo.mp4 out/X.mp4 public/cortes/X/plano.json --sem-musica`
+   (use `plano.json`, não `plano_final.json`).
+10. **Comprimir** (`-crf 25 -preset veryfast`, ~35 MB para 78 s), conferir loudness (-14 LUFS) e a correlação
+    do arquivo final com a voz isolada (> 0,8), e enviar com `SendUserFile`. Commit e push na branch da sessão.
+
+## Regras de edição (aprendidas com reprovações do usuário)
+
+- **Cortes sem comer fala:** só pausas > 1,2 s viram corte; o ritmo vem de zoom e texto. O fim de cada trecho vai até
+  o fim da palavra + 0,34 s (sem passar da próxima palavra); fade de 30 ms nas emendas. O limite só é movido quando
+  cai dentro de uma palavra. Nenhum trecho passa da duração do bruto.
+- **Legenda sempre na mesma altura:** uma linha só, reduzida em conjunto se for larga. (Linhas de 1 e 2 linhas em
+  alturas diferentes pareciam "legenda em cima e depois embaixo".)
+- **Filmagem original na maior parte:** o fundo novo (orador recortado) vale só em 2 a 4 destaques (`"recorte": True`).
+- **Orador centralizado** (câmera virtual pela cabeça, sem passar da borda e sem mostrar a legenda queimada do rodapé).
+- **Isolar a voz do áudio já editado** (não fatiar uma voz isolada de uma edição antiga: dessincroniza).
+- **Corte de transmissão:** o orador pode sair do quadro; descarte esse trecho em vez de fingir que está ok.
 
 ## Efeitos (parâmetros que funcionaram)
 
-- **Zoom seco:** sobe da escala anterior para a nova em **2 quadros** e segura (1,3x, depois 1,6x).
-- **Tremida:** ~8 quadros, amplitude 28 px, decai a zero (`random()` do Remotion, nunca
-  `Math.random()`). Some escala extra (`1 + 2*amp/1080`) enquanto treme para não aparecer borda.
-- **Clarão branco:** 2 quadros, camada branca opacidade 1.
-- **Borrão:** `blur(10px)` decaindo em ~6 quadros.
-- **Preto e branco forte:** `grayscale(1) contrast(1.8) brightness(1.05)` só no intervalo pedido.
-- **Texto gigante:** fonte Anton (`@fontsource/anton`, copie o `.woff2` para `public/fonts/` e use
-  `loadFont` de `@remotion/fonts`), 200 px, branca, maiúscula, centro, entra com escala 1,25→1.
-- **Legenda padrão e especiais** (palavra de emoção serifada, texto espalhado, clímax empilhado):
-  ver `references/estilo-visual-e-sonoro.md`.
-- **Texto atrás do pregador:** exige recorte da pessoa por quadro (modelo de segmentação via pip);
-  ficam bordas imperfeitas. Avise antes e mostre um teste.
+- **Zoom seco** em 2 quadros (1,15 a 1,5x); **tremida** ~8 quadros, 26 px; **clarão** 2 quadros; **borrão** 10 px em ~6 quadros.
+- **Preto e branco:** `grayscale(1) contrast(1.35)`, rampa de 5 quadros na entrada, 2 na saída.
+- **Brilho** (emenda): luz sobe em 5 quadros até o corte e some em 11, com clique no corte.
+- **Estouro de luz** (cartões): faixa de luz vertical + branco, ~11 quadros em volta do corte.
+- **Cartão tipográfico:** fundo branco, palavra-chave 224 px em serifa itálica (preto, vinho `#8a0f1c`, azul `#1c2c8c`),
+  conectivos 58 px em sans, entrelinha apertada, cada palavra entra na hora em que é dita.
+- **Legenda simples:** Inter Bold 64 px, tracking -0.045em, maiúscula, ~49% da altura, borrão 14 px → 0 em 6 quadros.
+- **Texto atrás do orador:** exige recorte por quadro; mostre um teste antes.
 
 ## Som
 
-- **A voz manda.** O áudio de pregação já vem perto de 0 dB: some efeitos sem abaixar a voz e
-  estoura. Abaixe a voz (~0,55) por ~0,5 s em cada impacto (`volume` por quadro em `<OffthreadVideo>`).
-- **Alinhar pelo pico, não pelo início do arquivo.** Meça o instante do pico de cada efeito e
-  adiante o início do `<Sequence>` por esse tempo (whoosh pico 0,25 s → −8 quadros; impacto
-  0,09 s → −3; estalo 0,13 s → −4).
-- **Fonte dos efeitos**, em ordem de preferência: (1) arquivos que o usuário mandar;
-  (2) **ElevenLabs** (modelo `eleven_text_to_sound_v2`, nó `sfx`; ~0,5 centavo de dólar por efeito):
-  uma geração por som, prompt curto e concreto, `generations_count: 1`, **nunca repetir a chamada
-  para "tentar de novo"** (cobra de novo), baixar os `.mp3` pelas URLs assinadas para
-  `public/sfx/`; (3) síntese local em `scripts/gerar_sfx_sintetico.py` (sons básicos).
-- **Música de fundo:** só usar arquivo enviado pelo usuário (pedir confirmação de licença). Fica
-  ~20 dB abaixo da voz. Não tente identificar a música.
-
-## Lição do corte C: a voz sumiu
-
-Na primeira mixagem a voz foi baixada para -20 LUFS (a gravação ao vivo vem em -10) mas os efeitos
-continuaram com volume absoluto, uns 20 dB acima da voz: o vídeo parecia "mudo, só fundo". Agora
-`mixar_audio.py` escala os efeitos pelo pico da voz e **para com erro se a voz não estiver pelo menos
-6 dB acima de música+efeitos**. Antes de entregar, confira também a correlação entre o arquivo final e a
-voz isolada (deve ser > 0,8; no corte C deu 0,99). Música de fundo é opcional (`--sem-musica`):
-o usuário pediu só a voz no corte C.
-
-## Lição do feedback do corte C: contexto, cortes e legenda
-
-- **Duração e estrutura:** 1 a 1,5 min. Abra com um gancho (a frase de impacto antecipada, ~4 s), depois
-  contexto, virada (clímax) e desfecho. Corte curto de 35 s sem contexto foi reprovado.
-- **Cortes sem comer fala:** só pausas > 1,2 s viram corte; o ritmo vem de zoom e texto. O fim de cada trecho
-  vai até o fim da palavra + 0,34 s (sem passar da próxima palavra) e a emenda tem fade de 30 ms.
-  Limite de trecho só é movido quando cai dentro de uma palavra (senão "minha" do início sumia).
-- **Legenda não pode pular de altura:** sempre uma linha só, altura fixa, reduzida em conjunto se for larga.
-  Antes, frases de 2 linhas (palavra de emoção grande) mudavam de posição e pareciam "em cima, depois embaixo".
-- **Texto da legenda:** conferir a transcrição inteira e usar `correcoes` em `cortes_config.py`
-  (ex.: "pontou" -> "apontou"); nomes próprios (Deus, Jeremias, Senhor) com maiúscula.
-- **Escolha do trecho:** olhe uma folha de contatos do bruto. Descarte onde o pastor sai do quadro ou fica
-  na borda (no corte A, de 31 s a 42 s do bruto), cortando em limite de frase.
-- **Voz isolada:** isole a voz do áudio já editado (não fatie uma isolada de edição antiga, pode dessincronizar).
-
-## Fundo novo só em destaques
-
-O padrão é a filmagem original reenquadrada na vertical (câmera virtual seguindo a cabeça do pastor,
-sem passar da borda da imagem e sem mostrar a legenda embutida do rodapé). O fundo novo (pastor recortado)
-vale só nos textos marcados com `"recorte": True` na configuração. Trechos em que o pastor fica na
-borda da imagem da transmissão devem ser descartados do corte (não dá para centralizar).
+- **A voz manda.** `mixar_audio.py` normaliza a voz em -20 LUFS, escala os efeitos pelo pico da voz, recua a voz nos
+  impactos e **para com erro se a voz não ficar 6 dB acima** de música+efeitos. Final em -14 LUFS (duas passadas).
+- **Música é opcional** (`--sem-musica`). Só usar arquivo enviado pelo usuário, com licença confirmada.
+- **Alinhar pelo pico** do efeito: `PICO` em `montar_plano.py` (whoosh 0,25 s, impacto 0,09 s, estalo 0,13 s, clique 0,03 s).
+- **Efeitos** em `public/sfx/` (`el_*.mp3`, gerados no ElevenLabs): impacto, impacto2, whoosh, whoosh2, estalo, riser, clique.
+  Gerar um novo: `eleven_text_to_sound_v2`, nó `sfx`, **uma chamada só** (repetir cobra de novo), ~0,5 centavo.
+  O clique veio com duas batidas: cortei só a primeira (`ffmpeg -ss 0.33 -t 0.35`).
+- **Voz isolada (ElevenLabs `audio_isolation`, ~13 centavos por 78 s):** subir o `mp3` da voz
+  (`creative_create_asset_upload` + PUT + `creative_finalize_asset_upload` com `flow_id`), gerar com
+  `generations_count: 1` e baixar pela URL assinada. **O limite de pedidos (429) é comum:** tente uma vez, espere
+  e tente de novo mais tarde, sem repetir em sequência. Se não liberar, use `afftdn` + passa-altas localmente e avise
+  o usuário que sobra um pouco de instrumental.
 
 ## Ambiente (armadilhas já encontradas)
 
-- **Chrome do Remotion não baixa** (rede bloqueada): `remotion.config.ts` aponta para o
-  `chrome-headless-shell` pré-instalado em `/opt/pw-browsers/`.
-- **Modelo Whisper** vem do Hugging Face. O usuário precisa liberar em *Network access*:
-  `huggingface.co`, `cdn-lfs.huggingface.co`, `us.aws.cdn.hf.co`, `cas-server.xethub.hf.co`
-  (ou `*.hf.co`). Guie-o passo a passo (ele não sabe onde fica). Se mesmo assim falhar com 403,
-  é host faltando: leia o redirect com `curl -s -o /dev/null -w '%{redirect_url}'`.
-- `faster-whisper` não lê arquivo (erro no PyAV): passe o áudio como array numpy, como no script.
-- **Google Drive:** o conector não lista nem baixa o conteúdo de pastas. Peça os arquivos anexados
-  ou links individuais.
-- Efeitos pagos/gerados (ElevenLabs): diga o custo antes de gerar em lote; confirme antes de
-  qualquer geração longa.
+- **Chrome:** `remotion.config.ts` usa o `chrome-headless-shell` de `/opt/pw-browsers/`. Para a skill `motionmaxxing`,
+  `CHROME_PATH=/opt/pw-browsers/chromium` está em `.claude/settings.json`.
+- **Rede:** o Whisper vem do Hugging Face (liberar `*.hf.co`); YouTube bloqueia download de datacenter; arquivo grande do
+  Drive só por link público. Guie o usuário passo a passo (ele não sabe onde ficam as configurações).
+- **GitHub push 403:** permissão do app; peça para reconectar em https://claude.ai/connect-github.
+- **Gerar muita saída** (ElevenLabs, render longo): diga o custo e rode em segundo plano com `Monitor`.
+- **`pkill -f` mata o próprio shell**: selecione o pid com `ps` + `awk`.
 - Plugins instalados no meio da conversa só valem em sessão nova.
 
 ## O que não prometer
 
-- Não ouço áudio nem identifico músicas/sons de outro vídeo: leio transcrição e números
-  (volume, picos). O julgamento "soou bom" é do usuário.
-- Copiar o **estilo** (ritmo, tipografia, cor, tipos de efeito) é ok; não reaproveitar marca,
-  logo, imagens, música ou texto do concorrente.
-- Fontes pagas: usar a gratuita mais parecida e avisar.
+- Não ouço áudio nem identifico músicas e sons de outro vídeo: leio transcrição e números (volume, picos). O "soou bom"
+  é do usuário. Peça que confirme o som.
+- Copiar o **estilo** (ritmo, tipografia, cor, tipos de efeito) é ok; não reaproveitar marca, logo, imagens, música ou
+  texto de terceiros. Cenas de filme/série (inserts) só com o clipe enviado pelo usuário ou autorização dele.
+- Fontes pagas: usar a gratuita mais parecida e avisar (hoje: Playfair itálico e Inter).
+- A escolha dos cartões e dos destaques é feita por mim lendo a fala, não é automática.
