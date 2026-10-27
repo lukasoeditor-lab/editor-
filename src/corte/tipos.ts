@@ -32,6 +32,7 @@ export type Plano = {
   pb?: { f0: number; f1: number }[]; // trechos em preto e branco
   cartoes?: Cartao[]; // cartões tipográficos em fundo branco
   estilo?: "simples"; // legenda palavra por palavra, sem motion design
+  faixa?: { nome: string; cargo: string; f0: number; f1: number }; // nome do orador (lower third)
   marca?: string; // @ no rodapé (estilo simples)
   sem?: string[]; // recursos desligados (diagnóstico de desempenho)
 };

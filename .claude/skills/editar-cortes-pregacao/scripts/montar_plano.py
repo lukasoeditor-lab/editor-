@@ -326,6 +326,10 @@ def main():
         for l in plano["legendas"]:
             for w in l["palavras"]:
                 w["txt"] = w["txt"].upper()
+        fx = cfg.get("faixa")  # {"nome": ..., "cargo": ..., "ini": s, "dur": s} — nome do orador
+        if fx:
+            f0 = frame(fx.get("ini", 1.0))
+            plano["faixa"] = {"nome": fx["nome"], "cargo": fx["cargo"], "f0": f0, "f1": f0 + frame(fx.get("dur", 3.5))}
     if "--editorial" in sys.argv:  # cartões tipográficos em fundo branco + estouro de luz + zoom a cada frase
         plano["cartoes"] = montar_cartoes(novas, cfg.get("cartoes", []), duracao)
         trans = [t for t in plano.get("transicoes", []) if t["tipo"] != "luz"]

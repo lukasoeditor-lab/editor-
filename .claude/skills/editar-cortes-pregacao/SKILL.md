@@ -8,8 +8,9 @@ description: Edita cortes verticais (Reels, TikTok, Shorts, 1080x1920, 30 fps) d
 Receita testada neste projeto. O projeto Remotion está na raiz do repositório (`src/corte/` é a composição
 `Corte`; `public/` guarda fontes, sons e os planos de cada corte em `public/cortes/X/`).
 
-Leia antes de montar: `references/estilo-visual-e-sonoro.md` (motion design) e
-`references/estilo-editorial-cartoes-tipograficos.md` (estilo editorial, com a receita dos cartões).
+Leia antes de montar: `references/estilo-visual-e-sonoro.md` (motion design),
+`references/estilo-editorial-cartoes-tipograficos.md` (estilo editorial, com a receita dos cartões) e
+`references/ferramentas-instaladas.md` (rubrica de escolha de trechos, áreas seguras e o que usar das 24 ferramentas instaladas).
 
 ## Escolha do estilo (o que o usuário pedir vale mais que o padrão)
 
@@ -28,7 +29,8 @@ brilho com clique, esmaecimento por preto), `"pb": [{"de": [...], "ate": [...]}]
    por ~4 s), contexto, virada (clímax) e desfecho. Corte curto sem contexto foi reprovado.
 2. **Transcrever com tempo por palavra** (`scripts/transcrever.py`, faster-whisper large-v3, áudio como array numpy).
    Ler a transcrição inteira, corrigir palavras erradas em `correcoes` e pôr nomes próprios com maiúscula.
-3. **Escolher os trechos** olhando uma folha de contatos do bruto. Descartar onde o orador sai do quadro ou fica
+3. **Escolher os trechos** pela rubrica de `ferramentas-instaladas.md` (8 a 12 candidatos com nota), mostrar a tabela ao usuário
+   e **só cortar depois da aprovação**. Olhe também uma folha de contatos do bruto. Descartar onde o orador sai do quadro ou fica
    na borda (não dá para centralizar). Cortar em limite de frase.
 4. **Configurar** `scripts/cortes_config.py`: `trechos`, `hits` (motion design), `cartoes` (editorial), `transicoes`, `pb`,
    `enfase`, `correcoes`.
@@ -37,7 +39,9 @@ brilho com clique, esmaecimento por preto), `"pb": [{"de": [...], "ate": [...]}]
    centralizada na cabeça do orador).
 6. **Plano**: `montar_plano.py X pasta_trabalho public/cortes/X [--reusar] [--simples @arroba] [--editorial]` e
    `juntar_plano.py public/cortes/X` (gera `plano_final.json`).
-7. **Conferir quadros** com `npx remotion still Corte out/q.png --props=public/cortes/X/plano_final.json --frame=N`
+7. **Verificar o plano**: `python3 -I scripts/verificar_plano.py public/cortes/X/plano.json` (duração, gancho, ritmo, volume).
+   Exportar a legenda fechada: `scripts/exportar_srt.py plano.json X.srt`. Nome do orador: `faixa` em `cortes_config.py`.
+   **Conferir quadros** com `npx remotion still Corte out/q.png --props=public/cortes/X/plano_final.json --frame=N`
    e uma folha de contatos. Fazer isso antes de renderizar tudo.
 8. **Render**: `npx remotion render Corte out/X_mudo.mp4 --props=public/cortes/X/plano_final.json --crf=18 --concurrency=4`
    (~12 min para 78 s; para prévia use `--frames=A-B`).
@@ -58,6 +62,14 @@ brilho com clique, esmaecimento por preto), `"pb": [{"de": [...], "ate": [...]}]
 - **Orador centralizado** (câmera virtual pela cabeça, sem passar da borda e sem mostrar a legenda queimada do rodapé).
 - **Isolar a voz do áudio já editado** (não fatiar uma voz isolada de uma edição antiga: dessincroniza).
 - **Corte de transmissão:** o orador pode sair do quadro; descarte esse trecho em vez de fingir que está ok.
+
+## Retenção e áreas seguras (de vídeo curto)
+
+- **Gancho na tela já no 1º quadro**, com o quadro mais forte primeiro (sem subir do preto). Uma ideia por vídeo.
+- **Mudança visual a cada 2 a 4 s**, em intervalos desiguais (zoom, cartão, transição, P&B). Cartão de mais de ~3,5 s deve ser dividido.
+- **Áreas seguras:** conteúdo no centro de 900x1400; ~320 px de baixo, ~120 px de cima e da direita livres.
+- **Legenda fechada** (`.srt`) além da queimada. **Faixa com o nome** do orador nos primeiros segundos.
+- **Pausa longa se corta pelo meio**, deixando respiro dos dois lados (já feito: 0,45 s de cada lado).
 
 ## Efeitos (parâmetros que funcionaram)
 

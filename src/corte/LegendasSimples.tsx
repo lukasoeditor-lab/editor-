@@ -1,6 +1,7 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { FONTE_MARCA, FONTE_SIMPLES } from "./fontes";
 import { cartaoAtivo } from "./Cartoes";
+import { FaixaNome } from "./FaixaNome";
 import { type Plano } from "./tipos";
 
 // Legenda de 1 a 3 palavras, no meio do vídeo. Cada palavra entra com um borrão que some
@@ -57,7 +58,8 @@ export const LegendasSimples: React.FC<{ plano: Plano }> = ({ plano }) => {
           })}
         </div>
       )}
-      {plano.marca && !noCartao && (
+      {plano.faixa && !noCartao && <FaixaNome plano={plano} />}
+      {plano.marca && !noCartao && !(plano.faixa && f >= plano.faixa.f0 && f < plano.faixa.f1) && (
         <div
           style={{
             position: "absolute",

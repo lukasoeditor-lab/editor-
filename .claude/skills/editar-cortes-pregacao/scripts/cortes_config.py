@@ -69,6 +69,7 @@ CORTES = {
         "correcoes": {"pontou": "apontou", "dEle": "Dele"},
         # estilo simples: emenda 1 = brilho com clique, emenda 2 = esmaecimento por preto
         "transicoes": ["brilho", "preto"],
+        "faixa": {"nome": "Pr. Eric Melo", "cargo": "Conferência Conectados", "ini": 5.0, "dur": 3.5},
         "pb": [{"de": ["eu", "tinha", "tudo"], "ate": ["mas", "deus", "chegou"]}],
         # cartões tipográficos (--editorial). `*` grande, `*v` vinho, `*a` azul, sem sufixo = pequeno
         "cartoes": [
