@@ -1,0 +1,460 @@
+{
+ "_leia": "Corte 2 (Cara de crente): tempos em segundos do vídeo original; veja a skill corte-de-pregacao.",
+ "estilo": "A",
+ "rotulo_topo": "ALÉM DO PÚLPITO",
+ "logo": "CAMINHO/DO/PNG-DO-@.png",
+ "cauda": 1.5,
+ "musica": {
+  "arquivo": "05-biblioteca/musica/SUA-MUSICA.mp3",
+  "inicio": 0,
+  "abaixo_da_voz_db": 14
+ },
+ "eventos": [
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "é rei,",
+     940.42
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "tem cara de",
+     941.82
+    ]
+   ],
+   "serif": [
+    "crente",
+    942.96
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "mas Deus está",
+     943.9
+    ]
+   ],
+   "serif": [
+    "rejeitando",
+    944.58
+   ],
+   "impacto": true
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "cantando",
+     946.1
+    ],
+    [
+     "de crente,",
+     946.84
+    ]
+   ]
+  },
+  {
+   "tipo": "scatter",
+   "w": [
+    [
+     "mas",
+     947.82,
+     150,
+     880
+    ],
+    [
+     "Deus",
+     947.96,
+     640,
+     960
+    ],
+    [
+     "está",
+     948.24,
+     250,
+     1070
+    ],
+    [
+     "rejeitando",
+     948.42,
+     110,
+     1200
+    ]
+   ],
+   "serifa_ultima": true
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "o vocabulário",
+     949.7
+    ],
+    [
+     "é de crente,",
+     950.54
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "mas é",
+     951.44
+    ],
+    [
+     "misericórdia,",
+     951.6
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "sangue de Jesus",
+     952.52
+    ],
+    [
+     "tem poder,",
+     953.06
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "mas tu sabe",
+     954.06
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "que tu está",
+     954.94
+    ]
+   ],
+   "serif": [
+    "desviado",
+    955.42
+   ],
+   "impacto": true
+  },
+  {
+   "tipo": "beat",
+   "w": [
+    [
+     "tu",
+     956.74,
+     190,
+     760
+    ],
+    [
+     "sabe",
+     956.94,
+     560,
+     850
+    ],
+    [
+     "que",
+     957.48,
+     220,
+     1010
+    ],
+    [
+     "tu",
+     957.7,
+     640,
+     1090
+    ],
+    [
+     "está",
+     957.86,
+     250,
+     1230
+    ],
+    [
+     "desviado",
+     957.96,
+     600,
+     1370
+    ]
+   ],
+   "t0": 956.55,
+   "t1": 958.7
+  },
+  {
+   "tipo": "list",
+   "linhas": [
+    [
+     [
+      "tu",
+      959.16
+     ],
+     [
+      "não",
+      959.3
+     ],
+     [
+      "canta",
+      959.44
+     ],
+     [
+      "mais,",
+      959.92
+     ]
+    ],
+    [
+     [
+      "tu",
+      960.42
+     ],
+     [
+      "não",
+      960.54
+     ],
+     [
+      "prega",
+      960.62
+     ],
+     [
+      "mais,",
+      961.14
+     ]
+    ],
+    [
+     [
+      "não",
+      961.56
+     ],
+     [
+      "evangeliza",
+      961.64
+     ],
+     [
+      "mais",
+      962.48
+     ]
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "você gosta",
+     963.3
+    ],
+    [
+     "até de ouvir",
+     963.9
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [],
+   "serif": [
+    "musiquinha gospel",
+    964.68
+   ],
+   "tamanho": 118
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "gosta até",
+     966.42
+    ],
+    [
+     "de ouvir",
+     967.14
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "algumas reflexões",
+     967.56
+    ],
+    [
+     "de pastores,",
+     968.84
+    ]
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "mas a sua",
+     970.28
+    ],
+    [
+     "comunhão",
+     970.9
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "com Deus foi",
+     971.42
+    ]
+   ],
+   "serif": [
+    "rompida",
+    972.1
+   ],
+   "impacto": true,
+   "glitch": true
+  },
+  {
+   "tipo": "beat",
+   "w": [
+    [
+     "Deus",
+     973.26,
+     200,
+     800
+    ],
+    [
+     "está",
+     973.48,
+     620,
+     930
+    ],
+    [
+     "rejeitando",
+     973.86,
+     330,
+     1090
+    ],
+    [
+     "você",
+     974.42,
+     560,
+     1260
+    ]
+   ],
+   "t0": 973.15,
+   "t1": 975.0,
+   "serifa_ultima": true
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "está aí no",
+     987.12
+    ],
+    [
+     "capítulo 15",
+     987.66
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "você rejeitou a",
+     988.5
+    ]
+   ],
+   "serif": [
+    "palavra",
+    990.74
+   ]
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "de Deus,",
+     991.18
+    ],
+    [
+     "versículo 23,",
+     991.88
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [
+    [
+     "o Senhor também te",
+     993.16
+    ]
+   ],
+   "serif": [
+    "rejeitará",
+    994.36
+   ],
+   "impacto": true
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "se você",
+     1009.6
+    ],
+    [
+     "rejeita a",
+     1010.2
+    ]
+   ]
+  },
+  {
+   "tipo": "emph",
+   "lead": [],
+   "serif": [
+    "palavra de Deus,",
+    1011.44
+   ],
+   "tamanho": 118
+  },
+  {
+   "tipo": "cap",
+   "w": [
+    [
+     "o Deus",
+     1012.5
+    ],
+    [
+     "da palavra",
+     1013.18
+    ]
+   ]
+  },
+  {
+   "tipo": "final",
+   "serif1": [
+    "rejeitará",
+    1014.7
+   ],
+   "serif2": [
+    "você",
+    1015.3
+   ]
+  }
+ ]
+}

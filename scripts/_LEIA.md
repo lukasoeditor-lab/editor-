@@ -22,6 +22,16 @@
 | `uv run scripts/video/olho_quadro_a_quadro.py camera\|folha\|rastro\|ampliar\|compara ...` | mede câmera, amplia detalhes e compara a referência com a recriação |
 | `uv run scripts/video/detectar_saltos.py <video>` | depois de todo render: acha quadros pulados, vazios ou isolados |
 
+## Corte de pregação (skill `corte-de-pregacao`)
+
+| Comando | O que faz |
+|---|---|
+| `uv run scripts/video/corte_pregacao/preparar_corte.py <pregacao.mp4> <pasta> --trechos "ini:fim,..." [--isolar-voz --modelo-voz <onnx>] [--transcrever]` | recorte vertical que segue o pregador, pausas cortadas, voz isolada e `palavras.json` |
+| `uv run scripts/video/corte_pregacao/gerar_projeto.py <roteiro.json> <preparo> <projeto> [--hf "<comando>"]` | gera o projeto HyperFrames (legenda, efeitos, SFX, música, cor de cinema) |
+| `uv run scripts/video/corte_pregacao/misturar_audio.py <projeto/index.html> <render.mp4> <final.mp4>` | refaz a mistura de áudio com limitador baixo e cola no vídeo renderizado |
+
+Cada um tem `--autoteste` (fabrica um vídeo de teste e confere a saída).
+
 ## Som
 
 Os detalhes e o método estão na skill `som-do-video` e no [README da biblioteca de som](../05-biblioteca/som/README.md).

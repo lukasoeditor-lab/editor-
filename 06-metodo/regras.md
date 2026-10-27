@@ -35,6 +35,24 @@
 | Respiro antes do drop | zerar o instrumental ~0,5 s antes do drop e pôr a palavra-chave no primeiro quadro dele |
 | Voz | narração seca, sem reverb nem eco |
 
+## Corte de pregação (Pregue)
+
+Medidos nas 5 referências do Lukas ([estilos-pregue](../03-referencias/analises/2026-10-27-estilos-pregue.md)); valem para cortes verticais de 45 a 75 s.
+
+| Regra | Valor de partida |
+|---|---|
+| Legenda | 4,5 a 6% da largura (≈ 50–65 px em 1080 px), minúscula, bold 700–800 (estilo B: 300), entrelinha ~0,95, sem caixa; do peito para baixo, nunca no rosto |
+| Palavra-chave | serifa itálica 1,8 a 2,2× a legenda; entrada com desfoque 14 px → 0, `scale 1,25 → 1`, 0,27 s `expo.out`; 1 a 3 por frase |
+| Entrada de palavra | no quadro em que é falada; 0,14 s com desfoque 6–9 px e subida de 8–16 px |
+| Troca de plano / flash | 3 a 4 quadros (≈ 0,13 s) com flash de luz; sem dissolve longo |
+| Plano | troca de enquadramento a cada ~6 s (zoom 1,0 ↔ 1,16/1,24; palavra-chave até 1,3 em 1080p de câmera aberta) |
+| Popup de notificação | topo, ~85% da largura, 2,5–3 s; dentro do primeiro terço do vídeo |
+| Interlúdio escuro | no máximo 2 por corte, 1,5 a 2,5 s, com flash de 0,07 s na entrada |
+| Cores | título vermelho #DC2427; amarelo #F7D903 só na fala do "outro" em P&B; resto branco |
+| Fecho | queima de filme (0,1–0,55 s) → preto → marca desenhada em ~1,8 s → parada ≥ 2 s |
+| Mix | voz −16 LUFS; música 14 dB abaixo; efeitos no nível dos picos da fala; final −14 a −16 LUFS, pico real ≤ −3 dBFS depois do limitador (0,68) |
+| Render | 1080×1920, 30 qps, `-q looks`; ~0,5 s por quadro com a grade em 4 núcleos |
+
 ## Render e revisão
 
 | Regra | Valor de partida |

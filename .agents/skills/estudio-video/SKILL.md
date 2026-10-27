@@ -17,6 +17,8 @@ description: Ponto de entrada de qualquer pedido de vídeo neste estúdio (Reel,
 4. **Identidade do vídeo** tirada do assunto, e **direção** decidida antes de animar: [references/identidade.md](references/identidade.md) e [references/direcao.md](references/direcao.md).
 5. **Briefing e storyboard aprovados** (seção abaixo).
 
+> **Corte de pregação (Pregue – Além do Púlpito)?** Pule direto para a skill [corte-de-pregacao](../corte-de-pregacao/SKILL.md): ela já traz o estilo aprovado do Lukas, os scripts e o fluxo "um corte por vez".
+
 ## Escolher o motor
 
 Confira o que está instalado em `02-ferramentas/` ([modelo dos docs](../../../02-ferramentas/_LEIA.md)) antes de decidir.

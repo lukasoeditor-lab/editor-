@@ -19,7 +19,7 @@
 
 ## Estilo e referências
 
-- Criadores e marcas que admiro: o editor do LC Frames, o editor do Felipe Levaque e editores que fazem motion design profissional.
+- Criadores e marcas que admiro (estilos analisados em [03-referencias/analises/2026-10-27-estilos-pregue.md](../03-referencias/analises/2026-10-27-estilos-pregue.md)): o editor do LC Frames, o editor do Felipe Levaque e editores que fazem motion design profissional.
 - Estilo visual que quero (ex.: limpo estilo Apple, hype, documental): dinâmico e chamativo: legenda pequena em negrito, palavra-chave grande em letra serifada itálica, palavras espalhadas na tela, cor viva com cor de cinema, interlúdios em fundo escuro.
 - O que não quero de jeito nenhum: nada com cara de IA ou de modelo genérico; nada amador.
 
