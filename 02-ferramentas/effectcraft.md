@@ -1,6 +1,6 @@
 # EffectCraft
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: não instalado
 
 **Resumo:** editor de motion graphics gratuito e de código aberto, no estilo do After Effects (camadas, keyframes, efeitos com os mesmos nomes), com servidor MCP: a IA cria a composição, anima, aplica efeitos e renderiza sem você clicar. Bom para começar sem pagar o After Effects.
 
@@ -9,4 +9,4 @@
 - **Credenciais:** nenhuma.
 - **Fluxo típico da IA:** `comp.new` → `layer.newText` / `layer.newSolid` → `set_property` / `add_keyframe` → `effect.apply` → `render_preview` para olhar o resultado. Tempos em segundos.
 - **Pegadinhas:** projeto novo (versões alfa, mudam rápido): atualize rodando o instalador de novo. Pode ser mais lento e usar mais memória que o After Effects em renders longos. Fonte que só o After Effects enxerga (pasta de fontes da Adobe) precisa ser instalada no sistema para o EffectCraft usar.
-- **Log:**
+- **Log:** 2026-10-27, não instalado: só existe versão para Mac e Windows. Instalar no computador do Lukas com o roteiro 2.

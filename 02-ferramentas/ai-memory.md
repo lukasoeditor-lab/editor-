@@ -1,6 +1,6 @@
 # ai-memory: a memória do estúdio
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: vigente
 
 **Resumo:** servidor local de memória, de código aberto, que grava sozinho as sessões do Claude Code e do Codex num wiki em markdown e devolve o contexto na sessão seguinte, em qualquer um dos dois. É a memória do projeto: fatos duráveis, regras aprendidas e decisões ficam nele.
 
@@ -14,4 +14,4 @@
   - `ai-memory upgrade`: nova versão.
 - **No dia a dia, peça à IA:** "onde paramos?", "o que fizemos sobre X?", "lembra disso para sempre: …".
 - **Pegadinhas:** sessão aberta antes da instalação só passa a gravar depois de reiniciar o agente. No Windows, rodar o `setup` de dentro do app Claude para desktop grava num lugar virtual (ver roteiro 1).
-- **Log:**
+- **Log:** 2026-10-27, ai-memory 3.2.8 em `/root/.local/bin/ai-memory` (Linux, computador na nuvem temporário). Sem serviço systemd: servidor iniciado na mão com `ai-memory serve --transport http`. Ligado ao Claude Code e ao Codex (ganchos do Codex ainda precisam de `/hooks`). Projeto `lukas-estudio`.

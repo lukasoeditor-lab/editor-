@@ -1,6 +1,6 @@
 # After Effects e o Motion Kit AE
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: não instalado
 
 **Resumo:** o After Effects é o acabamento mais fino (molas, câmera 3D, efeitos, transições). Com o Motion Kit AE, a IA monta a cena no seu After Effects, olha os quadros, revisa se o movimento está humano ou robotizado, corrige e renderiza. Opcional e pago (assinatura da Adobe).
 
@@ -9,4 +9,4 @@
 - **Credenciais:** a conta Adobe fica na Creative Cloud.
 - **Peça assim:** "faz o ícone A virar o B com mola", "entra o card com mola", "os itens sobem um depois do outro", "renderiza uma prévia".
 - **Pegadinhas:** feche o After Effects antes de instalar o kit. Janela de diálogo aberta trava a ponte (feche-a). Renderize de uma pasta sem acento nem "ç". Fonte nova: instale no sistema e reinicie o After Effects.
-- **Log:**
+- **Log:** 2026-10-27, não instalado nesta máquina (Linux na nuvem). É opcional: EffectCraft, HyperFrames e Remotion funcionam sem ele.

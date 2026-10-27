@@ -1,6 +1,6 @@
 # watch: a IA assiste a um vídeo
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: vigente
 
 **Resumo:** skill que deixa a IA "assistir" a um vídeo (link ou arquivo): baixa, tira quadros com o tempo de cada um e pega a transcrição. É assim que uma referência vira análise sem você descrever o vídeo.
 
@@ -9,4 +9,4 @@
 - **Credenciais:** opcional, uma chave da API do Gemini deixa o Google assistir ao vídeo inteiro com áudio. A skill explica onde guardar. Sem chave, funciona com quadros e transcrição local.
 - **Complementos do estúdio:** `uv run scripts/referencias.py olhar <arquivo>` (folha de contato rápida) e `uv run scripts/video/olho_quadro_a_quadro.py` (câmera, ampliação e comparação quadro a quadro).
 - **Pegadinhas:** vídeo privado ou com login não baixa: salve o arquivo e passe o caminho.
-- **Log:**
+- **Log:** 2026-10-27, skill `watch` instalada, usando yt-dlp 2026.10.21 e ffmpeg 6.1.1. Nesta nuvem o YouTube bloqueia o download.

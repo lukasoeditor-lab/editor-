@@ -1,6 +1,6 @@
 # Python e uv: as bibliotecas de áudio e vídeo
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: vigente
 
 **Resumo:** o uv instala o Python 3.11 e todas as bibliotecas do `pyproject.toml` numa pasta `.venv` só do estúdio, sem mexer no resto do computador. Todo script roda com `uv run`.
 
@@ -24,4 +24,4 @@
 | audio-separator | separar voz e instrumental (modelos RoFormer; extra `cpu`/`gpu`) |
 
 - **Pegadinhas:** biblioteca nova entra no `pyproject.toml` e depois `uv sync`; nunca `pip install` solto. Sem placa NVIDIA, a separação de voz é lenta: no teste de 22/10/2026, numa máquina de 4 núcleos, 15 s de música levaram ~3 min. Separe só o trecho que vai usar, não a música inteira. Com placa NVIDIA, leva segundos. O primeiro uso baixa o modelo (~1,5 GB) e o de batidas (pequeno); depois ficam guardados.
-- **Log:**
+- **Log:** 2026-10-27, uv 0.11.32 em `/root/.local/bin/uv` e Python 3.11.17 no `.venv`. Modo leve: sem torch, beat_this e audio-separator, porque o site do PyTorch está bloqueado aqui.

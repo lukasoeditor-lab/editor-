@@ -1,1 +1,2 @@
+- 27/10 — [Roteiro 2: ferramentas de edição](2026-10-27-ferramentas.md)
 - 27/10 — [Segundo cérebro: modelo, memória e perfil](2026-10-27-segundo-cerebro.md)

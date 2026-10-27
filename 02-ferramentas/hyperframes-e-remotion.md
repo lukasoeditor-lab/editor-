@@ -1,6 +1,6 @@
 # HyperFrames e Remotion: vídeo em código
 
-> Data: 2026-10-22 · Tipo: guia · Status: vigente
+> Data: 2026-10-27 · Tipo: guia · Status: vigente
 
 **Resumo:** dois jeitos de fazer vídeo escrevendo código, sem programa de edição: HyperFrames usa HTML e GSAP, Remotion usa React. A IA escreve a composição, mostra a prévia no navegador e renderiza em MP4. Ótimos para telas de app, texto animado, gráficos e peças em série.
 
@@ -11,4 +11,4 @@
   - HyperFrames: `npx hyperframes preview`, `npx hyperframes check`, `npx hyperframes render` (a skill `hyperframes` explica o resto).
   - Remotion: `npx create-video@latest --yes --blank meu-video`, `npx remotion studio`, `npx remotion render src/index.ts <Composicao> render/final.mp4`.
 - **Pegadinhas:** caminho com "ç" quebra a extração de vídeo do HyperFrames: renderize de uma pasta sem acento. Desfoque de movimento em HTML: renderize a 240 qps e junte 4 quadros (ver `06-metodo/regras.md`).
-- **Log:**
+- **Log:** 2026-10-27, HyperFrames 0.8.206 (plugin e skills) e skills do Remotion instaladas. O render rodou aqui com o Chromium do sistema. O CDN do GSAP é bloqueado nesta nuvem, então o GSAP vai em `assets/gsap.min.js` (baixado do npm).
