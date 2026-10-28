@@ -73,6 +73,13 @@ class Tempo:
                 return round(c + max(0.0, t - a), 3)
         return round(self.dur, 3)
 
+    def fim_trecho(self, tc):
+        """fim (tempo do corte) do trecho que contém o instante tc: a legenda não passa da emenda"""
+        for (a, b), c in zip(self.segs, self.cum):
+            if c - 0.001 <= tc < c + (b - a):
+                return round(c + (b - a), 3)
+        return round(self.dur, 3)
+
     @property
     def cortes(self):
         return [round(c, 3) for c in self.cum[1:]]
@@ -163,6 +170,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             prox = textuais[i + 1]["_t0"] if i + 1 < len(textuais) else TOTAL
             e["_t1"] = round(min(prox - 0.03, e["_t0"] + 3.2), 3)
         e["_t1"] = round(max(e["_t1"], e["_t0"] + 0.3), 3)
+        if e["tipo"] in ("cap", "frase", "emph", "scatter"):
+            e["_t1"] = round(min(e["_t1"], max(tm.fim_trecho(e["_t0"] + 0.07), e["_t0"] + 0.3)), 3)
         if any(x.get("no_fim") for x in ev) and e["tipo"] in ("cap", "frase", "emph", "scatter"):
             e["_t1"] = round(min(e["_t1"], DUR0 - 0.02), 3)  # a legenda não invade o cartão final
         if i + 1 < len(textuais) and e["tipo"] not in ("beat", "final", "notificacao", "titulo", "assinatura") and e["_t1"] > textuais[i + 1]["_t0"] - 0.02:

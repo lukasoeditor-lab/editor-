@@ -216,7 +216,7 @@ def preparar(video: Path, saida: Path, trechos, largura: int, altura: int, isola
             fonte_voz = next((tmp / "sep").glob("*Vocals*.wav"))
         m = len(segs)
         fa = (f"[0:a]asplit={m}" + "".join(f"[a{i}]" for i in range(m)) + ";"
-              + ";".join(f"[a{i}]atrim={s - crop0:.3f}:{e - crop0:.3f},asetpts=PTS-STARTPTS[t{i}]" for i, (s, e) in enumerate(segs)) + ";"
+              + ";".join(f"[a{i}]atrim={s - crop0:.3f}:{e - crop0:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.015,afade=t=out:st={e - s - 0.015:.3f}:d=0.015[t{i}]" for i, (s, e) in enumerate(segs)) + ";"
               + "".join(f"[t{i}]" for i in range(m)) + f"concat=n={m}:v=0:a=1[o]")
         farq = tmp / "fa.txt"
         farq.write_text(fa)
