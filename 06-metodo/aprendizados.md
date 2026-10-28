@@ -58,3 +58,4 @@
 - **Troca de cartão (azul ↔ branco) sem pregador no meio:** o cartão novo começa no começo do trecho e entra por **dissolve** (0,3 s) por cima do anterior, que só some depois. No `gerar_projeto.py`: `fade_in`, `fade_out`, `antes` e encadeamento automático.
 - **Sequência de cartões:** no máximo 2 seguidos; alterne com vídeo.
 - **Imagem:** fonte 720p em corte 9:16 é sempre macia. Ajuda: `hqdn3d` antes do `scale`, `unsharp` depois, enquadramento com a cabeça a ~1/3 do alto e sem o telão azul embaixo (ypos 0,4), zona morta mais estreita (0,28) para o pregador não ficar na borda.
+- **Começo do vídeo:** se o pregador está pequeno/andando nos primeiros segundos (imagem borrada no corte vertical), abra com **cartão** com a voz do gancho, sem fade no primeiro quadro (o vídeo não pode aparecer no quadro 0). O pregador entra depois, num trecho em que está parado.
