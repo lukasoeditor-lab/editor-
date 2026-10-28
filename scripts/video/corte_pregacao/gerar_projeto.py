@@ -61,10 +61,11 @@ def rodar(cmd, **kw):
 class Tempo:
     def __init__(self, info):
         self.segs = info["segs"]
+        self.pausas = info.get("pausas") or [0.0] * len(self.segs)  # silêncio (só texto na tela) depois de cada trecho
         self.cum, o = [], 0.0
-        for a, b in self.segs:
+        for (a, b), p in zip(self.segs, self.pausas):
             self.cum.append(o)
-            o += b - a
+            o += b - a + p
         self.dur = o
 
     def __call__(self, t):
@@ -79,9 +80,9 @@ class Tempo:
 
     def fim_trecho(self, tc):
         """fim (tempo do corte) do trecho que contém o instante tc: a legenda não passa da emenda"""
-        for (a, b), c in zip(self.segs, self.cum):
-            if c - 0.001 <= tc < c + (b - a):
-                return round(c + (b - a), 3)
+        for (a, b), c, p in zip(self.segs, self.cum, self.pausas):
+            if c - 0.001 <= tc < c + (b - a) + p:
+                return round(c + (b - a) + p, 3)
         return round(self.dur, 3)
 
     @property
@@ -163,10 +164,17 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
         elif k == "assinatura":
             e["_t0"], e["_t1"] = tm(e["t"]), TOTAL
         elif k == "cartao":
-            e["_t0"] = DUR0 if e.get("no_fim") else tm(e["t0"]) - 0.04
+            e["_t0"] = DUR0 if e.get("no_fim") else tm(e["t0"]) - float(e.get("antes", 0.04))
             e["_t1"] = TOTAL if e.get("no_fim") else e["_t0"] + float(e["dur"])
         else:  # flash, gridcut, bw: sem janela de texto
             e["_t0"] = tm(e.get("t", e.get("t0", 0)))
+    # cartões colados um no outro: o de baixo fica até o novo terminar de aparecer (dissolve, sem o vídeo aparecer no meio)
+    cars = sorted([e for e in ev if e["tipo"] == "cartao"], key=lambda e: e["_t0"])
+    for i, e in enumerate(cars[:-1]):
+        prox = cars[i + 1]
+        if prox["_t0"] - e["_t1"] < 0.3:
+            e["_t1"] = max(e["_t1"], prox["_t0"] + float(prox.get("fade_in", 0.06)))
+            e["_encadeado"] = True
     textuais = [e for e in ev if e["tipo"] in ("cap", "frase", "emph", "scatter", "list", "final", "beat", "notificacao", "titulo", "assinatura")]
     textuais.sort(key=lambda e: e["_t0"])
     for i, e in enumerate(textuais):
@@ -176,6 +184,10 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
         e["_t1"] = round(max(e["_t1"], e["_t0"] + 0.3), 3)
         if e["tipo"] in ("cap", "frase", "emph", "scatter"):
             e["_t1"] = round(min(e["_t1"], max(tm.fim_trecho(e["_t0"] + 0.07), e["_t0"] + 0.3)), 3)
+        if e["tipo"] in ("cap", "frase", "emph", "scatter"):  # a legenda sai quando um cartão cobre a tela
+            nx = [c["_t0"] for c in cars if c["_t0"] > e["_t0"] + 0.02]
+            if nx:
+                e["_t1"] = round(min(e["_t1"], max(min(nx) - 0.02, e["_t0"] + 0.15)), 3)
         if any(x.get("no_fim") for x in ev) and e["tipo"] in ("cap", "frase", "emph", "scatter"):
             e["_t1"] = round(min(e["_t1"], DUR0 - 0.02), 3)  # a legenda não invade o cartão final
         if i + 1 < len(textuais) and e["tipo"] not in ("beat", "final", "notificacao", "titulo", "assinatura") and e["_t1"] > textuais[i + 1]["_t0"] - 0.02:
@@ -455,8 +467,13 @@ window.__timelines["type"] = tl;
                 else:
                     fx_js.append(f'tl.fromTo("#{idc}w{j}",{{opacity:0,y:14,filter:"blur(10px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.22,ease:"power2.out"}},{max(tw, a):.3f});')
             fx_html.append(f'<div class="cartao{" cx" if centro else ""}" id="{idc}" style="background:{e.get("fundo", "#023BC5")};color:{e.get("cor", "#ffffff")}"><div class="ct" style="font-size:{tam}px">{spans}</div></div>')
-            fx_js += [f'tl.to("#{idc}",{{opacity:1,duration:0.06,ease:"none"}},{a:.3f});',
-                      f'tl.to("#{idc}",{{opacity:0,duration:0.1,ease:"power1.in"}},{max(b - 0.1, a + 0.2):.3f});']
+            fi = float(e.get("fade_in", 0.06))
+            fx_js.append(f'tl.to("#{idc}",{{opacity:1,duration:{fi},ease:"power1.inOut"}},{a:.3f});')
+            if e.get("_encadeado"):
+                fx_js.append(f'tl.set("#{idc}",{{opacity:0}},{b:.3f});')  # o cartão seguinte já cobre
+            elif not e.get("no_fim"):
+                fo = float(e.get("fade_out", 0.3))
+                fx_js.append(f'tl.to("#{idc}",{{opacity:0,duration:{fo},ease:"power1.inOut"}},{max(b - 0.05, a + 0.2):.3f});')
         elif e["tipo"] == "pb":
             # esmaece para preto, a tela vira preto e branco; no fim esmaece para preto de novo e a cor volta
             a, b, f = tm(e["t0"]), tm(e["t1"]), float(e.get("fade", 0.45))

@@ -49,3 +49,12 @@
 - **Cartão não passa da emenda** do trecho em que começa; a legenda de 1 palavra também não.
 - **Render:** 2 min de vídeo levam ~27 min em 4 núcleos (`--page-motion-blur=off -w 4` dá ~2,3 quadros/s; sem isso ~1,7). Não há como acelerar mais neste ambiente.
 - **Transcrição:** Whisper pequeno erra palavras em trechos lentos ("navalha" virou "Ranavalha", "embriagada" veio partida). Corrija a lista de palavras antes de gerar e evite cortar frases cujo texto não deu para confirmar.
+
+## 2026-10-28: feedback do corte 3 v1 (fala cortada, sem legenda, cartão com pregador no meio)
+
+- **Fala cortada:** o fim do trecho NÃO pode vir da faixa que escolho na mão nem do fim da palavra do Whisper (erra 0,2 a 0,8 s). Ache o **vale de energia da voz isolada** perto do fim da última palavra e corte ali (`exemplo_refazer_com_pausas.py`). Voz isolada é obrigatória para o trecho todo: separe uma vez a faixa inteira e reaproveite.
+- **Tempo para ler:** cartão com a fala inteira, e depois da última palavra a **voz para e só o texto fica** (pausa de 0,8 a 2,2 s; música segue). Em `info.json`: lista `pausas`; no vídeo, `tpad=stop_mode=clone` repete o último quadro.
+- **Legenda sem buracos:** nos trechos de vídeo, blocos de 1 a 3 palavras, sempre um na tela até o próximo começar. A palavra gigante do gancho dura até o fim da fala dela.
+- **Troca de cartão (azul ↔ branco) sem pregador no meio:** o cartão novo começa no começo do trecho e entra por **dissolve** (0,3 s) por cima do anterior, que só some depois. No `gerar_projeto.py`: `fade_in`, `fade_out`, `antes` e encadeamento automático.
+- **Sequência de cartões:** no máximo 2 seguidos; alterne com vídeo.
+- **Imagem:** fonte 720p em corte 9:16 é sempre macia. Ajuda: `hqdn3d` antes do `scale`, `unsharp` depois, enquadramento com a cabeça a ~1/3 do alto e sem o telão azul embaixo (ypos 0,4), zona morta mais estreita (0,28) para o pregador não ficar na borda.
