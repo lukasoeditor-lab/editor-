@@ -45,6 +45,8 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 
 ## Regras que valem sempre
 
+- **Não corte a fala no meio nem logo depois da última palavra** (pedido do Lukas em 28/10): o início do trecho fica ~0,15 s antes da 1ª palavra; o fim fica **0,7 a 1,2 s depois** da última palavra, sem passar do início da fala seguinte (menos 0,1 s). Meça a energia do áudio (50 ms) em volta do corte: a palavra final tem cauda de reverberação. O vídeo termina com o pregador ainda na tela (`cauda` curta, 0,5 s), nunca com tela vazia.
+
 - **Sem zoom e sem câmera deslizante** (pedido do Lukas em 28/10): no estilo E o `punch_in` já vem desligado e o recorte usa zona morta.
 
 - **Legenda = evento `frase`** (bloco estreito alinhado à esquerda, tracking −0,04em, palavra-chave em serifa na própria linha). **Não** usar legenda de uma linha com franja colorida: esse foi o erro do corte 2 v1.
