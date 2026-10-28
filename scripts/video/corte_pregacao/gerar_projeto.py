@@ -41,6 +41,9 @@ ESTILOS = {
     # E: legenda básica da referência R6 (Pr. Eric Mello): 1 a 3 palavras em CAIXA-ALTA no meio do corpo, sem cor nem serifa
     "E": dict(cap_peso=800, cap_tam=70, cap_margem=10, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88,
               basico=True, cap_top=0.50),
+    # F: guia "cartões + legenda de 1 palavra" (LC Frames e referências de 28/10): minúscula, 1 palavra por vez no peito
+    "F": dict(cap_peso=800, cap_tam=58, cap_margem=8, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88,
+              basico=True, minuscula=True, cap_top=0.50),
     "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56, frase_tam=54, frase_peso=300, frase_track="-0.01em", frase_lh=1.05),
 }
 # nível de cada tipo de efeito (volume relativo à biblioteca, que já está nivelada)
@@ -148,6 +151,9 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             e["_t0"], e["_t1"] = tm(e["t"]) - 0.04, tm(e["t"]) + float(e.get("dur", 1.6))
         elif k == "assinatura":
             e["_t0"], e["_t1"] = tm(e["t"]), TOTAL
+        elif k == "cartao":
+            e["_t0"] = DUR0 if e.get("no_fim") else tm(e["t0"]) - 0.04
+            e["_t1"] = TOTAL if e.get("no_fim") else e["_t0"] + float(e["dur"])
         else:  # flash, gridcut, bw: sem janela de texto
             e["_t0"] = tm(e.get("t", e.get("t0", 0)))
     textuais = [e for e in ev if e["tipo"] in ("cap", "frase", "emph", "scatter", "list", "final", "beat", "notificacao", "titulo", "assinatura")]
@@ -157,6 +163,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             prox = textuais[i + 1]["_t0"] if i + 1 < len(textuais) else TOTAL
             e["_t1"] = round(min(prox - 0.03, e["_t0"] + 3.2), 3)
         e["_t1"] = round(max(e["_t1"], e["_t0"] + 0.3), 3)
+        if any(x.get("no_fim") for x in ev) and e["tipo"] in ("cap", "frase", "emph", "scatter"):
+            e["_t1"] = round(min(e["_t1"], DUR0 - 0.02), 3)  # a legenda não invade o cartão final
         if i + 1 < len(textuais) and e["tipo"] not in ("beat", "final", "notificacao", "titulo", "assinatura") and e["_t1"] > textuais[i + 1]["_t0"] - 0.02:
             e["_t1"] = round(textuais[i + 1]["_t0"] - 0.02, 3)
 
@@ -187,7 +195,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
         if k == "cap":
             sp = ""
             for j, (txt, ts) in enumerate(e["w"]):
-                sp += f'<span class="w" id="{cid}w{j}"{cor}>{txt}</span>'
+                gr = ' style="font-size:1.55em;line-height:1"' if e.get("grande") else ""
+                sp += f'<span class="w" id="{cid}w{j}"{cor or gr}>{txt}</span>'
                 anims.append(pop(f"{cid}w{j}", max(tm(ts) - 0.02, t0)))
             inner = f'<div class="cap">{sp}</div>'
         elif k == "frase":
@@ -326,7 +335,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   #root {{ position:absolute; inset:0; font-family:'Montserrat','Inter',sans-serif; }}
   .ev {{ position:absolute; inset:0; color:#fff; }}
   .w {{ display:inline-block; }}
-  .cap {{ position:absolute; left:0; right:0; top:{int(A * est.get('cap_top', 0.531))}px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:{'-0.035em' if est.get('basico') else '-0.01em'}; line-height:1.15; {'text-transform:uppercase; text-shadow:0 3px 14px rgba(0,0,0,.45);' if est.get('basico') else CHROMA} }}
+  .cap {{ position:absolute; left:0; right:0; top:{int(A * est.get('cap_top', 0.531))}px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:{'-0.035em' if est.get('basico') else '-0.01em'}; line-height:1.15; {('text-transform:' + ('none' if est.get('minuscula') else 'uppercase') + '; text-shadow:0 3px 14px rgba(0,0,0,.45);') if est.get('basico') else CHROMA} }}
   .cap .w {{ margin:0 {est['cap_margem']}px; }}
   .lead {{ position:absolute; left:0; right:0; top:860px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['lead_tam']}px; letter-spacing:-0.01em; {CHROMA} }}
   .lead .w {{ margin:0 10px; }}
@@ -400,7 +409,9 @@ window.__timelines["type"] = tl;
                   f'tl.fromTo("#fl_branco",{{opacity:0}},{{opacity:.7,duration:0.05,ease:"none"}},{b["_t0"]:.3f});',
                   f'tl.to("#fl_branco",{{opacity:0,duration:0.22,ease:"power2.out"}},{b["_t0"] + 0.05:.3f});',
                   f'tl.to("#beat{bi}",{{opacity:0,duration:0.07,ease:"none"}},{b["_t1"] - 0.07:.3f});']
+    ei_fx = -1
     for e in ev:
+        ei_fx += 1
         t = e["_t0"]
         if e["tipo"] == "flash":
             modo = e.get("modo", "luz")
@@ -413,6 +424,26 @@ window.__timelines["type"] = tl;
             a, b = tm(e["t0"]), tm(e["t1"])
             fx_js += [f'tl.fromTo("#bw",{{opacity:0}},{{opacity:1,duration:0.25,ease:"power2.inOut"}},{a:.3f});',
                       f'tl.to("#bw",{{opacity:0,duration:0.25,ease:"power2.inOut"}},{b:.3f});']
+        elif e["tipo"] == "cartao":
+            # cartão de cor cheia com a fala em texto (pilha que cresce palavra a palavra) ou uma palavra gigante
+            a, b = e["_t0"], e["_t1"]
+            idc = f"car{ei_fx}"
+            gig = e.get("modo") == "gigante"
+            centro = gig or e.get("modo") == "centro"
+            tam = int(e.get("tam") or (L * 0.105))
+            spans = ""
+            for j, w in enumerate(e["w"]):
+                if gig:
+                    tam = int(min(e.get("tam") or 420, L * 0.88 / max(len(w[0]) * 0.56, 1)))
+                spans += f'<span class="w" id="{idc}w{j}">{w[0]}</span>'
+                tw = (DUR0 if e.get("no_fim") else tm(w[1])) - 0.02
+                if gig:
+                    fx_js.append(f'tl.fromTo("#{idc}w{j}",{{opacity:0,scale:1.14,filter:"blur(16px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.3,ease:"expo.out"}},{max(tw, a):.3f});')
+                else:
+                    fx_js.append(f'tl.fromTo("#{idc}w{j}",{{opacity:0,y:14,filter:"blur(10px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.22,ease:"power2.out"}},{max(tw, a):.3f});')
+            fx_html.append(f'<div class="cartao{" cx" if centro else ""}" id="{idc}" style="background:{e.get("fundo", "#023BC5")};color:{e.get("cor", "#ffffff")}"><div class="ct" style="font-size:{tam}px">{spans}</div></div>')
+            fx_js += [f'tl.to("#{idc}",{{opacity:1,duration:0.06,ease:"none"}},{a:.3f});',
+                      f'tl.to("#{idc}",{{opacity:0,duration:0.1,ease:"power1.in"}},{max(b - 0.1, a + 0.2):.3f});']
         elif e["tipo"] == "pb":
             # esmaece para preto, a tela vira preto e branco; no fim esmaece para preto de novo e a cor volta
             a, b, f = tm(e["t0"]), tm(e["t1"]), float(e.get("fade", 0.45))
@@ -495,6 +526,11 @@ window.__timelines["type"] = tl;
             sfx(f"sx-tit{ei}", "impacto", e["_t0"] + 0.05, 1.1, indice=ei, fade_out=0.5)
         if k == "flash":
             sfx(f"sx-fl{ei}", "whoosh-grande" if e.get("modo") == "filme" else "whoosh", e["_t0"], 0.9, indice=ei)
+        if k == "cartao" and not e.get("no_fim"):
+            if e.get("modo") == "gigante":
+                sfx(f"sx-car{ei}", "impacto", e["_t0"] + 0.05, 0.7, indice=ei, fade_out=0.6)
+            else:
+                sfx(f"sx-car{ei}", "whoosh", e["_t0"], 0.45, indice=ei)
         if k == "sfx":
             sfx(f"sx-x{ei}", e.get("cat", "impacto"), tm(e["t"]), float(e.get("vol", 1.0)), indice=int(e.get("i", 0)), fade_out=float(e.get("fade_out", 0.0)))
         if k == "pb":
@@ -545,6 +581,11 @@ window.__timelines["type"] = tl;
       #fl_luz {{ position:absolute; inset:0; z-index:41; opacity:0; background:radial-gradient(70% 50% at 50% 55%, #fff3cf 0%, #ffb347 38%, rgba(255,120,20,0) 75%); mix-blend-mode:screen; }}
       #fl_filme {{ position:absolute; inset:0; z-index:42; opacity:0; mix-blend-mode:screen;
         background:linear-gradient(105deg, rgba(255,70,20,.0) 8%, rgba(255,90,30,.95) 30%, rgba(255,200,120,1) 48%, rgba(255,60,90,.9) 66%, rgba(255,40,10,0) 92%); box-shadow: inset 6px 0 0 rgba(255,0,60,.8), inset -6px 0 0 rgba(0,220,255,.8); }}
+      .cartao {{ position:absolute; inset:0; z-index:36; opacity:0; display:flex; align-items:center; justify-content:flex-start; padding:0 {int(L * 0.1)}px {int(A * 0.06)}px; }}
+      .cartao.cx {{ justify-content:center; padding:0; }}
+      .cartao .ct {{ font-family:'Montserrat','Inter',sans-serif; font-weight:800; letter-spacing:-0.035em; line-height:.95; text-align:left; }}
+      .cartao.cx .ct {{ text-align:center; white-space:nowrap; }}
+      .cartao .ct .w {{ display:inline-block; margin-right:.22em; }}
       #fpreto {{ position:absolute; inset:0; z-index:49; opacity:0; background:#000; }}
       #fadeout {{ position:absolute; inset:0; z-index:50; opacity:0; background:#02030a; }}
     </style>
@@ -646,6 +687,9 @@ def autoteste() -> None:
             {"tipo": "titulo", "t": 105.5, "dur": 1.4, "texto": "TALVEZ"},
             {"tipo": "flash", "t": 107.0, "modo": "luz"},
             {"tipo": "bw", "t0": 107.2, "t1": 108.5},
+            {"tipo": "cartao", "t0": 102.0, "dur": 1.6, "fundo": "#023BC5", "cor": "#ffffff", "w": [["teste", 102.0], ["do cartão", 102.4]]},
+            {"tipo": "cartao", "t0": 104.0, "dur": 0.8, "modo": "gigante", "fundo": "#F5E9F8", "cor": "#2550C6", "w": [["vitória", 104.0]]},
+            {"tipo": "cartao", "no_fim": True, "fundo": "#000", "cor": "#fff", "modo": "centro", "w": [["Compartilhe", 0]]},
             {"tipo": "assinatura", "t": 108.8, "texto": "Pregue", "sub": "ALÉM DO PÚLPITO"}]}
         # a biblioteca de efeitos pode não existir no autoteste: sem ela os efeitos são simplesmente omitidos
         montar(roteiro, prep, d / "proj", "npx -y hyperframes")

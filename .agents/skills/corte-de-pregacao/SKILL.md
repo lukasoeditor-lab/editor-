@@ -24,6 +24,7 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 | Corte mais calmo ou reflexivo | **B**: legenda leve espalhada, flash de luz, P&B com legenda amarela para a "objeção" | [r2](../../../03-referencias/analises/2026-10-27-r2-correria.md) |
 | Devocional, história bíblica | **C**: apresentador + cenas de IA, título em serifa vermelha | [r1](../../../03-referencias/analises/2026-10-27-r1-tempestade.md), [r4](../../../03-referencias/analises/2026-10-27-r4-silencio.md) |
 | Estilo básico, só legenda (pedido de 28/10) | **E**: CAIXA-ALTA, 1 a 3 palavras no meio do corpo, sem serifa; + transição com som a cada troca de cena e, no ponto de tensão, **fade para preto → preto e branco → fade para preto → cor** (evento `pb`) | [r6](../../../03-referencias/analises/2026-10-28-r6-basico-ericmello.md) |
+| Cartões de cor + legenda de 1 palavra (pedido de 28/10, guia de LC Frames) | **F**: pregador alternando com cartões de cor cheia (evento `cartao`), `cap` com 1 palavra minúscula, palavra gigante (`cartao` com `modo: gigante`), fecho "Compartilhe" (`cartao` com `no_fim`) | [guia](../../../03-referencias/analises/2026-10-28-guia-de-estilo-cartoes-e-legenda.md) |
 | Dica, aula, bastidor | **D**: palavras em todos os tamanhos, Grid Cut, flash branco | [r3](../../../03-referencias/analises/2026-10-27-r3-gridcut.md) |
 
 ## O fluxo (cada passo tem um comando)

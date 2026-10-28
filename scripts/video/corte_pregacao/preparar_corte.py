@@ -63,11 +63,16 @@ def rastrear_cor(video: Path, t0: float, t1: float) -> list[float]:
     raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t0), "-t", str(t1 - t0), "-i", str(video), "-vf",
                           f"fps=2,scale={W}:{H},format=rgb24", "-f", "rawvideo", "-"], capture_output=True).stdout
     quadros = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3).astype(int)
-    xs, ult = [], 0.5
+    masc = []
     for f in quadros:
         reg = f[int(H * 0.15):int(H * 0.64)]
         r, g, b = reg[..., 0], reg[..., 1], reg[..., 2]
-        m = (b > 45) & (b < 210) & (b - g > 15) & (b - r > 20)
+        masc.append((b > 45) & (b < 210) & (b - g > 15) & (b - r > 20))
+    masc = np.array(masc)
+    parado = masc.mean(0) > 0.55  # azul que fica no mesmo lugar (guitarra, telão): não é o pregador
+    xs, ult = [], 0.5
+    for m in masc:
+        m = m & ~parado
         col = m.sum(0)
         if col.sum() >= 12:
             ult = float((col * np.arange(W)).sum() / col.sum() / W)

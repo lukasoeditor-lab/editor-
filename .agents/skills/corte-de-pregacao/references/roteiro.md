@@ -8,7 +8,7 @@
 
 | Campo | Para quê |
 |---|---|
-| `estilo` | `"A"` (sans bold 800 + serifa), `"B"` (sans leve 300 com palavras bem espaçadas) ou `"E"` (básico: CAIXA-ALTA, use `cap` com 1 a 3 palavras) |
+| `estilo` | `"A"` (sans bold 800 + serifa), `"B"` (sans leve 300 com palavras bem espaçadas) `"E"` (básico: CAIXA-ALTA, `cap` com 1 a 3 palavras) ou `"F"` (cartões de cor + `cap` de 1 palavra em minúscula; `grande: true` no `cap` deixa a palavra 1,55×) |
 | `rotulo_topo` | texto pequeno no topo (ex.: `"ALÉM DO PÚLPITO"`); vazio some |
 | `logo` | PNG do @ (fundo preto, texto branco); o script remove o fundo, 36% da largura, a 76% da altura |
 | `cauda` | segundos de tela final depois da última fala (padrão 1,5) |
@@ -34,6 +34,7 @@ Cada evento tem `"tipo"`. Palavras são `["texto", tempo_da_fala]`.
 | `titulo` | `t`, `dur` (1,6), `texto`, `cor`, `tamanho`, `largura` | título gigante em serifa caixa-alta vermelha |
 | `flash` | `t`, `modo`: `luz`, `branco`, `filme` | flash de luz (warm), branco ou queima de filme (diagonal laranja com borda cromática) |
 | `bw` | `t0`, `t1` | trecho em preto e branco (blend `saturation`) com legenda amarela por cima via `cor` |
+| `cartao` | `t0` (tempo original da 1ª palavra), `dur` (s), `w`: `[texto, tempo]`, `fundo`, `cor`, `modo` (`pilha` padrão, `gigante`, `centro`), `tam`, `no_fim` | cartão de cor cheia sobre o vídeo; pilha alinhada à esquerda que cresce palavra a palavra; `gigante` = 1 palavra na largura; `no_fim: true` = cartão depois do último quadro (ex.: "Compartilhe" em preto) |
 | `pb` | `t0`, `t1`, `fade` (0,45) | esmaece para preto, vira preto e branco; no `t1` esmaece para preto de novo e a cor volta (com whoosh, riser e impacto) |
 | `sfx` | `t`, `cat`, `vol`, `i` | efeito sonoro avulso da biblioteca (ex.: `impacto` no fecho) |
 | `gridcut` | `t`, `dur` (0,5), `cor` | quadrados cobrem e descobrem a imagem em ordem fixa (seed), com punch-in escondido no meio |
