@@ -68,9 +68,13 @@ class Tempo:
         self.dur = o
 
     def __call__(self, t):
+        # trechos podem estar fora de ordem cronológica (a história vai e volta): acha o que contém t
         for (a, b), c in zip(self.segs, self.cum):
-            if t <= b + 0.05:
+            if a - 0.35 <= t <= b + 0.05:
                 return round(c + max(0.0, t - a), 3)
+        depois = [(a - t, c) for (a, b), c in zip(self.segs, self.cum) if a >= t]
+        if depois:
+            return round(min(depois)[1], 3)
         return round(self.dur, 3)
 
     def fim_trecho(self, tc):

@@ -40,3 +40,12 @@
 - O Lukas disse que os zooms a cada legenda e a câmera deslizando atrás do pregador davam dor de cabeça. No estilo E: **sem punch-in** (padrão agora, `punch_in` desligado) e **sem som de zoom**; o recorte vertical só se mexe quando o pregador chega perto da borda (zona morta) e depois suaviza. Efeitos só nas trocas de cena, no fade preto/P&B e no fecho.
 - Antes de renderizar, olhe 10 quadros de `prep/base.mp4`: o pregador tem de aparecer inteiro em todos.
 - Escolha de corte: a melhor parte é a que fala direto com a vida de quem assiste (promessa, "Deus está se lembrando de você"), não só a boa história. Releia a pregação toda e confira **quem** está falando (o @ de baixo é do pregador).
+
+## 2026-10-28: corte longo com história (estilo F, ~2 min)
+
+- **Formato que o Lukas aprovou como direção:** abrir com um gancho de impacto (a acusação "ela só pode estar embriagada" + a resposta de Ana), voltar ao contexto da história, e fechar forte ("o tempo de espera termina hoje"). Cortes de 1:30 a 2:00 são aceitos se tiverem contexto e fechamento. Cartões alternam as cores **invertidas** da mesma paleta (lavanda/azul), sem cor nova.
+- **Trechos fora de ordem:** o corte pode pegar partes anteriores da pregação (flashback). O mapa de tempo agora acha o trecho que contém o instante (antes assumia ordem cronológica e errava tudo).
+- **Verifique a imagem da fonte antes:** a transmissão começa com o vídeo **encolhido no meio de uma tela preta** (até ~60 s). Trechos assim não servem; cubra com cartão ou escolha outro. O detector de azul parado também ignora guitarra e telão.
+- **Cartão não passa da emenda** do trecho em que começa; a legenda de 1 palavra também não.
+- **Render:** 2 min de vídeo levam ~27 min em 4 núcleos (`--page-motion-blur=off -w 4` dá ~2,3 quadros/s; sem isso ~1,7). Não há como acelerar mais neste ambiente.
+- **Transcrição:** Whisper pequeno erra palavras em trechos lentos ("navalha" virou "Ranavalha", "embriagada" veio partida). Corrija a lista de palavras antes de gerar e evite cortar frases cujo texto não deu para confirmar.
