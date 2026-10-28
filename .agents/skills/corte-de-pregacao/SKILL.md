@@ -23,6 +23,7 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 | Corte de pregação padrão | **A**: legenda sans pequena + palavra-chave em serifa itálica | [r5](../../../03-referencias/analises/2026-10-27-r5-sacrificio.md) |
 | Corte mais calmo ou reflexivo | **B**: legenda leve espalhada, flash de luz, P&B com legenda amarela para a "objeção" | [r2](../../../03-referencias/analises/2026-10-27-r2-correria.md) |
 | Devocional, história bíblica | **C**: apresentador + cenas de IA, título em serifa vermelha | [r1](../../../03-referencias/analises/2026-10-27-r1-tempestade.md), [r4](../../../03-referencias/analises/2026-10-27-r4-silencio.md) |
+| Estilo básico, só legenda (pedido de 28/10) | **E**: CAIXA-ALTA, 1 a 3 palavras no meio do corpo, sem serifa; + transição com som a cada troca de cena e, no ponto de tensão, **fade para preto → preto e branco → fade para preto → cor** (evento `pb`) | [r6](../../../03-referencias/analises/2026-10-28-r6-basico-ericmello.md) |
 | Dica, aula, bastidor | **D**: palavras em todos os tamanhos, Grid Cut, flash branco | [r3](../../../03-referencias/analises/2026-10-27-r3-gridcut.md) |
 
 ## O fluxo (cada passo tem um comando)
@@ -37,6 +38,10 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 8. **Renderizar** (`hyperframes render . -o ../render.mp4 -q looks`), em segundo plano e destacado do terminal (leva ~0,5 s por quadro com a grade: um corte de 50 s sai em ~20 min em 4 núcleos).
 9. **Misturar o áudio:** `uv run scripts/video/corte_pregacao/misturar_audio.py projeto/index.html render.mp4 final.mp4`. Meça: voz −16 LUFS, final −14 a −16 LUFS, pico real ≤ −1 dBTP, efeitos no nível dos picos da fala.
 10. **Entregar** (SendUserFile + `outputs/`) e escrever a **legenda do post**: gancho + valor + CTA de venda da edição de cortes + 5 hashtags (modelo em `references/pipeline.md` §7).
+
+## Câmera aberta (palco inteiro, pregador pequeno)
+
+`preparar_corte.py --rastreio cor --zoom 1.5 --ypos 0.4` segue o paletó azul (o rastreio por brilho segue os músicos) e calcula uma curva de recorte por trecho. Confira os quadros de `prep/base.mp4` antes de renderizar. A fonte em 720p fica mais macia quando ampliada; avise o Lukas e peça arquivo melhor se existir. O @ de baixo é o do **pregador** (imagem em `logo`), não o da Pregue.
 
 ## Regras que valem sempre
 

@@ -56,6 +56,25 @@ def trechos_de_texto(txt: str) -> list[tuple[float, float]]:
     return saida
 
 
+def rastrear_cor(video: Path, t0: float, t1: float) -> list[float]:
+    """Câmera aberta (pregador pequeno, músicos no palco): segue a cor azul do paletó, só na parte de cima do quadro
+    (o telão azul-claro fica embaixo). Sem azul no quadro, mantém a última posição."""
+    W, H = 480, 270
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t0), "-t", str(t1 - t0), "-i", str(video), "-vf",
+                          f"fps=2,scale={W}:{H},format=rgb24", "-f", "rawvideo", "-"], capture_output=True).stdout
+    quadros = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3).astype(int)
+    xs, ult = [], 0.5
+    for f in quadros:
+        reg = f[int(H * 0.15):int(H * 0.64)]
+        r, g, b = reg[..., 0], reg[..., 1], reg[..., 2]
+        m = (b > 45) & (b < 210) & (b - g > 15) & (b - r > 20)
+        col = m.sum(0)
+        if col.sum() >= 12:
+            ult = float((col * np.arange(W)).sum() / col.sum() / W)
+        xs.append(ult)
+    return xs
+
+
 def rastrear_centro(video: Path, t0: float, t1: float) -> list[float]:
     """Posição horizontal (0 a 1) do pregador a cada 0,5 s: centro de massa do brilho da parte de cima do quadro."""
     W, H = 480, 270
@@ -76,7 +95,8 @@ def expressao_x(xs: list[float], largura_fonte: int, largura_corte: int) -> str:
     k /= k.sum()
     suave = np.convolve(np.pad(xs, 12, mode="edge"), k, mode="valid")
     pts = []
-    for i in range(0, len(suave), 2):  # um ponto por segundo
+    passo = 2 * max(1, -(-len(suave) // 2 // 60))  # um ponto por segundo; no máx. ~60 pontos (o ffmpeg falha com expressões muito aninhadas)
+    for i in list(range(0, len(suave), passo)) + ([len(suave) - 1] if (len(suave) - 1) % passo else []):
         cx = suave[i] * largura_fonte
         pts.append((i / 2.0, float(min(max(cx - largura_corte / 2, 0), largura_fonte - largura_corte))))
     expr = f"{pts[-1][1]:.1f}"
@@ -113,7 +133,7 @@ def montar_trechos(trechos, sil):
 
 
 def preparar(video: Path, saida: Path, trechos, largura: int, altura: int, isolar: bool, modelo: Path | None,
-             transcrever: bool, modelo_whisper: str, idioma: str) -> dict:
+             transcrever: bool, modelo_whisper: str, idioma: str, rastreio: str = "brilho", zoom: float = 1.0, ypos: float = 0.0) -> dict:
     saida.mkdir(parents=True, exist_ok=True)
     t_ini, t_fim = min(a for a, _ in trechos), max(b for _, b in trechos)
     crop0 = max(0.0, t_ini - 6.0)
@@ -134,18 +154,36 @@ def preparar(video: Path, saida: Path, trechos, largura: int, altura: int, isola
         dur = o
         print(f"{len(segs)} trechos, {dur:.1f} s depois de tirar as pausas")
 
-        xs = rastrear_centro(video, crop0, t_fim_rastro)
+        xs = (rastrear_cor if rastreio == "cor" else rastrear_centro)(video, crop0, t_fim_rastro)
         # largura da fonte e do recorte 9:16 (a altura da fonte vira a altura do vídeo)
         info_v = json.loads(rodar(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "json", video]).stdout)["streams"][0]
         wf, hf = int(info_v["width"]), int(info_v["height"])
-        wc = int(round(hf * largura / altura / 2)) * 2
+        hc = int(round(hf / zoom / 2)) * 2
+        wc = int(round(hc * largura / altura / 2)) * 2
+        yc = int(round((hf - hc) * ypos))
         expr = expressao_x(xs, wf, wc)
 
         n = len(segs)
         partes_v = [f"[cv{i}]trim={s - crop0:.3f}:{e - crop0:.3f},setpts=PTS-STARTPTS[v{i}]" for i, (s, e) in enumerate(segs)]
-        fc = (f"[0:v]fps=30,crop={wc}:{hf}:x='{expr}':y=0,scale={largura}:{altura}:flags=lanczos[cv];"
+        fc = (f"[0:v]fps=30,crop={wc}:{hc}:x='{expr}':y={yc},scale={largura}:{altura}:flags=lanczos[cv];"
               f"[cv]split={n}" + "".join(f"[cv{i}]" for i in range(n)) + ";" + ";".join(partes_v) + ";"
               + "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[vo]")
+        if rastreio == "cor":
+            # pregador pequeno e rápido: uma curva por trecho (tempo local), pontos de 0,5 s e pouca suavização
+            k = np.exp(-0.5 * (np.arange(-4, 5) / 1.5) ** 2); k /= k.sum()
+            suave = np.convolve(np.pad(xs, 4, mode="edge"), k, mode="valid")
+            partes = []
+            for i, (s_, e_) in enumerate(segs):
+                i0, i1 = int((s_ - crop0) * 2), min(len(suave) - 1, int((e_ - crop0) * 2) + 1)
+                pts = [(idx / 2.0 - (s_ - crop0), float(min(max(suave[idx] * wf - wc / 2, 0), wf - wc))) for idx in range(i0, i1 + 1)]
+                ex = f"{pts[-1][1]:.1f}"
+                for (ta, xa), (tb, xb) in reversed(list(zip(pts[:-1], pts[1:]))):
+                    ex = f"if(lt(t,{tb:.2f}),{xa:.1f}+({xb - xa:.1f})*(t-{ta:.2f})/{max(tb - ta, 0.01):.2f},{ex})"
+                partes.append(f"[fps]trim={s_ - crop0:.3f}:{e_ - crop0:.3f},setpts=PTS-STARTPTS,crop={wc}:{hc}:x='{ex}':y={yc},"
+                              f"scale={largura}:{altura}:flags=lanczos[v{i}]")
+            fc = ("[0:v]fps=30[fps0];[fps0]split=" + str(n) + "".join(f"[fps{i}]" for i in range(n)) + ";"
+                  + ";".join(pp.replace("[fps]", f"[fps{i}]") for i, pp in enumerate(partes)) + ";"
+                  + "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[vo]")
         fcarq = tmp / "fc.txt"
         fcarq.write_text(fc)
         rodar(["ffmpeg", "-v", "error", "-y", "-ss", crop0, "-t", t_fim_rastro - crop0, "-i", video,
@@ -214,6 +252,9 @@ def main() -> None:
     p.add_argument("--trechos", help='"início:fim,início:fim" em segundos do vídeo original')
     p.add_argument("--largura", type=int, default=1080)
     p.add_argument("--altura", type=int, default=1920)
+    p.add_argument("--rastreio", choices=["brilho", "cor"], default="brilho", help="cor = segue o paletó azul (câmera aberta)")
+    p.add_argument("--zoom", type=float, default=1.0, help="ampliação do recorte (1,5 = recorte de 2/3 da altura)")
+    p.add_argument("--ypos", type=float, default=0.0, help="0 = recorte colado no alto, 1 = embaixo")
     p.add_argument("--isolar-voz", action="store_true")
     p.add_argument("--modelo-voz", type=Path, default=None, help="UVR-MDX-NET-Voc_FT.onnx")
     p.add_argument("--transcrever", action="store_true", help="grava palavras.json (faster-whisper)")
@@ -226,7 +267,7 @@ def main() -> None:
     if not (a.video and a.saida and a.trechos):
         p.error("preciso do vídeo, da pasta de saída e de --trechos")
     preparar(a.video, a.saida, trechos_de_texto(a.trechos), a.largura, a.altura, a.isolar_voz, a.modelo_voz,
-             a.transcrever, a.modelo_whisper, a.idioma)
+             a.transcrever, a.modelo_whisper, a.idioma, a.rastreio, a.zoom, a.ypos)
 
 
 if __name__ == "__main__":

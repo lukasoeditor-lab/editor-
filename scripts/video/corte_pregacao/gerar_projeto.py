@@ -38,6 +38,9 @@ ANCORAS = [(0.30, 0.55), (0.50, 0.58), (0.36, 0.62), (0.58, 0.54), (0.26, 0.60),
 ESTILOS = {
     # legenda: peso, tamanho, margem entre palavras
     "A": dict(cap_peso=800, cap_tam=62, cap_margem=12, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88),
+    # E: legenda básica da referência R6 (Pr. Eric Mello): 1 a 3 palavras em CAIXA-ALTA no meio do corpo, sem cor nem serifa
+    "E": dict(cap_peso=800, cap_tam=70, cap_margem=10, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88,
+              basico=True, cap_top=0.50),
     "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56, frase_tam=54, frase_peso=300, frase_track="-0.01em", frase_lh=1.05),
 }
 # nível de cada tipo de efeito (volume relativo à biblioteca, que já está nivelada)
@@ -158,6 +161,8 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
             e["_t1"] = round(textuais[i + 1]["_t0"] - 0.02, 3)
 
     def pop(idn, t, grande=False, cor_final=None):
+        if est.get("basico"):
+            return f'tl.fromTo("#{idn}",{{opacity:0,y:6}},{{opacity:1,y:0,duration:0.09,ease:"power1.out"}},{t:.3f});'
         if grande:
             return f'tl.fromTo("#{idn}",{{opacity:0,scale:1.35,filter:"blur(16px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.26,ease:"expo.out"}},{t:.3f});'
         return f'tl.fromTo("#{idn}",{{opacity:0,y:16,scale:1.18,filter:"blur(9px)"}},{{opacity:1,y:0,scale:1,filter:"blur(0px)",duration:0.14,ease:"power3.out"}},{t:.3f});'
@@ -321,7 +326,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   #root {{ position:absolute; inset:0; font-family:'Montserrat','Inter',sans-serif; }}
   .ev {{ position:absolute; inset:0; color:#fff; }}
   .w {{ display:inline-block; }}
-  .cap {{ position:absolute; left:0; right:0; top:1020px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:-0.01em; line-height:1.15; {CHROMA} }}
+  .cap {{ position:absolute; left:0; right:0; top:{int(A * est.get('cap_top', 0.531))}px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:{'-0.035em' if est.get('basico') else '-0.01em'}; line-height:1.15; {'text-transform:uppercase; text-shadow:0 3px 14px rgba(0,0,0,.45);' if est.get('basico') else CHROMA} }}
   .cap .w {{ margin:0 {est['cap_margem']}px; }}
   .lead {{ position:absolute; left:0; right:0; top:860px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['lead_tam']}px; letter-spacing:-0.01em; {CHROMA} }}
   .lead .w {{ margin:0 10px; }}
@@ -407,6 +412,15 @@ window.__timelines["type"] = tl;
             a, b = tm(e["t0"]), tm(e["t1"])
             fx_js += [f'tl.fromTo("#bw",{{opacity:0}},{{opacity:1,duration:0.25,ease:"power2.inOut"}},{a:.3f});',
                       f'tl.to("#bw",{{opacity:0,duration:0.25,ease:"power2.inOut"}},{b:.3f});']
+        elif e["tipo"] == "pb":
+            # esmaece para preto, a tela vira preto e branco; no fim esmaece para preto de novo e a cor volta
+            a, b, f = tm(e["t0"]), tm(e["t1"]), float(e.get("fade", 0.45))
+            fx_js += [f'tl.to("#fpreto",{{opacity:1,duration:{f},ease:"power2.in"}},{a - f:.3f});',
+                      f'tl.set("#bw",{{opacity:1}},{a:.3f});',
+                      f'tl.to("#fpreto",{{opacity:0,duration:{f},ease:"power2.out"}},{a:.3f});',
+                      f'tl.to("#fpreto",{{opacity:1,duration:{f},ease:"power2.in"}},{b - f:.3f});',
+                      f'tl.set("#bw",{{opacity:0}},{b:.3f});',
+                      f'tl.to("#fpreto",{{opacity:0,duration:{f},ease:"power2.out"}},{b:.3f});']
         elif e["tipo"] == "gridcut":
             dur = float(e.get("dur", 0.5))
             cols, linhas = 10, 18
@@ -480,6 +494,13 @@ window.__timelines["type"] = tl;
             sfx(f"sx-tit{ei}", "impacto", e["_t0"] + 0.05, 1.1, indice=ei, fade_out=0.5)
         if k == "flash":
             sfx(f"sx-fl{ei}", "whoosh-grande" if e.get("modo") == "filme" else "whoosh", e["_t0"], 0.9, indice=ei)
+        if k == "sfx":
+            sfx(f"sx-x{ei}", e.get("cat", "impacto"), tm(e["t"]), float(e.get("vol", 1.0)), indice=int(e.get("i", 0)), fade_out=float(e.get("fade_out", 0.0)))
+        if k == "pb":
+            f = float(e.get("fade", 0.45))
+            sfx(f"sx-pba{ei}", "whoosh-grande", tm(e["t0"]) - f * 0.6, 0.9, indice=ei)
+            sfx(f"sx-pbb{ei}", "riser", tm(e["t1"]) - f - 0.5, 0.8, dur=1.2, fade_out=0.3)
+            sfx(f"sx-pbc{ei}", "impacto", tm(e["t1"]) + 0.02, 1.1, indice=ei + 2, fade_out=0.8)
         if k == "gridcut":
             sfx(f"sx-gc{ei}", "glitch", e["_t0"] - 0.1, 0.7, indice=ei + 1, dur=0.8, fade_out=0.3)
         if k == "assinatura":
@@ -522,6 +543,7 @@ window.__timelines["type"] = tl;
       #fl_luz {{ position:absolute; inset:0; z-index:41; opacity:0; background:radial-gradient(70% 50% at 50% 55%, #fff3cf 0%, #ffb347 38%, rgba(255,120,20,0) 75%); mix-blend-mode:screen; }}
       #fl_filme {{ position:absolute; inset:0; z-index:42; opacity:0; mix-blend-mode:screen;
         background:linear-gradient(105deg, rgba(255,70,20,.0) 8%, rgba(255,90,30,.95) 30%, rgba(255,200,120,1) 48%, rgba(255,60,90,.9) 66%, rgba(255,40,10,0) 92%); box-shadow: inset 6px 0 0 rgba(255,0,60,.8), inset -6px 0 0 rgba(0,220,255,.8); }}
+      #fpreto {{ position:absolute; inset:0; z-index:49; opacity:0; background:#000; }}
       #fadeout {{ position:absolute; inset:0; z-index:50; opacity:0; background:#02030a; }}
     </style>
   </head>
@@ -537,7 +559,7 @@ window.__timelines["type"] = tl;
       <div id="tl">{rotulo}</div>
       <img id="handle" src="assets/handle.png" />
       <div id="fl_branco"></div><div id="fl_luz"></div><div id="fl_filme"></div>
-      <div id="fadeout"></div>
+      <div id="fpreto"></div><div id="fadeout"></div>
       <audio id="voice" src="assets/voice.wav" data-start="0" data-duration="{DUR0:.3f}" data-volume="1"></audio>
       {music_tag}
       {chr(10).join('      ' + s for s in sfx_tags).strip()}
@@ -545,7 +567,7 @@ window.__timelines["type"] = tl;
     <script>
       window.__timelines = window.__timelines || {{}};
       const tl = gsap.timeline({{ paused: true }});
-      tl.set("#vwrap",{{scale:1}},0); tl.set("#fl_branco",{{opacity:0}},0); tl.set("#fl_luz",{{opacity:0}},0); tl.set("#fl_filme",{{opacity:0}},0); tl.set("#bw",{{opacity:0}},0);
+      tl.set("#vwrap",{{scale:1}},0); tl.set("#fl_branco",{{opacity:0}},0); tl.set("#fl_luz",{{opacity:0}},0); tl.set("#fl_filme",{{opacity:0}},0); tl.set("#bw",{{opacity:0}},0); tl.set("#fpreto",{{opacity:0}},0);
       {chr(10).join('      ' + s for s in cam_js).strip()}
       {chr(10).join('      ' + s for s in fx_js).strip()}
       window.__timelines["main"] = tl;
