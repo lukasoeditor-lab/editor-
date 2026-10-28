@@ -45,6 +45,8 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 
 ## Regras que valem sempre
 
+- **Sem zoom e sem câmera deslizante** (pedido do Lukas em 28/10): no estilo E o `punch_in` já vem desligado e o recorte usa zona morta.
+
 - **Legenda = evento `frase`** (bloco estreito alinhado à esquerda, tracking −0,04em, palavra-chave em serifa na própria linha). **Não** usar legenda de uma linha com franja colorida: esse foi o erro do corte 2 v1.
 - **Sem som por palavra:** nas referências nenhuma palavra tem efeito sonoro (medido). O som está na música, nas trocas de plano/flashes, no popup e no impacto de abertura.
 - **Texto acompanha a fala**, nunca antes. Nada cobre o rosto.

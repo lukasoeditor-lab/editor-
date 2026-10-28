@@ -170,8 +170,17 @@ def preparar(video: Path, saida: Path, trechos, largura: int, altura: int, isola
               + "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[vo]")
         if rastreio == "cor":
             # pregador pequeno e rápido: uma curva por trecho (tempo local), pontos de 0,5 s e pouca suavização
-            k = np.exp(-0.5 * (np.arange(-4, 5) / 1.5) ** 2); k /= k.sum()
-            suave = np.convolve(np.pad(xs, 4, mode="edge"), k, mode="valid")
+            # câmera parada: só desliza quando o pregador chega perto da borda do recorte (zona morta), depois suaviza
+            folga = 0.5 * (wc / wf) * 0.4
+            c, cam_x = xs[0], []
+            for x in xs:
+                if x > c + folga:
+                    c = x - folga
+                elif x < c - folga:
+                    c = x + folga
+                cam_x.append(c)
+            k = np.exp(-0.5 * (np.arange(-6, 7) / 1.6) ** 2); k /= k.sum()
+            suave = np.convolve(np.pad(cam_x, 6, mode="edge"), k, mode="valid")
             partes = []
             for i, (s_, e_) in enumerate(segs):
                 i0, i1 = int((s_ - crop0) * 2), min(len(suave) - 1, int((e_ - crop0) * 2) + 1)

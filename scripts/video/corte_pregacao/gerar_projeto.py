@@ -384,7 +384,8 @@ window.__timelines["type"] = tl;
             ai += 1
         cam.append((e["_t0"] - 0.04, tgt))
     cam_js, prev = [], 1.0
-    if roteiro.get("punch_in", True):
+    punch = roteiro.get("punch_in", not est.get("basico"))  # estilo E: sem zoom (o Lukas pediu câmera parada)
+    if punch:
         for t, tgt in cam:
             if abs(tgt - prev) < 0.01:
                 continue
@@ -468,7 +469,7 @@ window.__timelines["type"] = tl;
         sfx_tags.append(f'<audio id="{idn}" src="assets/sfx/{nome}" data-start="{ini:.3f}" data-duration="{d}" data-volume="{v}"{ex}></audio>')
 
     n_wh = 0
-    for i, (t, tgt) in enumerate(cam):
+    for i, (t, tgt) in enumerate(cam if punch else []):
         if i % 3 == 1:
             sfx(f"sx-pu{i}", "whoosh", t + 0.05, 0.6, indice=n_wh); n_wh += 1
     for ei, e in enumerate(ev):

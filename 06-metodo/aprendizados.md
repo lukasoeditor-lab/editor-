@@ -34,3 +34,9 @@
 ## 2026-10-28: música Can't Forget You (Vybeq)
 
 - A parte animada com bateria entra em **36,1 s**. O Lukas pediu para cortar antes disso e recomeçar do início da música, repetindo até o fim. Use `"musica": {"loop_ate": 36.0}` no roteiro. Medido: com o loop, nenhum trecho passa do nível calmo da introdução.
+
+## 2026-10-28: sem zoom e com câmera parada (estilo E)
+
+- O Lukas disse que os zooms a cada legenda e a câmera deslizando atrás do pregador davam dor de cabeça. No estilo E: **sem punch-in** (padrão agora, `punch_in` desligado) e **sem som de zoom**; o recorte vertical só se mexe quando o pregador chega perto da borda (zona morta) e depois suaviza. Efeitos só nas trocas de cena, no fade preto/P&B e no fecho.
+- Antes de renderizar, olhe 10 quadros de `prep/base.mp4`: o pregador tem de aparecer inteiro em todos.
+- Escolha de corte: a melhor parte é a que fala direto com a vida de quem assiste (promessa, "Deus está se lembrando de você"), não só a boa história. Releia a pregação toda e confira **quem** está falando (o @ de baixo é do pregador).
