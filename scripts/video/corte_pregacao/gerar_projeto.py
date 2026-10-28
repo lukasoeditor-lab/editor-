@@ -515,7 +515,8 @@ window.__timelines["type"] = tl;
     if mus:
         voz_lufs = -16.0
         saida_m = saida / "assets" / "music.wav"
-        preparar_musica(Path(mus["arquivo"]), float(mus.get("inicio", 0)), TOTAL, voz_lufs - float(mus.get("abaixo_da_voz_db", 14)), saida_m)
+        preparar_musica(Path(mus["arquivo"]), float(mus.get("inicio", 0)), TOTAL, voz_lufs - float(mus.get("abaixo_da_voz_db", 14)), saida_m,
+                        loop_ate=mus.get("loop_ate"), loop_fusao=float(mus.get("loop_fusao", 0.35)))
         music_tag = f'<audio id="music" src="assets/music.wav" data-start="0" data-duration="{TOTAL}" data-volume="1"></audio>'
 
     rotulo = roteiro.get("rotulo_topo", "")
@@ -587,13 +588,27 @@ window.__timelines["type"] = tl;
     print("cor de cinema:", "aplicada" if '"ok": true' in r.stdout else "NÃO aplicada (rode o media-treatment à mão): " + (r.stderr or r.stdout)[-300:])
 
 
-def preparar_musica(arq: Path, inicio: float, total: float, lufs_alvo: float, saida: Path) -> None:
-    """Corta a música a partir de `inicio`, repete com fusão se for curta, põe entrada/saída suaves e nivela."""
+def preparar_musica(arq: Path, inicio: float, total: float, lufs_alvo: float, saida: Path,
+                    loop_ate: float | None = None, loop_fusao: float = 0.35) -> None:
+    """Corta a música a partir de `inicio`, repete com fusão se for curta, põe entrada/saída suaves e nivela.
+    Com `loop_ate`, só o trecho [inicio, loop_ate] é usado e ele recomeça do começo, quantas vezes precisar
+    (pedido do Lukas: cortar antes da parte animada com bateria e voltar ao início da música)."""
     dur = float(rodar(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", arq]).stdout)
     util = dur - inicio
     fi, fo = 1.2, 3.2
     base = "aformat=channel_layouts=stereo,aresample=48000"
-    if util >= total:
+    if loop_ate:
+        unidade = loop_ate - inicio
+        n = int(total // (unidade - loop_fusao)) + 2
+        cortes = ";".join(f"[{i}:a]{base},atrim={inicio}:{loop_ate},asetpts=PTS-STARTPTS[c{i}]" for i in range(n))
+        cadeia, ant = "", "c0"
+        for i in range(1, n):
+            cadeia += f";[{ant}][c{i}]acrossfade=d={loop_fusao}:c1=tri:c2=tri[x{i}]"
+            ant = f"x{i}"
+        fc = (f"{cortes}{cadeia};[{ant}]atrim=0:{total},asetpts=PTS-STARTPTS,afade=t=in:d={fi},afade=t=out:st={total - fo:.2f}:d={fo},"
+              f"highpass=f=60,lowpass=f=12000[o]")
+        entradas = sum((["-i", arq] for _ in range(n)), [])
+    elif util >= total:
         fc = f"[0:a]{base},atrim={inicio}:{inicio + total},asetpts=PTS-STARTPTS,afade=t=in:d={fi},afade=t=out:st={total - fo:.2f}:d={fo},highpass=f=60,lowpass=f=12000[o]"
         entradas = ["-i", arq]
     else:

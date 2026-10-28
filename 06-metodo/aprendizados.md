@@ -29,3 +29,8 @@
 - **O que aconteceu:**
 - **Da próxima vez:**
 -->
+
+
+## 2026-10-28: música Can't Forget You (Vybeq)
+
+- A parte animada com bateria entra em **36,1 s**. O Lukas pediu para cortar antes disso e recomeçar do início da música, repetindo até o fim. Use `"musica": {"loop_ate": 36.0}` no roteiro. Medido: com o loop, nenhum trecho passa do nível calmo da introdução.

@@ -12,7 +12,7 @@
 | `rotulo_topo` | texto pequeno no topo (ex.: `"ALÉM DO PÚLPITO"`); vazio some |
 | `logo` | PNG do @ (fundo preto, texto branco); o script remove o fundo, 36% da largura, a 76% da altura |
 | `cauda` | segundos de tela final depois da última fala (padrão 1,5) |
-| `musica` | `{"arquivo", "inicio", "abaixo_da_voz_db"}` (14 por padrão) |
+| `musica` | `{"arquivo", "inicio", "abaixo_da_voz_db", "loop_ate", "loop_fusao"}` (14 por padrão). `loop_ate`: usa só o trecho `inicio`→`loop_ate` e recomeça do começo até o fim do vídeo (fusão de 0,35 s). **Can't Forget You: `"loop_ate": 36.0`** (a bateria entra em 36,1 s e não combina; pedido do Lukas) |
 | `punch_in` | `false` para desligar os zooms de câmera nos eventos |
 | `cor_titulo`, `cor_objecao` | vermelho do título (#DC2427) e amarelo da objeção (#F7D903) |
 | `grade` | JSON do `media-treatment` (padrão: deep-contrast 0,7, sombras azuis, realces quentes, vinheta e grão) |
