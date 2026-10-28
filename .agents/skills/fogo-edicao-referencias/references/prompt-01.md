@@ -1,0 +1,3 @@
+# Prompt 1 — entender a referência
+
+Analise os vídeos de referência que anexei. Quero aprender a linguagem de edição e aplicá-la à minha própria gravação. Descreva, com tempos aproximados, o gancho dos primeiros três segundos, cortes, enquadramento, proporções da tela dividida, legendas, entradas e saídas de elementos, uso de câmera e CTA. Explique o que aparece em cada trecho e como isso corresponde à fala. Ao final, crie um guia de estilo reutilizável com regras práticas e uma tabela de cenas. Não edite ainda. Se não conseguir assistir ou ouvir algum arquivo, diga exatamente qual e não invente seu conteúdo. Não trate números ou resultados da referência como se fossem meus.
