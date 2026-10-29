@@ -59,3 +59,8 @@
 - **Sequência de cartões:** no máximo 2 seguidos; alterne com vídeo.
 - **Imagem:** fonte 720p em corte 9:16 é sempre macia. Ajuda: `hqdn3d` antes do `scale`, `unsharp` depois, enquadramento com a cabeça a ~1/3 do alto e sem o telão azul embaixo (ypos 0,4), zona morta mais estreita (0,28) para o pregador não ficar na borda.
 - **Começo do vídeo:** se o pregador está pequeno/andando nos primeiros segundos (imagem borrada no corte vertical), abra com **cartão** com a voz do gancho, sem fade no primeiro quadro (o vídeo não pode aparecer no quadro 0). O pregador entra depois, num trecho em que está parado.
+
+## 2026-10-29: melhorar a imagem do pregador com IA (Real-ESRGAN)
+
+- O cliente pediu o trecho do altar/voto do corte 3 "em ótima qualidade". Funcionou: recorte cru do trecho (sem ampliar), **realesr-general-x4v3** (spandrel + torch, CPU, ~4,8 s por quadro), mistura **55% IA + 45% lanczos** (só IA fica com cara de pintura/plástico), depois unsharp leve + grão fino (noise=4). Exemplo: `scripts/video/corte_pregacao/exemplo_ampliar_ia.py`. Peso: github.com/xinntao/Real-ESRGAN releases v0.2.5.0.
+- Só vale para trechos curtos de vídeo (9 s = ~22 min). Cartões não precisam. Render final com `-q delivery`.
