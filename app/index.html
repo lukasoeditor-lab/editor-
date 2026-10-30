@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Vsense Gestão</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icon.svg" alt="" class="brand-logo">
+      <div>
+        <strong>VSENSE</strong>
+        <small>Gestão financeira</small>
+      </div>
+    </div>
+    <label class="month-picker">
+      <input type="month" id="month">
+    </label>
+  </header>
+
+  <main id="view"></main>
+
+  <button class="fab" id="fab" aria-label="Novo">+</button>
+
+  <nav class="tabbar">
+    <button data-tab="inicio" class="active"><span>◎</span>Início</button>
+    <button data-tab="lancamentos"><span>⇅</span>Lançamentos</button>
+    <button data-tab="produtos"><span>▣</span>Produtos</button>
+    <button data-tab="contas"><span>◷</span>Contas</button>
+    <button data-tab="mais"><span>⋯</span>Mais</button>
+  </nav>
+
+  <dialog id="modal">
+    <form method="dialog" id="modal-form">
+      <h2 id="modal-title"></h2>
+      <div id="modal-body"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="modal-cancel">Cancelar</button>
+        <button type="submit" class="btn primary" id="modal-ok">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
