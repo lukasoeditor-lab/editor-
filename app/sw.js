@@ -1,6 +1,6 @@
 // Cache simples para o app abrir offline
-const CACHE = 'vsense-v1';
-const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'icon.svg', 'manifest.json'];
+const CACHE = 'vsensi-v2';
+const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.json', 'symbol.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));

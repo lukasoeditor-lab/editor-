@@ -1,6 +1,6 @@
-# Vsense Gestão
+# V'Sensi Gestão
 
-App de controle financeiro da marca **Vsense**: vendas, gastos, produtos, estoque e contas a pagar/receber.
+App de controle financeiro da marca **V'Sensi Aromatizantes**: vendas, gastos, produtos, estoque e contas a pagar/receber.
 
 ## O que ele faz
 
@@ -21,4 +21,6 @@ Os dados ficam salvos no próprio aparelho. Faça backup pela aba **Mais** de ve
 
 ## Identidade visual
 
-A cor da marca fica em `--accent` no início de `app/styles.css`, e o ícone provisório está em `app/icon.svg`. Os dois serão trocados pela logo oficial.
+Cores tiradas da logo: verde-oliva `#8B8854` e bege `#E5E1D9`, definidas no início de `app/styles.css`. Títulos em Cormorant Garamond e textos em Jost (Google Fonts). Os ícones (`icon-*.png`, `apple-touch-icon.png`, `symbol.png`) e a `logo.png` foram gerados a partir da logo oficial.
+
+As categorias de gasto já vêm pensadas para aromatizantes: essências, frascos e válvulas, varetas, álcool/base, rótulos, embalagem, frete etc.

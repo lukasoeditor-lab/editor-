@@ -5,8 +5,8 @@
 const STORE_KEY = 'vsense-data-v1';
 
 const CATEGORIES = {
-  in: ['Venda', 'Encomenda', 'Parceria', 'Outros recebimentos'],
-  out: ['Compra de produto', 'Embalagem', 'Frete', 'Marketing / anúncios', 'Fornecedor', 'Taxas / maquininha', 'Fixo (aluguel, internet...)', 'Outros gastos'],
+  in: ['Venda', 'Encomenda', 'Revenda / atacado', 'Kit presente', 'Outros recebimentos'],
+  out: ['Essências', 'Frascos e válvulas', 'Varetas e tampas', 'Álcool / base', 'Rótulos e etiquetas', 'Embalagem', 'Compra de produto pronto', 'Frete', 'Marketing / anúncios', 'Fornecedor', 'Taxas / maquininha', 'Fixo (aluguel, internet...)', 'Outros gastos'],
 };
 const METHODS = ['Pix', 'Dinheiro', 'Cartão de crédito', 'Cartão de débito', 'Boleto', 'Transferência'];
 
@@ -282,7 +282,7 @@ function viewBills() {
 
 function viewMore() {
   return `
-    <h1>Mais</h1>
+    <div style="text-align:center;margin:8px 0 4px"><img src="logo.png" alt="V'Sensi Aromatizantes" style="max-width:260px;width:80%"></div>
     <h3>Backup</h3>
     <p class="sub" style="color:var(--muted)">Os dados ficam salvos neste aparelho. Faça backup de vez em quando para não perder nada.</p>
     <button class="btn block" id="export-json">⬇ Baixar backup (.json)</button>
@@ -291,7 +291,7 @@ function viewMore() {
     <input type="file" id="import-file" accept="application/json,.json" hidden>
     <h3>Zona de perigo</h3>
     <button class="btn block danger" id="reset">Apagar todos os dados</button>
-    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">Vsense Gestão · v1</p>
+    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v2</p>
   `;
 }
 
@@ -430,7 +430,7 @@ function productForm(existing) {
   const isEdit = !!existing;
   const num = (v) => (v != null ? String(v).replace('.', ',') : '');
   const body = `
-    <div class="field"><label>Nome do produto</label><input name="name" required value="${esc(p.name)}" placeholder="Ex.: Camiseta oversized preta"></div>
+    <div class="field"><label>Nome do produto</label><input name="name" required value="${esc(p.name)}" placeholder="Ex.: Home spray Lavanda 250ml"></div>
     <div class="two">
       <div class="field"><label>Quanto custou (un.)</label><input name="cost" inputmode="decimal" placeholder="0,00" value="${num(p.cost)}"></div>
       <div class="field"><label>Preço de venda</label><input name="price" inputmode="decimal" placeholder="0,00" value="${num(p.price)}"></div>
@@ -483,7 +483,7 @@ function billForm(existing) {
       </select>
     </div>
     <div class="field"><label>Quem</label><input name="person" required value="${esc(b.person)}" placeholder="Fornecedor, cliente..."></div>
-    <div class="field"><label>Referente a</label><input name="desc" value="${esc(b.desc)}" placeholder="Ex.: Lote de 50 camisetas"></div>
+    <div class="field"><label>Referente a</label><input name="desc" value="${esc(b.desc)}" placeholder="Ex.: 1L de essência de lavanda"></div>
     <div class="two">
       <div class="field"><label>Valor (R$)</label><input name="amount" inputmode="decimal" required value="${b.amount != null ? String(b.amount).replace('.', ',') : ''}" placeholder="0,00"></div>
       <div class="field"><label>Vencimento</label><input type="date" name="due" value="${b.due || ''}"></div>
@@ -570,7 +570,7 @@ function exportCsv() {
     saleProfit(t) !== null ? saleProfit(t).toFixed(2).replace('.', ',') : '',
   ]);
   const csv = [head, ...rows].map((r) => r.map((c) => `"${String(c ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
-  download(`vsense-lancamentos-${today()}.csv`, '﻿' + csv, 'text/csv');
+  download(`vsensi-lancamentos-${today()}.csv`, '﻿' + csv, 'text/csv');
 }
 
 /* ================= Eventos ================= */
@@ -591,7 +591,7 @@ document.addEventListener('click', (e) => {
   }
 
   switch (e.target.id) {
-    case 'export-json': download(`vsense-backup-${today()}.json`, JSON.stringify(db, null, 2), 'application/json'); break;
+    case 'export-json': download(`vsensi-backup-${today()}.json`, JSON.stringify(db, null, 2), 'application/json'); break;
     case 'import-json': $('#import-file').click(); break;
     case 'export-csv': exportCsv(); break;
     case 'reset':
