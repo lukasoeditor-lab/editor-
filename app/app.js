@@ -160,12 +160,13 @@ async function connectCloud() {
   if (!window.claude || !window.claude.use) return;
   let ns = null;
   try { ns = await window.claude.use('db'); } catch (e) { ns = null; }
-  if (!ns) return;
+  if (!ns) { if (session.mode === 'loading') { session.mode = 'noid'; render(); } return; }
   cloud = ns;
   syncState = 'conectando';
   try {
     const meta = await cloud.doc('meta/settings').get();
-    if (!meta.exists) {
+    const remoteProducts = await cloud.collection('products').limit(1).get();
+    if (!meta.exists && remoteProducts.empty) {
       // Primeira vez na nuvem: sobe tudo que está neste aparelho
       Object.keys(localMap()).forEach((k) => dirty.add(k));
       saveDirty();
@@ -195,6 +196,7 @@ async function connectCloud() {
     }
   }, () => {});
   flush();
+  initTeam();
   window.addEventListener('online', flush);
   setInterval(() => { if (dirty.size) flush(); }, 30000);
 }
@@ -368,14 +370,354 @@ function fairStats(f) {
   };
 }
 
+
+/* ================= Equipe e acesso =================
+   O login é a conta do Claude (Google ou e-mail). No primeiro acesso a pessoa
+   se cadastra na equipe (members/<id>) e o CEO define a função (roles/<id>).
+   O vendedor só vê feiras e produtos, sem custos nem lucro. */
+
+const APP_LINK = 'https://claude.ai/artifact/2EfkaNsFeg2xMRJXZE46re';
+const ROLES = {
+  ceo: { label: 'CEO / Dono', desc: 'Vê tudo e aprova a equipe' },
+  gerente: { label: 'Gerente', desc: 'Vê tudo e aprova funcionários' },
+  financeiro: { label: 'Financeiro', desc: 'Caixa, contas e relatórios' },
+  vendedor: { label: 'Vendedor(a)', desc: 'Registra vendas nas feiras' },
+};
+const PERMS = {
+  ceo: ['inicio', 'feiras', 'lancamentos', 'produtos', 'contas', 'custos', 'editar', 'equipe', 'equipe-ceo', 'backup'],
+  gerente: ['inicio', 'feiras', 'lancamentos', 'produtos', 'contas', 'custos', 'editar', 'equipe', 'backup'],
+  financeiro: ['inicio', 'feiras', 'lancamentos', 'produtos', 'contas', 'custos', 'editar', 'backup'],
+  vendedor: ['feiras', 'produtos'],
+};
+const TAB_ORDER = ['inicio', 'feiras', 'lancamentos', 'produtos', 'contas'];
+
+// mode: local (fora do Claude) | loading | noid | register | pending | blocked | team
+const session = { mode: 'local', id: null, role: 'ceo', me: null, isOwner: false };
+const SESSION_KEY = 'vsensi-session-v1';
+
+// Abre com a última função conhecida, para funcionar na feira mesmo sem sinal
+if (window.claude) {
+  session.mode = 'loading';
+  try {
+    const cached = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (cached && cached.role) { session.mode = 'team'; session.role = cached.role; session.id = cached.id; }
+  } catch (e) { /* sem cache */ }
+}
+const team = { members: {}, roles: {}, profiles: {}, mine: null, mineLoaded: false, membersSub: false };
+let userNs = null;
+
+function can(perm) {
+  if (perm === 'mais') return true;
+  if (session.mode !== 'team') return true;
+  if ((PERMS[session.role] || []).includes(perm)) return true;
+  // O dono do link nunca fica trancado fora da gestão da equipe
+  return session.isOwner && perm.startsWith('equipe');
+}
+
+const firstTab = () => TAB_ORDER.find(can) || 'feiras';
+const roleLabel = (r) => (ROLES[r] || {}).label || 'Sem função';
+const hasCeo = () => Object.values(team.roles).some((r) => r.active && r.role === 'ceo');
+
+function memberName(id) {
+  if (!id) return 'Sem vendedor';
+  return team.members[id]?.name || (id === session.id ? team.mine?.name : '') || team.profiles[id]?.name || 'Membro da equipe';
+}
+
+function isCpf(v) {
+  const d = String(v).replace(/\D/g, '');
+  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+  for (const n of [9, 10]) {
+    let sum = 0;
+    for (let i = 0; i < n; i++) sum += Number(d[i]) * (n + 1 - i);
+    const check = ((sum * 10) % 11) % 10;
+    if (check !== Number(d[n])) return false;
+  }
+  return true;
+}
+
+function maskCpf(v) {
+  const d = String(v).replace(/\D/g, '').slice(0, 11);
+  return d.replace(/^(\d{3})(\d)/, '$1.$2').replace(/^(\d{3}\.\d{3})(\d)/, '$1.$2').replace(/(\.\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+function maskPhone(v) {
+  const d = String(v).replace(/\D/g, '').slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
+}
+
+const hiddenCpf = (cpf) => (cpf ? `***.${cpf.slice(4, 7)}.${cpf.slice(8, 11)}-**` : '');
+
+async function initTeam() {
+  try { userNs = await window.claude.use('user'); } catch (e) { userNs = null; }
+  const id = userNs ? await userNs.id() : null;
+  if (!id) { session.mode = 'noid'; render(); return; }
+  session.id = id;
+  session.me = await userNs.me();
+  session.isOwner = session.me.isOwner;
+  session.mode = 'loading';
+  render();
+  cloud.collection('roles').onSnapshot((snap) => {
+    team.roles = Object.fromEntries(snap.docs.map((d) => [d.id, { ...d.data() }]));
+    updateSession();
+  }, () => {});
+  cloud.doc('members/' + id).onSnapshot((snap) => {
+    team.mine = snap.exists ? { ...snap.data() } : null;
+    team.mineLoaded = true;
+    updateSession();
+  }, () => { team.mineLoaded = true; updateSession(); });
+}
+
+function updateSession() {
+  const r = team.roles[session.id];
+  if (r && r.active) { session.mode = 'team'; session.role = r.role; }
+  else if (!team.mineLoaded) session.mode = 'loading';
+  else if (!team.mine) session.mode = 'register';
+  else session.mode = r && r.active === false ? 'blocked' : 'pending';
+  try {
+    if (session.mode === 'team') localStorage.setItem(SESSION_KEY, JSON.stringify({ id: session.id, role: session.role }));
+    else if (session.mode !== 'loading') localStorage.removeItem(SESSION_KEY);
+  } catch (e) { /* ignora */ }
+  if (session.mode === 'team') {
+    if (!can(tab)) tab = firstTab();
+    if (can('equipe') && !team.membersSub) subscribeMembers();
+  }
+  render();
+}
+
+function subscribeMembers() {
+  team.membersSub = true;
+  cloud.collection('members').onSnapshot(async (snap) => {
+    team.members = Object.fromEntries(snap.docs.map((d) => [d.id, { ...d.data() }]));
+    if (userNs) {
+      try { team.profiles = await userNs.profiles(Object.keys(team.members)); } catch (e) { /* sem fotos */ }
+    }
+    render();
+  }, () => {});
+}
+
+async function registerMember(form) {
+  const fd = new FormData(form);
+  const data = {
+    name: String(fd.get('name') || '').trim(),
+    cpf: maskCpf(fd.get('cpf')),
+    phone: maskPhone(fd.get('phone')),
+    email: String(fd.get('email') || '').trim(),
+    wantedRole: fd.get('role'),
+    createdAt: new Date().toISOString(),
+  };
+  if (data.name.split(/\s+/).length < 2) return toast('Escreva nome e sobrenome');
+  if (!isCpf(data.cpf)) return toast('CPF inválido: confira os números');
+  if (!ROLES[data.wantedRole]) return toast('Escolha sua função');
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    if (team.mine) await cloud.doc('members/' + session.id).update(data);
+    else await cloud.doc('members/' + session.id).set(data);
+    // Sem CEO cadastrado ainda: a equipe começa sem precisar de aprovação
+    if (!hasCeo() && !team.roles[session.id]) {
+      try { await cloud.doc('roles/' + session.id).set({ role: data.wantedRole, active: true, by: session.id, at: new Date().toISOString() }); } catch (e) { /* fica aguardando */ }
+    }
+    toast('Cadastro enviado ✓');
+  } catch (e) {
+    toast('Não foi possível salvar. Peça para o CEO te dar acesso de edição no link.');
+    btn.disabled = false; btn.textContent = 'Entrar na equipe';
+  }
+}
+
+async function setRole(uid, role, active = true) {
+  if (role === 'ceo' && !can('equipe-ceo')) return toast('Só o CEO pode nomear outro CEO');
+  try {
+    await cloud.doc('roles/' + uid).set({ role, active, by: session.id, at: new Date().toISOString() });
+    toast(active ? `${memberName(uid)} agora é ${roleLabel(role)}` : 'Acesso desativado');
+  } catch (e) { toast('Sem permissão para mudar a equipe'); }
+}
+
+async function rejectMember(uid) {
+  if (!(await ask(`Recusar o cadastro de ${memberName(uid)}?`, 'Recusar'))) return;
+  try {
+    await cloud.doc('members/' + uid).delete();
+    await cloud.doc('roles/' + uid).delete();
+    toast('Cadastro recusado');
+  } catch (e) { toast('Sem permissão para mudar a equipe'); }
+}
+
+function memberForm(uid) {
+  const m = team.members[uid] || {};
+  const r = team.roles[uid] || {};
+  const roles = Object.keys(ROLES).filter((k) => k !== 'ceo' || can('equipe-ceo'));
+  const body = `
+    <div class="profile-card">
+      <img class="avatar-lg" data-avatar="${esc(uid)}" alt="">
+      <div class="main">
+        <div class="title">${esc(m.name || 'Sem nome')}</div>
+        <div class="sub">CPF ${esc(m.cpf || '—')}</div>
+        <div class="sub">${esc(m.phone || '')}${m.email ? ' · ' + esc(m.email) : ''}</div>
+      </div>
+    </div>
+    <div class="field"><label>Função</label>
+      <div class="role-grid" id="role-pick">${roles.map((k) => `
+        <button type="button" class="role-opt ${(r.role || m.wantedRole) === k ? 'active' : ''}" data-val="${k}"><b>${ROLES[k].label}</b><small>${ROLES[k].desc}</small></button>`).join('')}
+      </div>
+    </div>
+    <input type="hidden" name="role" value="${esc(r.role || m.wantedRole || 'vendedor')}">
+    ${r.active && uid !== session.id ? '<button type="button" class="btn block danger" id="deactivate">Desativar acesso</button>' : ''}
+  `;
+  openModal(r.active ? 'Membro da equipe' : 'Aprovar cadastro', body, (fd) => {
+    setRole(uid, fd.get('role'), true);
+    return true;
+  }, (root) => {
+    $('#modal-ok').textContent = r.active ? 'Salvar função' : 'Aprovar';
+    paintAvatars(root);
+    root.onclick = (e) => {
+      const b = e.target.closest('.role-opt');
+      if (b) {
+        root.querySelector('[name=role]').value = b.dataset.val;
+        root.querySelectorAll('.role-opt').forEach((x) => x.classList.toggle('active', x === b));
+      }
+    };
+    const off = $('#deactivate', root);
+    if (off) off.onclick = async () => {
+      if (!(await ask(`Desativar o acesso de ${m.name || 'este membro'}? As vendas dele continuam salvas.`, 'Desativar'))) return;
+      $('#modal').close();
+      setRole(uid, r.role || 'vendedor', false);
+    };
+  });
+}
+
+function profileForm() {
+  const m = team.mine || {};
+  const body = `
+    <div class="field"><label>Nome completo</label><input name="name" required value="${esc(m.name)}"></div>
+    <div class="two">
+      <div class="field"><label>CPF</label><input name="cpf" inputmode="numeric" data-mask="cpf" required value="${esc(m.cpf)}"></div>
+      <div class="field"><label>WhatsApp</label><input name="phone" inputmode="tel" data-mask="phone" value="${esc(m.phone)}"></div>
+    </div>
+    <div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(m.email)}"></div>
+    <input type="hidden" name="role" value="${esc(m.wantedRole || session.role)}">
+  `;
+  openModal('Meus dados', body, (fd) => {
+    const name = String(fd.get('name')).trim();
+    const cpf = maskCpf(fd.get('cpf'));
+    if (!isCpf(cpf)) { toast('CPF inválido: confira os números'); return false; }
+    cloud.doc('members/' + session.id).update({ name, cpf, phone: maskPhone(fd.get('phone')), email: String(fd.get('email')).trim() })
+      .then(() => toast('Dados atualizados ✓'), () => toast('Não foi possível salvar'));
+    return true;
+  });
+}
+
+// Fotos vêm da conta do Claude; a URL é posta como atributo, nunca como HTML
+function paintAvatars(root = document) {
+  root.querySelectorAll('img[data-avatar]').forEach((img) => {
+    const id = img.dataset.avatar;
+    const url = id === 'me' || id === session.id ? session.me?.avatarUrl : team.profiles[id]?.avatarUrl;
+    if (url) img.src = url; else img.removeAttribute('src');
+  });
+}
+
+function viewGate() {
+  const logo = `<img src="logo.png" alt="V'Sensi Aromatizantes" class="gate-logo">`;
+  const who = session.me ? `
+    <div class="who">
+      <img class="avatar" data-avatar="me" alt="">
+      <div><div class="title">${esc(session.me.name || 'Sua conta')}</div><div class="sub">Entrou com sua conta Claude (Google ou e-mail)</div></div>
+    </div>` : '';
+  if (session.mode === 'loading') return `<div class="gate">${logo}<p class="gate-msg">Carregando…</p></div>`;
+  if (session.mode === 'noid') return `<div class="gate">${logo}<div class="gate-card"><h2>Entre na sua conta</h2><p class="gate-msg">Para usar o app da equipe, abra este link logado na sua conta do Claude (com Google ou e-mail) e peça acesso ao CEO.</p></div></div>`;
+  if (session.mode === 'pending') return `
+    <div class="gate">${logo}
+      <div class="gate-card">${who}
+        <div class="status-pill">⏳ Aguardando aprovação</div>
+        <h2>Cadastro enviado!</h2>
+        <p class="gate-msg">Avise o CEO da V'Sensi para aprovar seu acesso. Assim que ele aprovar, o app abre aqui sozinho.</p>
+        <div class="kv"><span>Nome</span><b>${esc(team.mine?.name)}</b></div>
+        <div class="kv"><span>CPF</span><b>${esc(hiddenCpf(team.mine?.cpf))}</b></div>
+        <div class="kv"><span>Função pedida</span><b>${esc(roleLabel(team.mine?.wantedRole))}</b></div>
+      </div>
+    </div>`;
+  if (session.mode === 'blocked') return `<div class="gate">${logo}<div class="gate-card">${who}<h2>Acesso desativado</h2><p class="gate-msg">Seu acesso à gestão da V'Sensi foi desativado. Fale com o CEO se isso for um engano.</p></div></div>`;
+  const first = !hasCeo();
+  return `
+    <div class="gate">${logo}
+      <form class="gate-card" id="register-form" novalidate>
+        <h2>${first ? 'Bem-vindo à gestão V\'Sensi' : 'Entrar na equipe'}</h2>
+        <p class="gate-msg">${first ? 'Primeiro acesso: cadastre-se. O primeiro CEO entra direto, sem aprovação.' : 'Preencha seus dados. O CEO vai aprovar seu acesso.'}</p>
+        ${who}
+        <div class="field"><label for="reg-name">Nome completo</label><input id="reg-name" name="name" autocomplete="name" required value="${esc(session.me?.name || '')}"></div>
+        <div class="two">
+          <div class="field"><label for="reg-cpf">CPF</label><input id="reg-cpf" name="cpf" inputmode="numeric" data-mask="cpf" placeholder="000.000.000-00" required></div>
+          <div class="field"><label for="reg-phone">WhatsApp</label><input id="reg-phone" name="phone" inputmode="tel" data-mask="phone" placeholder="(81) 90000-0000"></div>
+        </div>
+        <div class="field"><label for="reg-email">E-mail</label><input id="reg-email" name="email" type="email" autocomplete="email" value="${esc(session.me?.email || '')}"></div>
+        <div class="field"><label>Sua função</label>
+          <div class="role-grid" id="role-pick">${Object.keys(ROLES).map((k) => `
+            <button type="button" class="role-opt ${k === (first ? 'ceo' : 'vendedor') ? 'active' : ''}" data-val="${k}"><b>${ROLES[k].label}</b><small>${ROLES[k].desc}</small></button>`).join('')}
+          </div>
+        </div>
+        <input type="hidden" name="role" value="${first ? 'ceo' : 'vendedor'}">
+        <button type="submit" class="btn primary block">Entrar na equipe</button>
+        <p class="fine">Seu CPF fica visível só para a gestão (CEO e gerentes).</p>
+      </form>
+    </div>`;
+}
+
+function viewTeam() {
+  const ids = Object.keys(team.members);
+  const pending = ids.filter((id) => !team.roles[id]?.active && team.roles[id]?.active !== false);
+  const active = ids.filter((id) => team.roles[id]?.active).sort((a, b) => Object.keys(ROLES).indexOf(team.roles[a].role) - Object.keys(ROLES).indexOf(team.roles[b].role));
+  const off = ids.filter((id) => team.roles[id]?.active === false);
+  const sales = rank(monthTx(), (t) => t.sellerId || '');
+  const soldBy = Object.fromEntries(sales.map((r) => [r.name, r]));
+  const card = (id, extra = '') => `
+    <div class="item member" data-member="${esc(id)}">
+      <img class="avatar" data-avatar="${esc(id)}" alt="">
+      <div class="main">
+        <div class="title">${esc(team.members[id].name || 'Sem nome')}${id === session.id ? ' <small class="you">você</small>' : ''}</div>
+        <div class="sub">${esc(team.members[id].phone || hiddenCpf(team.members[id].cpf))}</div>
+      </div>
+      ${extra}
+    </div>`;
+  return `
+    <h3>Equipe</h3>
+    ${pending.length ? `<div class="list">${pending.map((id) => card(id, `
+      <div class="pending-actions">
+        <span class="badge open">${esc(roleLabel(team.members[id].wantedRole))}?</span>
+        <button class="btn primary sm" data-member="${esc(id)}">Aprovar</button>
+        <button class="btn sm" data-reject="${esc(id)}">Recusar</button>
+      </div>`)).join('')}</div>` : ''}
+    <div class="list" style="margin-top:8px">${active.map((id) => card(id, `
+      <div class="amount"><span class="badge role-${esc(team.roles[id].role)}">${esc(roleLabel(team.roles[id].role))}</span>
+      <div class="sub">${soldBy[id] ? `${soldBy[id].qty} peças · ${money(soldBy[id].total)}` : 'sem vendas no mês'}</div></div>`)).join('')}</div>
+    ${off.length ? `<div class="sub" style="color:var(--muted);margin-top:8px">Desativados: ${off.map((id) => esc(team.members[id].name)).join(', ')}</div>` : ''}
+    <div class="invite">
+      <div class="title">Convidar alguém</div>
+      <ol>
+        <li>Toque em <b>Compartilhar</b> no topo desta página do Claude.</li>
+        <li>Adicione o e-mail da pessoa com permissão de <b>edição</b>.</li>
+        <li>Mande o link. Ela entra com a conta Google ou e-mail e se cadastra.</li>
+      </ol>
+      <div class="link-row"><code id="app-link">${APP_LINK}</code><button class="btn sm" id="copy-link">Copiar</button></div>
+    </div>
+  `;
+}
+
 /* ================= Telas ================= */
 
 let tab = 'inicio';
 const ui = { txFilter: 'all', txSearch: '', billFilter: 'pagar', billShowPaid: false, fairId: null, prodView: 'produtos' };
 
 function render() {
-  document.querySelectorAll('.tabbar button').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
-  $('#fab').style.display = tab === 'mais' ? 'none' : '';
+  const gated = session.mode !== 'local' && session.mode !== 'team';
+  document.body.classList.toggle('gated', gated);
+  renderTopAvatar();
+  if (gated) { $('#view').innerHTML = viewGate(); paintAvatars(); return; }
+  if (!can(tab)) tab = firstTab();
+  document.querySelectorAll('.tabbar button').forEach((b) => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+    b.hidden = !can(b.dataset.tab);
+  });
+  $('#fab').hidden = tab === 'mais' || (tab === 'produtos' && !can('editar'));
   $('#fab').textContent = tab === 'feiras' && ui.fairId ? '＄' : '+';
   if (ui.fairId && !fairById(ui.fairId)) ui.fairId = null;
   const v = $('#view');
@@ -387,6 +729,15 @@ function render() {
     contas: viewBills,
     mais: viewMore,
   }[tab]();
+  paintAvatars();
+}
+
+function renderTopAvatar() {
+  const btn = $('#open-more');
+  if (session.me && session.mode === 'team') {
+    if (!btn.querySelector('img')) { btn.textContent = ''; const img = document.createElement('img'); img.dataset.avatar = 'me'; img.alt = ''; btn.appendChild(img); }
+    btn.classList.add('has-avatar');
+  } else if (btn.querySelector('img')) { btn.textContent = '⚙'; btn.classList.remove('has-avatar'); }
 }
 
 function rankList(rows, limit) {
@@ -412,7 +763,7 @@ function fairCard(f) {
       <div class="main">
         <div class="title">${esc(f.place)} ${isToday ? '<span class="badge open">Hoje</span>' : ''}</div>
         <div class="sub">${esc(weekday(f.date))}, ${fmtDate(f.date)} · ${esc(f.period)}</div>
-        <div class="sub">${s.pieces} peça(s) · líquido <b class="${s.net < 0 ? 'neg' : 'pos'}">${money(s.net)}</b></div>
+        <div class="sub">${s.pieces} peça(s)${can('custos') ? ` · líquido <b class="${s.net < 0 ? 'neg' : 'pos'}">${money(s.net)}</b>` : ''}</div>
       </div>
       <div class="amount">${money(s.sold)}</div>
     </div>`;
@@ -456,7 +807,9 @@ function viewFairs() {
     <h3>Resumo do mês</h3>
     <div class="grid">
       <div class="card"><div class="label">Vendido nas feiras</div><div class="value pos">${money(totalSold)}</div></div>
-      <div class="card"><div class="label">Lucro líquido</div><div class="value accent">${money(totalNet)}</div><div class="hint">já tirando custo e gastos</div></div>
+      ${can('custos')
+        ? `<div class="card"><div class="label">Lucro líquido</div><div class="value accent">${money(totalNet)}</div><div class="hint">já tirando custo e gastos</div></div>`
+        : `<div class="card"><div class="label">Minhas vendas</div><div class="value accent">${money(monthTxs.filter((t) => t.type === 'in' && t.sellerId === session.id).reduce((a, t) => a + t.amount, 0))}</div></div>`}
       <div class="card"><div class="label">Peças vendidas</div><div class="value">${totalPieces}</div></div>
       <div class="card"><div class="label">Feiras feitas</div><div class="value">${fairs.filter((f) => f.date <= today()).length}</div></div>
     </div>
@@ -468,7 +821,7 @@ function viewFairs() {
           <div class="sub">${p.count} feira(s) · ${p.pieces} peças · média ${money(p.count ? p.sold / p.count : 0)} por feira</div>
           <div class="bar" style="margin-top:6px"><div style="width:${totalSold ? (p.sold / totalSold) * 100 : 0}%"></div></div>
         </div>
-        <div class="amount">${money(p.sold)}<div class="sub">líquido ${money(p.net)}</div></div>
+        <div class="amount">${money(p.sold)}${can('custos') ? `<div class="sub">líquido ${money(p.net)}</div>` : ''}</div>
       </div>`).join('')}</div>` : ''}
 
     <h3>Fragrâncias mais vendidas nas feiras (mês)</h3>
@@ -476,6 +829,8 @@ function viewFairs() {
 
     <h3>Produtos mais vendidos nas feiras (mês)</h3>
     ${rankList(rankProducts(monthTxs), 10)}
+
+    ${can('equipe') && session.mode === 'team' ? `<h3>Vendedores do mês</h3>${rankList(rank(monthTxs, (t) => memberName(t.sellerId)), 10)}` : ''}
 
     <h3>Feiras do mês</h3>
     ${fairs.length ? `<div class="list">${fairs.map(fairCard).join('')}</div>` : '<div class="empty">Nenhuma feira neste mês. Toque em “Montar semana de feira”.</div>'}
@@ -493,17 +848,17 @@ function viewFairDetail(f) {
     <div class="hero">
       <div class="label">Vendido nesta feira</div>
       <div class="value">${money(s.sold)}</div>
-      <div class="row"><span>${s.pieces} peça(s)</span><span>Lucro líquido: <b>${money(s.net)}</b></span></div>
+      <div class="row"><span>${s.pieces} peça(s)</span>${can('custos') ? `<span>Lucro líquido: <b>${money(s.net)}</b></span>` : ''}</div>
     </div>
 
-    <div class="grid">
+    ${can('custos') ? `<div class="grid">
       <div class="card"><div class="label">Custo das peças</div><div class="value">${money(s.cost)}</div></div>
       <div class="card"><div class="label">Gastos da feira</div><div class="value neg">${money(s.spent)}</div><div class="hint">barraca, transporte...</div></div>
-    </div>
+    </div>` : ''}
 
     <div class="two" style="margin-top:12px">
       <button class="btn primary block" data-quick-sale="${f.id}">＄ Registrar venda</button>
-      <button class="btn block" data-fair-expense="${f.id}">− Gasto da feira</button>
+      ${can('custos') ? `<button class="btn block" data-fair-expense="${f.id}">− Gasto da feira</button>` : ''}
     </div>
 
     ${s.sold ? `<h3>Varejo × Atacado</h3><div class="chips"><span class="chip static">Varejo <b>${money(s.sold - s.wholesale)}</b></span><span class="chip static">Atacado <b>${money(s.wholesale)}</b></span></div>` : ''}
@@ -515,12 +870,14 @@ function viewFairDetail(f) {
     <h3>Produtos que mais saíram</h3>
     ${rankList(rankProducts(s.txs))}
 
+    ${session.mode === 'team' && can('equipe') ? `<h3>Quem vendeu</h3>${rankList(rank(s.txs, (t) => memberName(t.sellerId)))}` : ''}
+
     <h3>Vendas (${sales.length})</h3>
     ${sales.length ? `<div class="list">${sales.map(txItem).join('')}</div>` : '<div class="empty">Nenhuma venda ainda. Toque em “Registrar venda”.</div>'}
 
-    ${s.expenses.length ? `<h3>Gastos</h3><div class="list">${s.expenses.map(txItem).join('')}</div>` : ''}
+    ${s.expenses.length && can('custos') ? `<h3>Gastos</h3><div class="list">${s.expenses.map(txItem).join('')}</div>` : ''}
 
-    <button class="btn block ghost" style="margin-top:20px" data-edit-fair="${f.id}">Editar feira</button>
+    ${can('editar') ? `<button class="btn block ghost" style="margin-top:20px" data-edit-fair="${f.id}">Editar feira</button>` : ''}
   `;
 }
 
@@ -543,7 +900,7 @@ function viewFragrances() {
 
     <h3>Catálogo (${db.fragrances.length})</h3>
     <div class="list">${[...db.fragrances].sort((a, b) => a.localeCompare(b)).map((f) => `
-      <div class="item" data-edit-fragrance="${esc(f)}">
+      <div class="item" ${can('editar') ? `data-edit-fragrance="${esc(f)}"` : ''}>
         <div class="ico">❦</div>
         <div class="main"><div class="title">${esc(f)}</div></div>
         <div class="sub">${allQty[f] || 0} vendida(s) no total</div>
@@ -606,11 +963,13 @@ const byDateDesc = (a, b) => (b.date + (b.created || '')).localeCompare(a.date +
 
 function txItem(t) {
   const p = t.productId && productById(t.productId);
-  const profit = saleProfit(t);
+  const profit = can('custos') ? saleProfit(t) : null;
   const f = t.fairId && fairById(t.fairId);
-  const sub = [fmtDate(t.date), f ? 'Feira ' + f.place.replace(' do Capibaribe', '') : t.category, t.method, p && t.qty > 1 ? `${t.qty} un.` : ''].filter(Boolean).map(esc).join(' · ');
+  const editable = can('editar') || (t.sellerId && t.sellerId === session.id);
+  const seller = session.mode === 'team' && can('equipe') && t.sellerId ? memberName(t.sellerId).split(' ')[0] : '';
+  const sub = [fmtDate(t.date), f ? 'Feira ' + f.place.replace(' do Capibaribe', '') : t.category, t.method, p && t.qty > 1 ? `${t.qty} un.` : '', seller].filter(Boolean).map(esc).join(' · ');
   return `
-    <div class="item" data-edit-tx="${t.id}">
+    <div class="item" ${editable ? `data-edit-tx="${t.id}"` : ''}>
       <div class="ico ${t.type}">${t.type === 'in' ? '↓' : '↑'}</div>
       <div class="main">
         <div class="title">${esc(t.desc || t.category)}</div>
@@ -654,13 +1013,13 @@ function viewProducts() {
       const soldQty = sold.reduce((a, t) => a + (t.qty || 0), 0);
       const profit = sold.reduce((a, t) => a + saleProfit(t), 0);
       return `
-        <div class="item" data-edit-product="${p.id}">
+        <div class="item" ${can('editar') ? `data-edit-product="${p.id}"` : ''}>
           <div class="ico">▣</div>
           <div class="main">
             <div class="title">${esc(p.name)}</div>
             <div class="sub">Varejo <b>${money(p.price)}</b>${p.wholesale ? ` · Atacado <b>${money(p.wholesale)}</b>` : ''}</div>
-            <div class="sub">${p.cost ? `Custo ${money(p.cost)} · Margem <b class="${margin < 0 ? 'neg' : 'accent'}">${margin.toFixed(0)}%</b>${p.wholesale ? ` / <b class="${marginW < 0 ? 'neg' : 'accent'}">${marginW.toFixed(0)}%</b> atacado` : ''}` : '<b class="warn">Custo não informado</b>'}</div>
-            <div class="sub">Estoque <b class="${lowStock(p) ? 'warn' : ''}">${p.stock || 0}</b> · Vendidos ${soldQty} · Lucro total ${money(profit)}</div>
+            ${can('custos') ? `<div class="sub">${p.cost ? `Custo ${money(p.cost)} · Margem <b class="${margin < 0 ? 'neg' : 'accent'}">${margin.toFixed(0)}%</b>${p.wholesale ? ` / <b class="${marginW < 0 ? 'neg' : 'accent'}">${marginW.toFixed(0)}%</b> atacado` : ''}` : '<b class="warn">Custo não informado</b>'}</div>` : ''}
+            <div class="sub">Estoque <b class="${lowStock(p) ? 'warn' : ''}">${p.stock || 0}</b> · Vendidos ${soldQty}${can('custos') ? ` · Lucro total ${money(profit)}` : ''}</div>
           </div>
         </div>`;
     }).join('')}</div>` : '<div class="empty">Cadastre seus produtos (ex.: Home spray 250ml, Difusor 250ml, Água de lençol) com custo e preço de venda. A fragrância você escolhe na hora da venda.</div>'}
@@ -704,9 +1063,23 @@ function viewBills() {
 }
 
 function viewMore() {
+  const profile = session.mode === 'team' ? `
+    <div class="profile-card">
+      <img class="avatar-lg" data-avatar="me" alt="">
+      <div class="main">
+        <div class="title">${esc(team.mine?.name || session.me?.name || 'Você')}</div>
+        <span class="badge role-${esc(session.role)}">${esc(roleLabel(session.role))}</span>
+        <div class="sub">${esc([hiddenCpf(team.mine?.cpf), team.mine?.phone].filter(Boolean).join(' · '))}</div>
+      </div>
+      <button class="btn sm" id="edit-profile">Editar</button>
+    </div>` : '';
+  if (session.mode === 'team' && !can('backup')) {
+    return `${profile}<p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v5</p>`;
+  }
   return `
-    <div style="text-align:center;margin:8px 0 4px"><img src="logo.png" alt="V'Sensi Aromatizantes" style="max-width:260px;width:80%"></div>
-    <h3>Seus dados</h3>
+    ${profile || `<div style="text-align:center;margin:8px 0 4px"><img src="logo.png" alt="V'Sensi Aromatizantes" style="max-width:260px;width:80%"></div>`}
+    ${session.mode === 'team' && can('equipe') ? viewTeam() : ''}
+    <h3>Dados na nuvem</h3>
     <div class="item">
       <div class="ico ${syncState === 'nuvem' ? 'in' : syncState === 'offline' ? 'warn' : ''}">${syncState === 'nuvem' ? '✓' : syncState === 'offline' ? '!' : '↻'}</div>
       <div class="main">
@@ -720,9 +1093,9 @@ function viewMore() {
     <button class="btn block" id="import-json">⬆ Restaurar backup</button>
     <button class="btn block" id="export-csv">📊 Exportar lançamentos para planilha (.csv)</button>
     <input type="file" id="import-file" accept="application/json,.json" hidden>
-    <h3>Zona de perigo</h3>
-    <button class="btn block danger" id="reset">Apagar todos os dados</button>
-    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v4</p>
+    ${can('equipe-ceo') ? `<h3>Zona de perigo</h3>
+    <button class="btn block danger" id="reset">Apagar todos os dados</button>` : ''}
+    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v5</p>
   `;
 }
 
@@ -804,6 +1177,7 @@ function txForm(existing, preset = {}) {
       unitCost: p ? (isEdit && t.productId === productId ? t.unitCost : p.cost) : 0,
       fragrance: fd.get('fragrance') || '',
       fairId: fd.get('fairId') || '',
+      sellerId: t.sellerId || session.id || '',
       billId: t.billId,
     };
     if (isEdit) {
@@ -918,7 +1292,7 @@ function quickSaleForm(fair) {
       type: 'in', amount, date: fair.date, method: sel.method, category: sel.wholesale ? 'Revenda / atacado' : 'Venda',
       desc: [p?.name, sel.fragrance].filter(Boolean).join(' — '),
       productId: sel.product, qty: sel.qty, unitCost: p ? p.cost : 0,
-      fragrance: sel.fragrance, fairId: fair.id,
+      fragrance: sel.fragrance, fairId: fair.id, sellerId: session.id || '',
     };
     db.tx.push(tx);
     stockEffect(tx, +1);
@@ -967,7 +1341,7 @@ function quickSaleForm(fair) {
       if (!p && !sel.manual) amountEl.value = '';
       const amount = parseMoney(amountEl.value);
       const parts = [sel.qty + '×', p?.name, sel.fragrance, sel.wholesale ? '(atacado)' : ''].filter(Boolean).join(' ');
-      $('#qs-calc').innerHTML = `${esc(parts)}${p && p.cost ? ` · lucro <b class="pos">${money(amount - p.cost * sel.qty)}</b>` : ''}`;
+      $('#qs-calc').innerHTML = `${esc(parts)}${p && p.cost && can('custos') ? ` · lucro <b class="pos">${money(amount - p.cost * sel.qty)}</b>` : ''}`;
     };
     refresh();
   });
@@ -1218,6 +1592,22 @@ document.addEventListener('click', (e) => {
   if (seg) { ui[seg.parentElement.dataset.seg] = seg.dataset.val; render(); return; }
 
   if (e.target.closest('[data-goto-products]')) { tab = 'produtos'; ui.prodView = 'produtos'; render(); window.scrollTo(0, 0); return; }
+  const mem = e.target.closest('[data-member],[data-reject],.role-opt,#edit-profile,#copy-link');
+  if (mem) {
+    if (mem.dataset.reject) return rejectMember(mem.dataset.reject);
+    if (mem.dataset.member) return memberForm(mem.dataset.member);
+    if (mem.id === 'edit-profile') return profileForm();
+    if (mem.id === 'copy-link') {
+      navigator.clipboard.writeText(APP_LINK).then(() => toast('Link copiado'), () => { const r = document.createRange(); r.selectNode($('#app-link')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Link selecionado: copie'); });
+      return;
+    }
+    if (mem.closest('#register-form')) {
+      const form = mem.closest('form');
+      form.querySelector('[name=role]').value = mem.dataset.val;
+      form.querySelectorAll('.role-opt').forEach((x) => x.classList.toggle('active', x === mem));
+      return;
+    }
+  }
   const el = e.target.closest('[data-quick-sale],[data-fair-expense],[data-edit-fair],[data-open-fair],[data-close-fair],[data-edit-fragrance],[data-edit-tx],[data-edit-product],[data-edit-bill],[data-toggle-bill]');
   if (el) {
     if (el.dataset.quickSale) return quickSaleForm(fairById(el.dataset.quickSale));
@@ -1247,7 +1637,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
+document.addEventListener('submit', (e) => {
+  if (e.target.id === 'register-form') { e.preventDefault(); registerMember(e.target); }
+});
+
 document.addEventListener('input', (e) => {
+  if (e.target.dataset.mask === 'cpf') e.target.value = maskCpf(e.target.value);
+  if (e.target.dataset.mask === 'phone') e.target.value = maskPhone(e.target.value);
   if (e.target.id === 'tx-search') {
     ui.txSearch = e.target.value;
     const pos = e.target.selectionStart;

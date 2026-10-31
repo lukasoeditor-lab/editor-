@@ -19,6 +19,19 @@ Aberto por esse link, os dados ficam salvos na nuvem e aparecem iguais em qualqu
 
 Para publicar uma nova versão, gere os arquivos com `python3 tools/build_artifact.py <pasta>` e publique o `index.html` dessa pasta com os arquivos ao lado.
 
+## Equipe e acesso
+
+O login é a conta do Claude da pessoa (Google ou e-mail). No primeiro acesso ela se cadastra com nome, CPF (validado), WhatsApp, e-mail e função. O primeiro CEO entra direto; depois disso, o CEO ou um gerente aprova cada novo cadastro.
+
+| Função | O que vê |
+|---|---|
+| CEO / Dono | Tudo, aprova a equipe e pode nomear outro CEO |
+| Gerente | Tudo e aprova funcionários |
+| Financeiro | Início, feiras, caixa, produtos e contas |
+| Vendedor(a) | Feiras e produtos, sem custos nem lucro |
+
+Cada venda guarda quem vendeu, e a gestão vê o ranking de vendedores. No banco de dados, os cadastros (com CPF) só são lidos pela gestão do link (quem tem permissão de edição), e só ela muda funções.
+
 ## Como usar
 
 O app está na pasta `app/`. É só HTML, CSS e JS, sem instalação.
