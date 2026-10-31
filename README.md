@@ -5,10 +5,11 @@ App de controle financeiro da marca **V'Sensi Aromatizantes**: vendas, gastos, p
 ## O que ele faz
 
 - **Início**: saldo em caixa, recebido e gasto no mês, lucro das vendas, valor do estoque, quanto você deve e quanto te devem, gastos por categoria e alertas de estoque baixo e contas vencidas.
-- **Lançamentos**: entradas e saídas com categoria, forma de pagamento (Pix, cartão, dinheiro...) e produto vinculado. Uma venda tira as peças do estoque e calcula o lucro; uma compra repõe o estoque.
-- **Produtos**: custo, preço de venda, margem, estoque, peças vendidas e lucro total de cada produto.
+- **Feiras**: agenda da semana com um toque (quinta de manhã em Toritama, quinta à tarde e sexta em Santa Cruz do Capibaribe), venda rápida na barraca (toca no produto, na fragrância e na forma de pagamento), relatório de cada feira (vendido, custo das peças, gastos da feira, lucro líquido, como pagaram), comparação Toritama × Santa Cruz e ranking das fragrâncias e produtos mais vendidos.
+- **Lançamentos (Caixa)**: entradas e saídas com categoria, forma de pagamento (Pix, cartão, dinheiro...) e produto vinculado. Uma venda tira as peças do estoque e calcula o lucro; uma compra repõe o estoque.
+- **Produtos**: custo, preço de venda, margem, estoque, peças vendidas e lucro total de cada produto. Na parte de **Fragrâncias** fica o catálogo da V'Sensi (41 fragrâncias), o ranking do mês e as que não venderam.
 - **Contas**: o que você deve (a pagar) e o que te devem (a receber), com vencimento e parcelas. Ao marcar como paga, a conta vira um lançamento no caixa.
-- **Mais**: backup (.json), restauração e exportação para planilha (.csv).
+- **⚙ (canto superior)**: backup (.json), restauração e exportação para planilha (.csv).
 
 ## Como usar
 
