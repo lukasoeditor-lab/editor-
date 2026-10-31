@@ -11,6 +11,14 @@ App de controle financeiro da marca **V'Sensi Aromatizantes**: vendas, gastos, p
 - **Contas**: o que você deve (a pagar) e o que te devem (a receber), com vencimento e parcelas. Ao marcar como paga, a conta vira um lançamento no caixa.
 - **⚙ (canto superior)**: backup (.json), restauração e exportação para planilha (.csv).
 
+## App publicado
+
+O app está publicado como Artifact do Claude: https://claude.ai/artifact/2EfkaNsFeg2xMRJXZE46re
+
+Aberto por esse link, os dados ficam salvos na nuvem e aparecem iguais em qualquer aparelho. Sem internet, o app guarda as vendas no aparelho e envia sozinho quando a conexão volta.
+
+Para publicar uma nova versão, gere os arquivos com `python3 tools/build_artifact.py <pasta>` e publique o `index.html` dessa pasta com os arquivos ao lado.
+
 ## Como usar
 
 O app está na pasta `app/`. É só HTML, CSS e JS, sem instalação.

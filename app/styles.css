@@ -221,3 +221,9 @@ dialog h2 { margin: 0 0 14px; font-family: var(--serif); font-size: 26px; font-w
 .stepper { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
 .stepper button { border: 0; background: none; width: 46px; height: 44px; font-size: 22px; cursor: pointer; color: var(--accent-dark); }
 .stepper span { font-weight: 700; font-size: 18px; }
+
+/* Confirmação */
+dialog.ask { width: min(380px, calc(100% - 32px)); }
+dialog.ask p { margin: 4px 0 14px; font-size: 16px; line-height: 1.45; }
+dialog.ask .modal-actions { position: static; border: 0; padding: 0; }
+.btn.danger-fill { background: var(--red); border-color: var(--red); color: var(--accent-ink); }

@@ -69,8 +69,149 @@ function normalize(d) {
 }
 
 function save() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
-  catch (e) { toast('Não foi possível salvar no aparelho'); }
+  saveLocal();
+  markDirty();
+  flush();
+}
+
+function saveLocal() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); } catch (e) { /* sem armazenamento local */ }
+}
+
+/* ================= Nuvem (db do Artifact) =================
+   Cada registro vira um documento: tx/<id>, products/<id>, bills/<id>, fairs/<id>
+   e meta/settings guarda o catálogo de fragrâncias. O aparelho guarda uma cópia
+   local e a lista do que ainda não subiu, para a venda feita sem internet na
+   feira não se perder. */
+
+const COLS = ['tx', 'products', 'bills', 'fairs'];
+const DIRTY_KEY = 'vsensi-dirty-v1';
+const settingsDoc = () => ({ fragrances: db.fragrances, catalogV1: true });
+let cloud = null;
+let syncState = 'local';
+let known = localMap();
+let dirty = new Set(readDirty());
+let flushing = false;
+
+function readDirty() {
+  try { return JSON.parse(localStorage.getItem(DIRTY_KEY) || '[]'); } catch (e) { return []; }
+}
+function saveDirty() {
+  try { localStorage.setItem(DIRTY_KEY, JSON.stringify([...dirty])); } catch (e) { /* ignora */ }
+}
+
+function localMap() {
+  const m = {};
+  COLS.forEach((c) => db[c].forEach((item) => { m[`${c}/${item.id}`] = JSON.stringify(item); }));
+  m['meta/settings'] = JSON.stringify(settingsDoc());
+  return m;
+}
+
+function localValue(key) {
+  if (key === 'meta/settings') return settingsDoc();
+  const [c, id] = key.split('/');
+  const item = (db[c] || []).find((x) => x.id === id);
+  return item ? JSON.parse(JSON.stringify(item)) : null;
+}
+
+function markDirty() {
+  const now = localMap();
+  Object.keys(now).forEach((k) => { if (now[k] !== known[k]) dirty.add(k); });
+  Object.keys(known).forEach((k) => { if (!(k in now)) dirty.add(k); });
+  known = now;
+  saveDirty();
+}
+
+async function flush() {
+  if (!cloud || flushing || !dirty.size) return;
+  flushing = true;
+  try {
+    for (const key of [...dirty]) {
+      const value = localValue(key);
+      try {
+        if (value) await cloud.doc(key).set(value);
+        else await cloud.doc(key).delete();
+        dirty.delete(key);
+      } catch (e) {
+        if (e && e.code === 'invalid_argument') { dirty.delete(key); continue; }
+        if (e && e.code === 'quota_exceeded') toast('A nuvem está cheia: faça um backup e apague dados antigos');
+        syncState = 'offline';
+        break;
+      }
+    }
+  } finally {
+    flushing = false;
+    saveDirty();
+    if (syncState !== 'offline' && !dirty.size) syncState = 'nuvem';
+    if (tab === 'mais') render();
+  }
+}
+
+function applyRemote(col, docs) {
+  const remote = docs.map((d) => ({ ...JSON.parse(JSON.stringify(d.data())), id: d.id }));
+  const keep = db[col].filter((item) => dirty.has(`${col}/${item.id}`));
+  const merged = remote.filter((item) => !dirty.has(`${col}/${item.id}`)).concat(keep);
+  db[col] = merged;
+  Object.keys(known).forEach((k) => { if (k.startsWith(col + '/')) delete known[k]; });
+  merged.forEach((item) => { known[`${col}/${item.id}`] = JSON.stringify(item); });
+}
+
+async function connectCloud() {
+  if (!window.claude || !window.claude.use) return;
+  let ns = null;
+  try { ns = await window.claude.use('db'); } catch (e) { ns = null; }
+  if (!ns) return;
+  cloud = ns;
+  syncState = 'conectando';
+  try {
+    const meta = await cloud.doc('meta/settings').get();
+    if (!meta.exists) {
+      // Primeira vez na nuvem: sobe tudo que está neste aparelho
+      Object.keys(localMap()).forEach((k) => dirty.add(k));
+      saveDirty();
+    }
+  } catch (e) { syncState = 'offline'; }
+
+  const loadTimer = setTimeout(() => { if (syncState === 'conectando') { syncState = 'offline'; render(); } }, 10000);
+  const onData = () => {
+    clearTimeout(loadTimer);
+    syncState = dirty.size ? 'enviando' : 'nuvem';
+    saveLocal();
+    render();
+    flush();
+  };
+  COLS.forEach((col) => {
+    cloud.collection(col).onSnapshot((snap) => {
+      applyRemote(col, snap.docs);
+      if (!snap.metadata.fromCache) onData(); else { saveLocal(); render(); }
+    }, () => { syncState = 'offline'; render(); });
+  });
+  cloud.doc('meta/settings').onSnapshot((snap) => {
+    if (snap.exists && !dirty.has('meta/settings')) {
+      const d = snap.data();
+      if (Array.isArray(d.fragrances)) db.fragrances = [...d.fragrances];
+      known['meta/settings'] = JSON.stringify(settingsDoc());
+      saveLocal(); render();
+    }
+  }, () => {});
+  flush();
+  window.addEventListener('online', flush);
+  setInterval(() => { if (dirty.size) flush(); }, 30000);
+}
+
+/* ================= Confirmação dentro do app ================= */
+
+function ask(message, okLabel = 'Confirmar') {
+  return new Promise((resolve) => {
+    const dlg = $('#ask');
+    $('#ask-msg').textContent = message;
+    $('#ask-ok').textContent = okLabel;
+    const done = (v) => { dlg.close(); resolve(v); };
+    $('#ask-ok').onclick = () => done(true);
+    $('#ask-cancel').onclick = () => done(false);
+    dlg.oncancel = (e) => { e.preventDefault(); done(false); };
+    dlg.showModal();
+  });
 }
 
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -565,8 +706,16 @@ function viewBills() {
 function viewMore() {
   return `
     <div style="text-align:center;margin:8px 0 4px"><img src="logo.png" alt="V'Sensi Aromatizantes" style="max-width:260px;width:80%"></div>
+    <h3>Seus dados</h3>
+    <div class="item">
+      <div class="ico ${syncState === 'nuvem' ? 'in' : syncState === 'offline' ? 'warn' : ''}">${syncState === 'nuvem' ? '✓' : syncState === 'offline' ? '!' : '↻'}</div>
+      <div class="main">
+        <div class="title">${{ nuvem: 'Salvos na nuvem', conectando: 'Conectando à nuvem…', enviando: 'Enviando para a nuvem…', offline: 'Sem conexão com a nuvem', local: 'Salvos só neste aparelho' }[syncState]}</div>
+        <div class="sub">${syncState === 'local' ? 'Abra o app pelo link do Claude para sincronizar entre aparelhos.' : dirty.size ? `${dirty.size} alteração(ões) esperando internet. Nada se perde: o app envia sozinho.` : 'Abra o link em qualquer aparelho e os dados aparecem iguais.'}</div>
+      </div>
+    </div>
     <h3>Backup</h3>
-    <p class="sub" style="color:var(--muted)">Os dados ficam salvos neste aparelho. Faça backup de vez em quando para não perder nada.</p>
+    <p class="sub" style="color:var(--muted)">Guarde uma cópia de vez em quando, por segurança.</p>
     <button class="btn block" id="export-json">⬇ Baixar backup (.json)</button>
     <button class="btn block" id="import-json">⬆ Restaurar backup</button>
     <button class="btn block" id="export-csv">📊 Exportar lançamentos para planilha (.csv)</button>
@@ -713,8 +862,8 @@ function txForm(existing, preset = {}) {
     fillCats(); updateCalc();
 
     const del = $('#del-tx', root);
-    if (del) del.onclick = () => {
-      if (!confirm('Excluir este lançamento?')) return;
+    if (del) del.onclick = async () => {
+      if (!(await ask('Excluir este lançamento?', 'Excluir'))) return;
       stockEffect(t, -1);
       db.tx = db.tx.filter((x) => x !== t);
       if (t.billId) { const b = db.bills.find((x) => x.id === t.billId); if (b) { b.paid = false; b.txId = null; } }
@@ -847,8 +996,8 @@ function fairForm(existing) {
     toast('Feira salva');
   }, (root) => {
     const del = $('#del-fair', root);
-    if (del) del.onclick = () => {
-      if (!confirm('Excluir esta feira? As vendas continuam salvas no caixa.')) return;
+    if (del) del.onclick = async () => {
+      if (!(await ask('Excluir esta feira? As vendas continuam salvas no caixa.', 'Excluir'))) return;
       db.tx.forEach((t) => { if (t.fairId === f.id) t.fairId = ''; });
       db.fairs = db.fairs.filter((x) => x !== f);
       ui.fairId = null;
@@ -893,8 +1042,8 @@ function fragranceForm(existing) {
     toast('Fragrância salva');
   }, (root) => {
     const del = $('#del-frag', root);
-    if (del) del.onclick = () => {
-      if (!confirm(`Remover “${existing}” do catálogo? As vendas antigas continuam no histórico.`)) return;
+    if (del) del.onclick = async () => {
+      if (!(await ask(`Remover “${existing}” do catálogo? As vendas antigas continuam no histórico.`, 'Remover'))) return;
       db.fragrances = db.fragrances.filter((x) => x !== existing);
       save(); $('#modal').close(); render(); toast('Fragrância removida');
     };
@@ -945,8 +1094,8 @@ function productForm(existing) {
     };
     root.oninput = upd; upd();
     const del = $('#del-p', root);
-    if (del) del.onclick = () => {
-      if (!confirm('Excluir este produto? Os lançamentos continuam salvos.')) return;
+    if (del) del.onclick = async () => {
+      if (!(await ask('Excluir este produto? Os lançamentos continuam salvos.', 'Excluir'))) return;
       db.products = db.products.filter((x) => x !== p);
       save(); $('#modal').close(); render(); toast('Produto excluído');
     };
@@ -991,8 +1140,8 @@ function billForm(existing) {
     toast(parts > 1 ? `${parts} parcelas criadas` : 'Conta salva');
   }, (root) => {
     const del = $('#del-b', root);
-    if (del) del.onclick = () => {
-      if (!confirm('Excluir esta conta?')) return;
+    if (del) del.onclick = async () => {
+      if (!(await ask('Excluir esta conta?', 'Excluir'))) return;
       db.bills = db.bills.filter((x) => x !== b);
       save(); $('#modal').close(); render(); toast('Conta excluída');
     };
@@ -1034,7 +1183,12 @@ function toggleBill(id) {
 
 /* ================= Backup ================= */
 
-function download(name, content, type) {
+async function download(name, content, type) {
+  const dl = window.claude && window.claude.use ? await window.claude.use('downloads').catch(() => null) : null;
+  if (dl) {
+    try { await dl.save({ filename: name, data: content }); } catch (e) { if (e && e.code === 'unavailable') toast('Download indisponível aqui'); }
+    return;
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([content], { type }));
   a.download = name;
@@ -1086,9 +1240,9 @@ document.addEventListener('click', (e) => {
     case 'import-json': $('#import-file').click(); break;
     case 'export-csv': exportCsv(); break;
     case 'reset':
-      if (confirm('Apagar TODOS os dados? Faça um backup antes.') && confirm('Tem certeza mesmo?')) {
-        db = normalize({}); save(); render(); toast('Dados apagados');
-      }
+      ask('Apagar TODOS os dados, inclusive da nuvem? Faça um backup antes.', 'Apagar tudo').then((ok) => {
+        if (ok) { db = normalize({}); save(); render(); toast('Dados apagados'); }
+      });
       break;
   }
 });
@@ -1106,13 +1260,13 @@ document.addEventListener('change', (e) => {
   if (e.target.id === 'show-paid') { ui.billShowPaid = e.target.checked; render(); }
   if (e.target.id === 'import-file' && e.target.files[0]) {
     const r = new FileReader();
-    r.onload = () => {
-      try {
-        const data = normalize(JSON.parse(r.result));
-        if (!confirm(`Restaurar backup com ${data.tx.length} lançamentos, ${data.products.length} produtos, ${data.fairs.length} feiras e ${data.bills.length} contas? Os dados atuais serão substituídos.`)) return;
-        db = data; save(); render(); toast('Backup restaurado');
-      } catch { toast('Arquivo inválido'); }
+    r.onload = async () => {
+      let data;
+      try { data = normalize(JSON.parse(r.result)); } catch { toast('Arquivo inválido'); return; }
+      if (!(await ask(`Restaurar backup com ${data.tx.length} lançamentos, ${data.products.length} produtos, ${data.fairs.length} feiras e ${data.bills.length} contas? Os dados atuais serão substituídos.`, 'Restaurar'))) return;
+      db = data; save(); render(); toast('Backup restaurado');
     };
+    e.target.value = '';
     r.readAsText(e.target.files[0]);
   }
 });
@@ -1131,8 +1285,9 @@ const monthInput = $('#month');
 monthInput.value = month;
 monthInput.onchange = () => { month = monthInput.value || today().slice(0, 7); render(); };
 
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+if ('serviceWorker' in navigator && location.protocol.startsWith('http') && window.top === window) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 render();
+connectCloud();
