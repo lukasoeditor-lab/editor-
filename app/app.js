@@ -21,6 +21,15 @@ const DEFAULT_FRAGRANCES = [
   'Bamboo', 'Canela',
 ];
 
+// Produtos da V'Sensi com preço de varejo e atacado (custo é preenchido pela dona)
+const DEFAULT_PRODUCTS = [
+  { name: 'Home Spray', price: 30, wholesale: 20 },
+  { name: 'Difusor', price: 35, wholesale: 25 },
+  { name: 'Sabonete Líquido', price: 30, wholesale: 22 },
+  { name: 'Limpador Perfumado', price: 30, wholesale: 22 },
+  { name: 'Eliminex', price: 30, wholesale: 22 },
+];
+
 // Feiras fixas da semana: quinta de manhã em Toritama, quinta à tarde e sexta em Santa Cruz
 const FAIR_PLACES = ['Toritama', 'Santa Cruz do Capibaribe'];
 const FAIR_PERIODS = ['Manhã', 'Tarde', 'Dia todo'];
@@ -41,9 +50,18 @@ function load() {
 }
 
 function normalize(d) {
+  const products = d.products || [];
+  if (!d.catalogV1) {
+    DEFAULT_PRODUCTS.forEach((dp) => {
+      if (!products.some((p) => p.name.toLowerCase() === dp.name.toLowerCase())) {
+        products.push({ id: Math.random().toString(36).slice(2, 10), cost: 0, stock: 0, minStock: 0, ...dp });
+      }
+    });
+  }
   return {
+    catalogV1: true,
     tx: d.tx || [],
-    products: d.products || [],
+    products,
     bills: d.bills || [],
     fairs: d.fairs || [],
     fragrances: d.fragrances || [...DEFAULT_FRAGRANCES],
@@ -93,6 +111,8 @@ function toast(msg) {
 }
 
 const productById = (id) => db.products.find((p) => p.id === id);
+const priceFor = (p, wholesale) => (wholesale && p.wholesale ? p.wholesale : p.price) || 0;
+const lowStock = (p) => (p.minStock ?? 2) > 0 && (p.stock || 0) <= p.minStock;
 const fairById = (id) => db.fairs.find((f) => f.id === id);
 
 function parseDate(iso) {
@@ -203,6 +223,7 @@ function fairStats(f) {
     pieces: sales.filter(isSale).reduce((a, t) => a + pieces(t), 0),
     net: sold - cost - spent,
     byMethod: groupBy(sales, 'method'),
+    wholesale: sales.filter((t) => t.category === 'Revenda / atacado').reduce((a, t) => a + t.amount, 0),
   };
 }
 
@@ -344,6 +365,7 @@ function viewFairDetail(f) {
       <button class="btn block" data-fair-expense="${f.id}">− Gasto da feira</button>
     </div>
 
+    ${s.sold ? `<h3>Varejo × Atacado</h3><div class="chips"><span class="chip static">Varejo <b>${money(s.sold - s.wholesale)}</b></span><span class="chip static">Atacado <b>${money(s.wholesale)}</b></span></div>` : ''}
     ${s.byMethod.length ? `<h3>Como pagaram</h3><div class="chips">${s.byMethod.map(([m, v]) => `<span class="chip static">${esc(m)} <b>${money(v)}</b></span>`).join('')}</div>` : ''}
 
     <h3>Fragrâncias que mais saíram</h3>
@@ -398,7 +420,8 @@ function viewHome() {
   const s = summary();
   const maxCat = s.outByCat[0]?.[1] || 1;
   const recent = [...db.tx].sort(byDateDesc).slice(0, 5);
-  const lowStock = db.products.filter((p) => (p.stock || 0) <= (p.minStock ?? 2));
+  const lowStockList = db.products.filter(lowStock);
+  const noCost = db.products.filter((p) => !p.cost);
 
   return `
     <div class="hero">
@@ -419,7 +442,8 @@ function viewHome() {
     </div>
 
     ${s.lateCount ? `<h3>Atenção</h3><div class="item"><div class="ico out">!</div><div class="main"><div class="title">${s.lateCount} conta(s) vencida(s)</div><div class="sub">Veja na aba Contas</div></div></div>` : ''}
-    ${lowStock.length ? `<h3>Estoque baixo</h3><div class="list">${lowStock.map((p) => `
+    ${noCost.length ? `<h3>Falta informar</h3><div class="item" data-goto-products><div class="ico warn">!</div><div class="main"><div class="title">Custo de ${noCost.length} produto(s)</div><div class="sub">Sem o custo, o lucro aparece igual ao valor vendido. Toque para preencher.</div></div></div>` : ''}
+    ${lowStockList.length ? `<h3>Estoque baixo</h3><div class="list">${lowStockList.map((p) => `
       <div class="item"><div class="ico">▣</div><div class="main"><div class="title">${esc(p.name)}</div><div class="sub">Restam ${p.stock || 0} un.</div></div></div>`).join('')}</div>` : ''}
 
     <h3>Fragrâncias mais vendidas (mês)</h3>
@@ -484,6 +508,7 @@ function viewProducts() {
     ${prodSeg()}
     ${list.length ? `<div class="list">${list.map((p) => {
       const margin = p.price ? ((p.price - p.cost) / p.price) * 100 : 0;
+      const marginW = p.wholesale ? ((p.wholesale - p.cost) / p.wholesale) * 100 : 0;
       const sold = db.tx.filter((t) => t.type === 'in' && t.productId === p.id);
       const soldQty = sold.reduce((a, t) => a + (t.qty || 0), 0);
       const profit = sold.reduce((a, t) => a + saleProfit(t), 0);
@@ -492,8 +517,9 @@ function viewProducts() {
           <div class="ico">▣</div>
           <div class="main">
             <div class="title">${esc(p.name)}</div>
-            <div class="sub">Custo ${money(p.cost)} · Venda ${money(p.price)} · Margem <b class="${margin < 0 ? 'neg' : 'accent'}">${margin.toFixed(0)}%</b></div>
-            <div class="sub">Estoque <b class="${(p.stock || 0) <= (p.minStock ?? 2) ? 'warn' : ''}">${p.stock || 0}</b> · Vendidos ${soldQty} · Lucro total ${money(profit)}</div>
+            <div class="sub">Varejo <b>${money(p.price)}</b>${p.wholesale ? ` · Atacado <b>${money(p.wholesale)}</b>` : ''}</div>
+            <div class="sub">${p.cost ? `Custo ${money(p.cost)} · Margem <b class="${margin < 0 ? 'neg' : 'accent'}">${margin.toFixed(0)}%</b>${p.wholesale ? ` / <b class="${marginW < 0 ? 'neg' : 'accent'}">${marginW.toFixed(0)}%</b> atacado` : ''}` : '<b class="warn">Custo não informado</b>'}</div>
+            <div class="sub">Estoque <b class="${lowStock(p) ? 'warn' : ''}">${p.stock || 0}</b> · Vendidos ${soldQty} · Lucro total ${money(profit)}</div>
           </div>
         </div>`;
     }).join('')}</div>` : '<div class="empty">Cadastre seus produtos (ex.: Home spray 250ml, Difusor 250ml, Água de lençol) com custo e preço de venda. A fragrância você escolhe na hora da venda.</div>'}
@@ -547,7 +573,7 @@ function viewMore() {
     <input type="file" id="import-file" accept="application/json,.json" hidden>
     <h3>Zona de perigo</h3>
     <button class="btn block danger" id="reset">Apagar todos os dados</button>
-    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v3</p>
+    <p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v4</p>
   `;
 }
 
@@ -675,7 +701,8 @@ function txForm(existing, preset = {}) {
       const amountEl = root.querySelector('[name=amount]');
       if (p && !amountEl.value) {
         const qty = parseInt(root.querySelector('[name=qty]').value, 10) || 1;
-        amountEl.value = String((typeInput.value === 'in' ? p.price : p.cost) * qty).replace('.', ',');
+        const wholesale = root.querySelector('[name=category]').value === 'Revenda / atacado';
+        amountEl.value = String((typeInput.value === 'in' ? priceFor(p, wholesale) : p.cost) * qty).replace('.', ',');
       }
       if (p && !root.querySelector('[name=desc]').value) {
         root.querySelector('[name=desc]').value = (typeInput.value === 'in' ? 'Venda — ' : 'Compra — ') + p.name;
@@ -701,15 +728,19 @@ function quickSaleForm(fair) {
   const counts = Object.fromEntries(rankFragrances(db.tx).map((r) => [r.name, r.qty]));
   const frags = [...db.fragrances].sort((a, b) => (counts[b] || 0) - (counts[a] || 0) || a.localeCompare(b));
   const quickMethods = METHODS.slice(0, 4);
-  const sel = { product: db.products.length === 1 ? db.products[0].id : '', fragrance: '', method: 'Pix', qty: 1, manual: false };
+  const sel = { product: db.products.length === 1 ? db.products[0].id : '', fragrance: '', method: 'Pix', qty: 1, manual: false, wholesale: false };
   let refresh = () => {};
 
   const body = `
     <div class="sub" style="color:var(--muted);margin:-8px 0 12px">${esc(fairLabel(fair))}</div>
+    <div class="segmented" id="qs-channel">
+      <button type="button" data-val="varejo" class="active">Varejo</button>
+      <button type="button" data-val="atacado">Atacado</button>
+    </div>
     ${db.products.length ? `
       <div class="field"><label>Produto</label>
         <div class="chips" id="qs-products">${db.products.map((p) => `
-          <button type="button" class="chip ${sel.product === p.id ? 'active' : ''}" data-val="${p.id}">${esc(p.name)} <small>${money(p.price)}</small></button>`).join('')}
+          <button type="button" class="chip ${sel.product === p.id ? 'active' : ''}" data-val="${p.id}">${esc(p.name)} <small data-price="${p.id}">${money(p.price)}</small></button>`).join('')}
         </div>
       </div>` : '<div class="calc">Dica: cadastre seus produtos na aba Produtos para o app calcular o lucro de cada venda.</div>'}
     <div class="field"><label>Fragrância</label>
@@ -735,7 +766,7 @@ function quickSaleForm(fair) {
     if (amount <= 0) { toast('Informe o valor'); return false; }
     const tx = {
       id: uid(), created: new Date().toISOString(),
-      type: 'in', amount, date: fair.date, method: sel.method, category: 'Venda',
+      type: 'in', amount, date: fair.date, method: sel.method, category: sel.wholesale ? 'Revenda / atacado' : 'Venda',
       desc: [p?.name, sel.fragrance].filter(Boolean).join(' — '),
       productId: sel.product, qty: sel.qty, unitCost: p ? p.cost : 0,
       fragrance: sel.fragrance, fairId: fair.id,
@@ -756,6 +787,8 @@ function quickSaleForm(fair) {
     root.onclick = (e) => {
       const chip = e.target.closest('.chip[data-val]');
       const step = e.target.closest('[data-step]');
+      const channel = e.target.closest('#qs-channel button');
+      if (channel) { sel.wholesale = channel.dataset.val === 'atacado'; sel.manual = false; refresh(); return; }
       if (chip) {
         const group = chip.parentElement.id;
         if (group === 'qs-products') { sel.product = chip.dataset.val; sel.manual = false; }
@@ -776,14 +809,16 @@ function quickSaleForm(fair) {
       root.querySelectorAll('#qs-products .chip').forEach((c) => c.classList.toggle('active', c.dataset.val === sel.product));
       root.querySelectorAll('#qs-frags .chip').forEach((c) => c.classList.toggle('active', c.dataset.val === sel.fragrance));
       root.querySelectorAll('#qs-methods .chip').forEach((c) => c.classList.toggle('active', c.dataset.val === sel.method));
+      root.querySelectorAll('#qs-channel button').forEach((b) => b.classList.toggle('active', (b.dataset.val === 'atacado') === sel.wholesale));
+      root.querySelectorAll('[data-price]').forEach((el) => { el.textContent = money(priceFor(productById(el.dataset.price), sel.wholesale)); });
       $('#qs-qty').textContent = sel.qty;
       const p = productById(sel.product);
       const amountEl = $('#qs-amount');
-      if (p && !sel.manual) amountEl.value = String(p.price * sel.qty).replace('.', ',');
+      if (p && !sel.manual) amountEl.value = String(priceFor(p, sel.wholesale) * sel.qty).replace('.', ',');
       if (!p && !sel.manual) amountEl.value = '';
       const amount = parseMoney(amountEl.value);
-      const parts = [sel.qty + '×', p?.name, sel.fragrance].filter(Boolean).join(' ');
-      $('#qs-calc').innerHTML = `${esc(parts) || 'Escolha o produto e a fragrância'}${p ? ` · lucro <b class="pos">${money(amount - p.cost * sel.qty)}</b>` : ''}`;
+      const parts = [sel.qty + '×', p?.name, sel.fragrance, sel.wholesale ? '(atacado)' : ''].filter(Boolean).join(' ');
+      $('#qs-calc').innerHTML = `${esc(parts)}${p && p.cost ? ` · lucro <b class="pos">${money(amount - p.cost * sel.qty)}</b>` : ''}`;
     };
     refresh();
   });
@@ -867,18 +902,19 @@ function fragranceForm(existing) {
 }
 
 function productForm(existing) {
-  const p = existing || { stock: 0, minStock: 2 };
+  const p = existing || { stock: 0, minStock: 0 };
   const isEdit = !!existing;
   const num = (v) => (v != null ? String(v).replace('.', ',') : '');
   const body = `
     <div class="field"><label>Nome do produto</label><input name="name" required value="${esc(p.name)}" placeholder="Ex.: Home spray Lavanda 250ml"></div>
     <div class="two">
       <div class="field"><label>Quanto custou (un.)</label><input name="cost" inputmode="decimal" placeholder="0,00" value="${num(p.cost)}"></div>
-      <div class="field"><label>Preço de venda</label><input name="price" inputmode="decimal" placeholder="0,00" value="${num(p.price)}"></div>
+      <div class="field"><label>Preço varejo</label><input name="price" inputmode="decimal" placeholder="0,00" value="${num(p.price)}"></div>
     </div>
+    <div class="field"><label>Preço atacado</label><input name="wholesale" inputmode="decimal" placeholder="0,00" value="${num(p.wholesale)}"></div>
     <div class="two">
       <div class="field"><label>Estoque atual</label><input type="number" name="stock" step="1" value="${p.stock || 0}"></div>
-      <div class="field"><label>Avisar quando chegar a</label><input type="number" name="minStock" min="0" step="1" value="${p.minStock ?? 2}"></div>
+      <div class="field"><label>Avisar quando chegar a</label><input type="number" name="minStock" min="0" step="1" value="${p.minStock ?? 0}"></div>
     </div>
     <div class="calc" id="p-calc"></div>
     ${isEdit ? '<button type="button" class="btn block danger" id="del-p">Excluir produto</button>' : ''}
@@ -889,6 +925,7 @@ function productForm(existing) {
       name: fd.get('name').trim(),
       cost: parseMoney(fd.get('cost')),
       price: parseMoney(fd.get('price')),
+      wholesale: parseMoney(fd.get('wholesale')),
       stock: parseInt(fd.get('stock'), 10) || 0,
       minStock: parseInt(fd.get('minStock'), 10) || 0,
     };
@@ -901,7 +938,10 @@ function productForm(existing) {
       const v = parseMoney(root.querySelector('[name=price]').value);
       const s = parseInt(root.querySelector('[name=stock]').value, 10) || 0;
       const m = v ? ((v - c) / v) * 100 : 0;
-      calc.innerHTML = `Lucro por peça: <b class="${v - c < 0 ? 'neg' : 'pos'}">${money(v - c)}</b> (${m.toFixed(0)}%) · Investido no estoque: <b>${money(c * s)}</b>`;
+      const w = parseMoney(root.querySelector('[name=wholesale]').value);
+      calc.innerHTML = c
+        ? `Lucro por peça: varejo <b class="${v - c < 0 ? 'neg' : 'pos'}">${money(v - c)}</b> (${m.toFixed(0)}%)${w ? ` · atacado <b class="${w - c < 0 ? 'neg' : 'pos'}">${money(w - c)}</b>` : ''} · Investido no estoque: <b>${money(c * s)}</b>`
+        : 'Informe quanto custa produzir uma unidade para o app calcular o lucro.';
     };
     root.oninput = upd; upd();
     const del = $('#del-p', root);
@@ -1023,6 +1063,7 @@ document.addEventListener('click', (e) => {
   const seg = e.target.closest('[data-seg] button');
   if (seg) { ui[seg.parentElement.dataset.seg] = seg.dataset.val; render(); return; }
 
+  if (e.target.closest('[data-goto-products]')) { tab = 'produtos'; ui.prodView = 'produtos'; render(); window.scrollTo(0, 0); return; }
   const el = e.target.closest('[data-quick-sale],[data-fair-expense],[data-edit-fair],[data-open-fair],[data-close-fair],[data-edit-fragrance],[data-edit-tx],[data-edit-product],[data-edit-bill],[data-toggle-bill]');
   if (el) {
     if (el.dataset.quickSale) return quickSaleForm(fairById(el.dataset.quickSale));

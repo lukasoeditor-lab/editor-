@@ -24,4 +24,6 @@ Os dados ficam salvos no próprio aparelho. Faça backup pela aba **Mais** de ve
 
 Cores tiradas da logo: verde-oliva `#8B8854` e bege `#E5E1D9`, definidas no início de `app/styles.css`. Títulos em Cormorant Garamond e textos em Jost (Google Fonts). Os ícones (`icon-*.png`, `apple-touch-icon.png`, `symbol.png`) e a `logo.png` foram gerados a partir da logo oficial.
 
+Produtos já cadastrados (varejo / atacado): Home Spray R$ 30 / R$ 20, Difusor R$ 35 / R$ 25, Sabonete Líquido, Limpador Perfumado e Eliminex R$ 30 / R$ 22. Na venda rápida dá para alternar entre Varejo e Atacado, e o relatório de cada feira separa os dois.
+
 As categorias de gasto já vêm pensadas para aromatizantes: essências, frascos e válvulas, varetas, álcool/base, rótulos, embalagem, frete etc.

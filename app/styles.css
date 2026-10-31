@@ -93,6 +93,8 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: v
   background: var(--surface-2);
 }
 .item .ico.in { color: var(--green); background: rgba(79, 122, 67, .12); }
+.item .ico.warn { color: var(--amber); background: rgba(176, 122, 34, .13); }
+.item[data-goto-products] { cursor: pointer; }
 .item .ico.out { color: var(--red); background: rgba(176, 73, 59, .1); }
 .item .main { flex: 1; min-width: 0; }
 .item .title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
