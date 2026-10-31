@@ -1,6 +1,6 @@
 // Cache simples para o app abrir offline
-const CACHE = 'vsensi-v4';
-const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.json', 'symbol.png', 'icon-192.png', 'icon-512.png'];
+const CACHE = 'vsensi-v5';
+const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.json', 'firebase-config.js', 'logo.png', 'apple-touch-icon.png', 'symbol.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));

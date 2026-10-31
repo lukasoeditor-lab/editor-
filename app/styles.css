@@ -284,3 +284,12 @@ dialog .profile-card { margin-bottom: 14px; background: var(--bg); }
 .invite ol { margin: 6px 0 10px; padding-left: 20px; line-height: 1.6; color: var(--text); }
 .link-row { display: flex; gap: 8px; align-items: center; }
 .link-row code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; background: var(--bg); padding: 8px 10px; border-radius: 10px; font-size: 12px; }
+
+/* Login do app instalado */
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--surface); color: var(--text); }
+.divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; margin: 14px 0; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.auth-links { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+.link { background: none; border: 0; padding: 4px 0; color: var(--accent-dark); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.who .main { flex: 1; min-width: 0; }
+.profile-actions { display: flex; flex-direction: column; gap: 6px; }

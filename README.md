@@ -11,7 +11,11 @@ App de controle financeiro da marca **V'Sensi Aromatizantes**: vendas, gastos, p
 - **Contas**: o que você deve (a pagar) e o que te devem (a receber), com vencimento e parcelas. Ao marcar como paga, a conta vira um lançamento no caixa.
 - **⚙ (canto superior)**: backup (.json), restauração e exportação para planilha (.csv).
 
-## App publicado
+## App para instalar (iPhone)
+
+O app também funciona fora do Claude, com login e dados no Firebase e hospedagem no GitHub Pages. O passo a passo está em [INSTALAR.md](INSTALAR.md). Depois de configurado, o endereço é https://lukasoeditor-lab.github.io/editor-/app/
+
+## App publicado no Claude
 
 O app está publicado como Artifact do Claude: https://claude.ai/artifact/2EfkaNsFeg2xMRJXZE46re
 

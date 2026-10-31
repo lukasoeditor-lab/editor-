@@ -1,0 +1,70 @@
+rules_version = '2';
+
+// Regras do banco de dados da V'Sensi Gestão.
+// Cole este arquivo inteiro em Firebase → Firestore Database → Regras → Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function rolePath() { return /databases/$(database)/documents/roles/$(request.auth.uid); }
+    function active() { return signedIn() && exists(rolePath()) && get(rolePath()).data.active == true; }
+    function role() { return get(rolePath()).data.role; }
+    function isCeo() { return active() && role() == 'ceo'; }
+    function isManager() { return active() && role() in ['ceo', 'gerente']; }
+    function seesMoney() { return active() && role() in ['ceo', 'gerente', 'financeiro']; }
+    function ownerUid() { return get(/databases/$(database)/documents/meta/owner).data.uid; }
+
+    // Primeira conta do app: vira a dona e o primeiro CEO. Só pode ser criada uma vez.
+    match /meta/owner {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Catálogo de fragrâncias
+    match /meta/settings {
+      allow read: if active();
+      allow write: if seesMoney();
+    }
+
+    // Função de cada pessoa. Só a gestão muda; só o CEO nomeia ou mexe em outro CEO.
+    match /roles/{uid} {
+      allow read: if signedIn();
+      allow create: if signedIn() && uid == request.auth.uid && !exists(/databases/$(database)/documents/roles/$(uid))
+        && request.resource.data.role == 'ceo' && ownerUid() == request.auth.uid;
+      allow create, update: if isCeo()
+        || (isManager() && request.resource.data.role != 'ceo' && (resource == null || resource.data.role != 'ceo'));
+      allow delete: if isCeo() || (isManager() && resource.data.role != 'ceo');
+    }
+
+    // Cadastro (nome, CPF, WhatsApp): a própria pessoa e a gestão.
+    match /members/{uid} {
+      allow read: if (signedIn() && uid == request.auth.uid) || isManager();
+      allow create, update: if signedIn() && uid == request.auth.uid;
+      allow delete: if (signedIn() && uid == request.auth.uid) || isManager();
+    }
+
+    // Vendas e gastos: toda a equipe registra; vendedor só altera as próprias vendas.
+    match /tx/{id} {
+      allow read, create: if active();
+      allow update, delete: if seesMoney() || (active() && resource.data.sellerId == request.auth.uid);
+    }
+
+    // Produtos: a venda baixa o estoque, então o vendedor só pode mudar o campo "stock".
+    match /products/{id} {
+      allow read: if active();
+      allow create, delete: if seesMoney();
+      allow update: if seesMoney()
+        || (active() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock']));
+    }
+
+    // Feiras: toda a equipe vê e cria.
+    match /fairs/{id} {
+      allow read, write: if active();
+    }
+
+    // Contas a pagar e a receber: só quem vê o financeiro.
+    match /bills/{id} {
+      allow read, write: if seesMoney();
+    }
+  }
+}

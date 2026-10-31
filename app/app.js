@@ -84,6 +84,9 @@ function saveLocal() {
    local e a lista do que ainda não subiu, para a venda feita sem internet na
    feira não se perder. */
 
+// Onde os dados moram: dentro do Claude (link do Artifact), no Firebase (app instalado) ou só no aparelho
+const BACKEND = window.claude && window.claude.use ? 'claude'
+  : (window.FIREBASE_CONFIG && window.firebase ? 'firebase' : 'local');
 const COLS = ['tx', 'products', 'bills', 'fairs'];
 const DIRTY_KEY = 'vsensi-dirty-v1';
 const settingsDoc = () => ({ fragrances: db.fragrances, catalogV1: true });
@@ -133,7 +136,7 @@ async function flush() {
         else await cloud.doc(key).delete();
         dirty.delete(key);
       } catch (e) {
-        if (e && e.code === 'invalid_argument') { dirty.delete(key); continue; }
+        if (e && (e.code === 'invalid_argument' || e.code === 'permission-denied')) { dirty.delete(key); continue; }
         if (e && e.code === 'quota_exceeded') toast('A nuvem está cheia: faça um backup e apague dados antigos');
         syncState = 'offline';
         break;
@@ -157,11 +160,23 @@ function applyRemote(col, docs) {
 }
 
 async function connectCloud() {
-  if (!window.claude || !window.claude.use) return;
+  if (BACKEND === 'firebase') return connectFirebase();
+  if (BACKEND !== 'claude') return;
   let ns = null;
   try { ns = await window.claude.use('db'); } catch (e) { ns = null; }
   if (!ns) { if (session.mode === 'loading') { session.mode = 'noid'; render(); } return; }
   cloud = ns;
+  startDataSync();
+  initTeam();
+}
+
+let dataStarted = false;
+
+// Assina os dados do app. No Firebase só começa depois que a função da pessoa é conhecida,
+// porque as regras do servidor escondem as contas de quem é vendedor.
+async function startDataSync() {
+  if (dataStarted) return;
+  dataStarted = true;
   syncState = 'conectando';
   try {
     const meta = await cloud.doc('meta/settings').get();
@@ -181,7 +196,7 @@ async function connectCloud() {
     render();
     flush();
   };
-  COLS.forEach((col) => {
+  COLS.filter((col) => col !== 'bills' || can('contas')).forEach((col) => {
     cloud.collection(col).onSnapshot((snap) => {
       applyRemote(col, snap.docs);
       if (!snap.metadata.fromCache) onData(); else { saveLocal(); render(); }
@@ -196,9 +211,128 @@ async function connectCloud() {
     }
   }, () => {});
   flush();
-  initTeam();
   window.addEventListener('online', flush);
   setInterval(() => { if (dirty.size) flush(); }, 30000);
+}
+
+
+/* ================= Firebase (app instalado) =================
+   Login com Google, e-mail ou CPF. Quem entra com CPF ganha uma conta
+   <cpf>@cpf.vsensi.app por trás, sem precisar de e-mail. */
+
+const CPF_DOMAIN = '@cpf.vsensi.app';
+let fbAuth = null;
+
+function initialsAvatar(name) {
+  const ini = String(name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0] || '').join('').toUpperCase() || '?';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#8b8854"/><text x="32" y="41" font-family="Georgia,serif" font-size="26" fill="#fbfaf6" text-anchor="middle">${ini.replace(/[<&>]/g, '')}</text></svg>`;
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+function loginEmail(id) {
+  const digits = String(id).replace(/\D/g, '');
+  return isCpf(digits) && !String(id).includes('@') ? digits + CPF_DOMAIN : String(id).trim();
+}
+
+const AUTH_ERRORS = {
+  'auth/invalid-credential': 'E-mail/CPF ou senha incorretos.',
+  'auth/wrong-password': 'Senha incorreta.',
+  'auth/user-not-found': 'Não existe conta com esse e-mail ou CPF. Toque em “Criar conta”.',
+  'auth/email-already-in-use': 'Já existe conta com esse e-mail ou CPF. Toque em “Já tenho conta”.',
+  'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+  'auth/invalid-email': 'Digite um e-mail válido ou um CPF válido.',
+  'auth/too-many-requests': 'Muitas tentativas. Espere alguns minutos e tente de novo.',
+  'auth/network-request-failed': 'Sem internet. Conecte e tente de novo.',
+  'auth/popup-closed-by-user': 'Login com Google cancelado.',
+  'auth/unauthorized-domain': 'Este endereço ainda não foi liberado no Firebase (Domínios autorizados).',
+  'auth/operation-not-allowed': 'Esse tipo de login ainda não foi ativado no Firebase.',
+};
+const authError = (e) => AUTH_ERRORS[e && e.code] || 'Não foi possível entrar. Tente de novo.';
+
+async function connectFirebase() {
+  try {
+    firebase.initializeApp(window.FIREBASE_CONFIG);
+    cloud = firebase.firestore();
+    try { await cloud.enablePersistence({ synchronizeTabs: true }); } catch (e) { /* sem cache offline neste navegador */ }
+    fbAuth = firebase.auth();
+    fbAuth.getRedirectResult().catch((e) => toast(authError(e)));
+  } catch (e) {
+    session.mode = 'noid'; render(); return;
+  }
+  fbAuth.onAuthStateChanged((u) => {
+    if (!u) { session.mode = 'signin'; session.id = null; render(); return; }
+    initTeam(u);
+  });
+}
+
+async function googleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try { await fbAuth.signInWithPopup(provider); }
+  catch (e) {
+    if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment', 'auth/cancelled-popup-request'].includes(e.code)) {
+      fbAuth.signInWithRedirect(provider);
+    } else toast(authError(e));
+  }
+}
+
+async function passwordSignIn(form) {
+  const fd = new FormData(form);
+  const email = loginEmail(fd.get('login'));
+  const pass = String(fd.get('password') || '');
+  const btn = form.querySelector('button[type=submit]');
+  if (ui.authMode === 'create' && pass !== fd.get('password2')) return toast('As senhas não são iguais');
+  btn.disabled = true;
+  try {
+    if (ui.authMode === 'create') await fbAuth.createUserWithEmailAndPassword(email, pass);
+    else await fbAuth.signInWithEmailAndPassword(email, pass);
+  } catch (e) { toast(authError(e)); }
+  btn.disabled = false;
+}
+
+async function resetPassword() {
+  const id = $('#login-id')?.value || '';
+  const email = loginEmail(id);
+  if (!email || email.endsWith(CPF_DOMAIN)) {
+    return toast(email ? 'Conta de CPF não recebe e-mail. Crie uma conta com e-mail e peça aprovação ao CEO.' : 'Digite seu e-mail primeiro');
+  }
+  try { await fbAuth.sendPasswordResetEmail(email); toast('Enviamos um link para ' + email); }
+  catch (e) { toast(authError(e)); }
+}
+
+async function signOut() {
+  const msg = dirty.size
+    ? `Há ${dirty.size} alteração(ões) ainda não enviadas. Saindo agora elas se perdem. Sair mesmo assim?`
+    : 'Sair da sua conta neste aparelho?';
+  if (!(await ask(msg, 'Sair'))) return;
+  try { [STORE_KEY, DIRTY_KEY, SESSION_KEY].forEach((k) => localStorage.removeItem(k)); } catch (e) { /* ignora */ }
+  await fbAuth.signOut();
+  location.reload();
+}
+
+function viewSignIn() {
+  const create = ui.authMode === 'create';
+  return `
+    <div class="gate"><img src="logo.png" alt="V'Sensi Aromatizantes" class="gate-logo">
+      <div class="gate-card">
+        <h2>${create ? 'Criar conta' : 'Entrar'}</h2>
+        <p class="gate-msg">${create ? 'Use seu e-mail ou seu CPF e crie uma senha.' : 'Gestão da V\'Sensi Aromatizantes'}</p>
+        <button type="button" class="btn block google-btn" id="google-signin">
+          <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+          Continuar com Google
+        </button>
+        <div class="divider"><span>ou</span></div>
+        <form id="signin-form" novalidate>
+          <div class="field"><label for="login-id">E-mail ou CPF</label><input id="login-id" name="login" autocomplete="username" inputmode="email" required placeholder="voce@email.com ou 000.000.000-00"></div>
+          <div class="field"><label for="login-pass">Senha</label><input id="login-pass" name="password" type="password" autocomplete="${create ? 'new-password' : 'current-password'}" required minlength="6"></div>
+          ${create ? '<div class="field"><label for="login-pass2">Repita a senha</label><input id="login-pass2" name="password2" type="password" autocomplete="new-password" required></div>' : ''}
+          <button type="submit" class="btn primary block">${create ? 'Criar conta' : 'Entrar'}</button>
+        </form>
+        <div class="auth-links">
+          <button type="button" class="link" id="toggle-auth">${create ? 'Já tenho conta' : 'Criar conta'}</button>
+          ${create ? '' : '<button type="button" class="link" id="reset-pass">Esqueci minha senha</button>'}
+        </div>
+      </div>
+    </div>`;
 }
 
 /* ================= Confirmação dentro do app ================= */
@@ -377,6 +511,7 @@ function fairStats(f) {
    O vendedor só vê feiras e produtos, sem custos nem lucro. */
 
 const APP_LINK = 'https://claude.ai/artifact/2EfkaNsFeg2xMRJXZE46re';
+const appLink = () => (BACKEND === 'firebase' ? location.origin + location.pathname : APP_LINK);
 const ROLES = {
   ceo: { label: 'CEO / Dono', desc: 'Vê tudo e aprova a equipe' },
   gerente: { label: 'Gerente', desc: 'Vê tudo e aprova funcionários' },
@@ -396,7 +531,7 @@ const session = { mode: 'local', id: null, role: 'ceo', me: null, isOwner: false
 const SESSION_KEY = 'vsensi-session-v1';
 
 // Abre com a última função conhecida, para funcionar na feira mesmo sem sinal
-if (window.claude) {
+if (BACKEND !== 'local') {
   session.mode = 'loading';
   try {
     const cached = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
@@ -449,14 +584,25 @@ function maskPhone(v) {
 
 const hiddenCpf = (cpf) => (cpf ? `***.${cpf.slice(4, 7)}.${cpf.slice(8, 11)}-**` : '');
 
-async function initTeam() {
-  try { userNs = await window.claude.use('user'); } catch (e) { userNs = null; }
-  const id = userNs ? await userNs.id() : null;
-  if (!id) { session.mode = 'noid'; render(); return; }
+async function initTeam(fbUser) {
+  let id = null;
+  if (fbUser) {
+    id = fbUser.uid;
+    session.me = {
+      id, name: fbUser.displayName || '', email: fbUser.email && !fbUser.email.endsWith(CPF_DOMAIN) ? fbUser.email : '',
+      avatarUrl: fbUser.photoURL || initialsAvatar(fbUser.displayName || fbUser.email || '?'), isOwner: false,
+      cpf: fbUser.email && fbUser.email.endsWith(CPF_DOMAIN) ? maskCpf(fbUser.email) : '',
+    };
+  } else {
+    try { userNs = await window.claude.use('user'); } catch (e) { userNs = null; }
+    id = userNs ? await userNs.id() : null;
+    if (!id) { session.mode = 'noid'; render(); return; }
+    session.me = await userNs.me();
+  }
+  if (session.id && session.id !== id) { try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignora */ } }
   session.id = id;
-  session.me = await userNs.me();
   session.isOwner = session.me.isOwner;
-  session.mode = 'loading';
+  if (session.mode !== 'team') session.mode = 'loading';
   render();
   cloud.collection('roles').onSnapshot((snap) => {
     team.roles = Object.fromEntries(snap.docs.map((d) => [d.id, { ...d.data() }]));
@@ -480,17 +626,23 @@ function updateSession() {
     else if (session.mode !== 'loading') localStorage.removeItem(SESSION_KEY);
   } catch (e) { /* ignora */ }
   if (session.mode === 'team') {
+    if (dataStarted && startedRole && startedRole !== session.role) { location.reload(); return; }
+    if (BACKEND === 'firebase' && !dataStarted) { startedRole = session.role; startDataSync(); }
     if (!can(tab)) tab = firstTab();
     if (can('equipe') && !team.membersSub) subscribeMembers();
   }
   render();
 }
 
+let startedRole = null;
+
 function subscribeMembers() {
   team.membersSub = true;
   cloud.collection('members').onSnapshot(async (snap) => {
     team.members = Object.fromEntries(snap.docs.map((d) => [d.id, { ...d.data() }]));
-    if (userNs) {
+    if (BACKEND === 'firebase') {
+      team.profiles = Object.fromEntries(Object.entries(team.members).map(([id, m]) => [id, { avatarUrl: m.photoURL || initialsAvatar(m.name) }]));
+    } else if (userNs) {
       try { team.profiles = await userNs.profiles(Object.keys(team.members)); } catch (e) { /* sem fotos */ }
     }
     render();
@@ -507,6 +659,7 @@ async function registerMember(form) {
     wantedRole: fd.get('role'),
     createdAt: new Date().toISOString(),
   };
+  if (BACKEND === 'firebase') data.photoURL = session.me?.avatarUrl?.startsWith('http') ? session.me.avatarUrl : '';
   if (data.name.split(/\s+/).length < 2) return toast('Escreva nome e sobrenome');
   if (!isCpf(data.cpf)) return toast('CPF inválido: confira os números');
   if (!ROLES[data.wantedRole]) return toast('Escolha sua função');
@@ -517,7 +670,11 @@ async function registerMember(form) {
     else await cloud.doc('members/' + session.id).set(data);
     // Sem CEO cadastrado ainda: a equipe começa sem precisar de aprovação
     if (!hasCeo() && !team.roles[session.id]) {
-      try { await cloud.doc('roles/' + session.id).set({ role: data.wantedRole, active: true, by: session.id, at: new Date().toISOString() }); } catch (e) { /* fica aguardando */ }
+      try {
+        // No Firebase a primeira conta vira a dona do app (meta/owner) e entra como CEO
+        if (BACKEND === 'firebase') await cloud.doc('meta/owner').set({ uid: session.id, at: new Date().toISOString() });
+        await cloud.doc('roles/' + session.id).set({ role: BACKEND === 'firebase' ? 'ceo' : data.wantedRole, active: true, by: session.id, at: new Date().toISOString() });
+      } catch (e) { /* fica aguardando aprovação */ }
     }
     toast('Cadastro enviado ✓');
   } catch (e) {
@@ -621,8 +778,10 @@ function viewGate() {
   const who = session.me ? `
     <div class="who">
       <img class="avatar" data-avatar="me" alt="">
-      <div><div class="title">${esc(session.me.name || 'Sua conta')}</div><div class="sub">Entrou com sua conta Claude (Google ou e-mail)</div></div>
+      <div class="main"><div class="title">${esc(session.me.name || session.me.email || session.me.cpf || 'Sua conta')}</div><div class="sub">${BACKEND === 'firebase' ? 'Conta conectada' : 'Entrou com sua conta Claude (Google ou e-mail)'}</div></div>
+      ${BACKEND === 'firebase' ? '<button type="button" class="link" id="sign-out">Sair</button>' : ''}
     </div>` : '';
+  if (session.mode === 'signin') return viewSignIn();
   if (session.mode === 'loading') return `<div class="gate">${logo}<p class="gate-msg">Carregando…</p></div>`;
   if (session.mode === 'noid') return `<div class="gate">${logo}<div class="gate-card"><h2>Entre na sua conta</h2><p class="gate-msg">Para usar o app da equipe, abra este link logado na sua conta do Claude (com Google ou e-mail) e peça acesso ao CEO.</p></div></div>`;
   if (session.mode === 'pending') return `
@@ -642,11 +801,13 @@ function viewGate() {
     <div class="gate">${logo}
       <form class="gate-card" id="register-form" novalidate>
         <h2>${first ? 'Bem-vindo à gestão V\'Sensi' : 'Entrar na equipe'}</h2>
-        <p class="gate-msg">${first ? 'Primeiro acesso: cadastre-se. O primeiro CEO entra direto, sem aprovação.' : 'Preencha seus dados. O CEO vai aprovar seu acesso.'}</p>
+        <p class="gate-msg">${first
+          ? (BACKEND === 'firebase' ? 'Primeiro acesso: esta conta será a do CEO. Depois você pode passar o cargo para outra pessoa.' : 'Primeiro acesso: cadastre-se. O primeiro CEO entra direto, sem aprovação.')
+          : 'Preencha seus dados. O CEO vai aprovar seu acesso.'}</p>
         ${who}
         <div class="field"><label for="reg-name">Nome completo</label><input id="reg-name" name="name" autocomplete="name" required value="${esc(session.me?.name || '')}"></div>
         <div class="two">
-          <div class="field"><label for="reg-cpf">CPF</label><input id="reg-cpf" name="cpf" inputmode="numeric" data-mask="cpf" placeholder="000.000.000-00" required></div>
+          <div class="field"><label for="reg-cpf">CPF</label><input id="reg-cpf" name="cpf" inputmode="numeric" data-mask="cpf" placeholder="000.000.000-00" required value="${esc(session.me?.cpf || '')}"></div>
           <div class="field"><label for="reg-phone">WhatsApp</label><input id="reg-phone" name="phone" inputmode="tel" data-mask="phone" placeholder="(81) 90000-0000"></div>
         </div>
         <div class="field"><label for="reg-email">E-mail</label><input id="reg-email" name="email" type="email" autocomplete="email" value="${esc(session.me?.email || '')}"></div>
@@ -692,12 +853,16 @@ function viewTeam() {
     ${off.length ? `<div class="sub" style="color:var(--muted);margin-top:8px">Desativados: ${off.map((id) => esc(team.members[id].name)).join(', ')}</div>` : ''}
     <div class="invite">
       <div class="title">Convidar alguém</div>
-      <ol>
+      ${BACKEND === 'firebase' ? `<ol>
+        <li>Mande o link do app para a pessoa pelo WhatsApp.</li>
+        <li>Ela abre no Safari e toca em Compartilhar → <b>Adicionar à Tela de Início</b>.</li>
+        <li>Ela cria a conta (Google, e-mail ou CPF) e se cadastra. Você aprova aqui.</li>
+      </ol>` : `<ol>
         <li>Toque em <b>Compartilhar</b> no topo desta página do Claude.</li>
         <li>Adicione o e-mail da pessoa com permissão de <b>edição</b>.</li>
         <li>Mande o link. Ela entra com a conta Google ou e-mail e se cadastra.</li>
-      </ol>
-      <div class="link-row"><code id="app-link">${APP_LINK}</code><button class="btn sm" id="copy-link">Copiar</button></div>
+      </ol>`}
+      <div class="link-row"><code id="app-link">${esc(appLink())}</code><button class="btn sm" id="copy-link">Copiar</button></div>
     </div>
   `;
 }
@@ -705,7 +870,7 @@ function viewTeam() {
 /* ================= Telas ================= */
 
 let tab = 'inicio';
-const ui = { txFilter: 'all', txSearch: '', billFilter: 'pagar', billShowPaid: false, fairId: null, prodView: 'produtos' };
+const ui = { authMode: 'login', txFilter: 'all', txSearch: '', billFilter: 'pagar', billShowPaid: false, fairId: null, prodView: 'produtos' };
 
 function render() {
   const gated = session.mode !== 'local' && session.mode !== 'team';
@@ -1071,7 +1236,10 @@ function viewMore() {
         <span class="badge role-${esc(session.role)}">${esc(roleLabel(session.role))}</span>
         <div class="sub">${esc([hiddenCpf(team.mine?.cpf), team.mine?.phone].filter(Boolean).join(' · '))}</div>
       </div>
-      <button class="btn sm" id="edit-profile">Editar</button>
+      <div class="profile-actions">
+        <button class="btn sm" id="edit-profile">Editar</button>
+        ${BACKEND === 'firebase' ? '<button class="btn sm ghost" id="sign-out">Sair</button>' : ''}
+      </div>
     </div>` : '';
   if (session.mode === 'team' && !can('backup')) {
     return `${profile}<p class="sub" style="color:var(--muted);margin-top:24px;text-align:center">V'Sensi Gestão · v5</p>`;
@@ -1592,13 +1760,20 @@ document.addEventListener('click', (e) => {
   if (seg) { ui[seg.parentElement.dataset.seg] = seg.dataset.val; render(); return; }
 
   if (e.target.closest('[data-goto-products]')) { tab = 'produtos'; ui.prodView = 'produtos'; render(); window.scrollTo(0, 0); return; }
+  const authBtn = e.target.closest('#google-signin,#toggle-auth,#reset-pass,#sign-out');
+  if (authBtn) {
+    if (authBtn.id === 'google-signin') return googleSignIn();
+    if (authBtn.id === 'toggle-auth') { ui.authMode = ui.authMode === 'create' ? 'login' : 'create'; return render(); }
+    if (authBtn.id === 'reset-pass') return resetPassword();
+    if (authBtn.id === 'sign-out') return signOut();
+  }
   const mem = e.target.closest('[data-member],[data-reject],.role-opt,#edit-profile,#copy-link');
   if (mem) {
     if (mem.dataset.reject) return rejectMember(mem.dataset.reject);
     if (mem.dataset.member) return memberForm(mem.dataset.member);
     if (mem.id === 'edit-profile') return profileForm();
     if (mem.id === 'copy-link') {
-      navigator.clipboard.writeText(APP_LINK).then(() => toast('Link copiado'), () => { const r = document.createRange(); r.selectNode($('#app-link')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Link selecionado: copie'); });
+      navigator.clipboard.writeText(appLink()).then(() => toast('Link copiado'), () => { const r = document.createRange(); r.selectNode($('#app-link')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Link selecionado: copie'); });
       return;
     }
     if (mem.closest('#register-form')) {
@@ -1639,6 +1814,7 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('submit', (e) => {
   if (e.target.id === 'register-form') { e.preventDefault(); registerMember(e.target); }
+  if (e.target.id === 'signin-form') { e.preventDefault(); passwordSignIn(e.target); }
 });
 
 document.addEventListener('input', (e) => {
@@ -1681,7 +1857,7 @@ const monthInput = $('#month');
 monthInput.value = month;
 monthInput.onchange = () => { month = monthInput.value || today().slice(0, 7); render(); };
 
-if ('serviceWorker' in navigator && location.protocol.startsWith('http') && window.top === window) {
+if ('serviceWorker' in navigator && location.protocol.startsWith('http') && BACKEND !== 'claude') {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
