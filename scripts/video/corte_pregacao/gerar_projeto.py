@@ -110,7 +110,9 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
     cauda = float(roteiro.get("cauda", 1.5))
     TOTAL = round(DUR0 + cauda, 3)
     L, A = info["largura"], info["altura"]
-    est = ESTILOS[roteiro.get("estilo", "A")]
+    est = dict(ESTILOS[roteiro.get("estilo", "A")])
+    if roteiro.get("legenda_tam"):  # tamanho da legenda normal (px), ex.: o cliente pediu maior
+        est["cap_tam"] = int(roteiro["legenda_tam"])
     vermelho = roteiro.get("cor_titulo", "#DC2427")
     amarelo = roteiro.get("cor_objecao", "#F7D903")
 
