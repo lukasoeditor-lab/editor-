@@ -1,0 +1,14 @@
+{
+  "name": "fremex",
+  "description": "Plugins da FREMEX para profissionais criativos: configuração do ambiente de vídeo e produção de reels no estilo FREMEX.",
+  "owner": {
+    "name": "FREMEX"
+  },
+  "plugins": [
+    {
+      "name": "fremex",
+      "source": "./plugins/fremex",
+      "description": "Configura o Claude Code para edição de vídeo por código (Remotion, HyperFrames, FFmpeg) e produz reels no estilo FREMEX."
+    }
+  ]
+}
