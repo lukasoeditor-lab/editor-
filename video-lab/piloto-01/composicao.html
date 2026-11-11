@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>FREMEX · Piloto 01 · Método CRIAR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Instrument+Serif:ital@1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=block">
+<style>
+/* Composição 1080x1920. Todo estado visual é função do tempo t (seek), para render determinístico. */
+:root {
+  --ink: #080A0F; --navy: #101D35; --navy2: #16274A; --blue: #2459A6; --blue-d: #6A96DE;
+  --ice: #F3F4F6; --mute: #8C97AB; --line: rgba(243,244,246,.10);
+  --display: "Archivo", sans-serif; --serif: "Instrument Serif", serif;
+  --mono: "IBM Plex Mono", monospace; --body: "IBM Plex Sans", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: var(--ice); font-family: var(--body);
+  background: radial-gradient(70% 38% at 50% 30%, rgba(36,89,166,.22), transparent 70%), var(--ink); }
+/* chão em perspectiva */
+#floor { position: absolute; left: -50%; right: -50%; bottom: -10%; height: 55%; transform-origin: 50% 0;
+  transform: perspective(700px) rotateX(62deg);
+  background-image: linear-gradient(rgba(106,150,222,.16) 2px, transparent 2px), linear-gradient(90deg, rgba(106,150,222,.16) 2px, transparent 2px);
+  background-size: 120px 120px; mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 70%, transparent); }
+.layer { position: absolute; inset: 0; }
+/* tipografia */
+.h { font-family: var(--display); font-stretch: 118%; font-weight: 700; letter-spacing: -.01em; line-height: 1.02; }
+.it { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--blue-d); font-stretch: 100%; }
+.mono { font-family: var(--mono); }
+/* legenda */
+#cap { position: absolute; left: 0; right: 0; top: 1395px; text-align: center; font-family: var(--display); font-stretch: 105%;
+  font-weight: 600; font-size: 64px; letter-spacing: .005em; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+#cap b { color: var(--blue-d); font-weight: 600; }
+/* cena 1 */
+#s1 .l1 { position: absolute; left: 90px; right: 90px; top: 470px; font-size: 104px; text-align: center; }
+#s1 .l2 { position: absolute; left: 60px; right: 60px; top: 780px; font-size: 150px; text-align: center; }
+/* cena 2 */
+#s2 .title { position: absolute; left: 90px; top: 230px; font-size: 92px; }
+#s2 .repo { position: absolute; left: 92px; top: 345px; font-size: 30px; color: var(--mute); }
+#s2 .tags { position: absolute; left: 90px; top: 400px; display: flex; gap: 14px; }
+.pill { font-family: var(--mono); font-size: 26px; padding: 6px 16px; border-radius: 999px; border: 2px solid var(--blue-d); color: var(--blue-d); letter-spacing: .04em; }
+.pill.warm { border-color: #C9A35A; color: #E3C27A; }
+#s2 .num { position: absolute; right: 80px; top: 170px; font-family: var(--serif); font-style: italic; font-size: 270px; line-height: 1;
+  color: #DCE7FA; text-shadow: 0 0 18px rgba(106,150,222,.9), 0 0 60px rgba(36,89,166,.8); }
+.card { position: absolute; left: 110px; right: 110px; top: 560px; height: 640px; border-radius: 22px; background: rgba(16,29,53,.72);
+  border: 2px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04); overflow: hidden; }
+.card .bar { height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 26px; border-bottom: 2px solid var(--line); font-family: var(--mono); font-size: 26px; color: var(--mute); }
+.dot { width: 16px; height: 16px; border-radius: 50%; }
+.card .body { padding: 34px 36px; display: grid; gap: 22px; font-size: 36px; }
+.row { display: flex; align-items: center; gap: 22px; padding: 22px 26px; border: 2px solid var(--line); border-radius: 14px; background: rgba(8,10,15,.5); }
+.row.on { border-color: rgba(106,150,222,.7); background: rgba(36,89,166,.16); }
+.chk { width: 40px; height: 40px; border-radius: 9px; border: 3px solid var(--mute); display: grid; place-items: center; flex: none; }
+.chk.on { border-color: var(--blue-d); background: var(--blue); }
+.chk.on::after { content: ""; width: 12px; height: 22px; border: solid var(--ice); border-width: 0 5px 5px 0; transform: translateY(-3px) rotate(45deg); }
+.term { font-family: var(--mono); font-size: 34px; line-height: 1.6; }
+.term .p { color: var(--blue-d); }
+.term .ok { color: #7FD1A8; }
+.frames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.frames div { aspect-ratio: 9/16; border-radius: 12px; border: 2px solid var(--line); background: linear-gradient(160deg, var(--navy2), var(--ink)); position: relative; }
+.frames span { position: absolute; left: 12px; top: 10px; font-family: var(--mono); font-size: 22px; color: var(--mute); }
+.libs { position: relative; height: 470px; }
+.libs div { position: absolute; left: 50%; top: 40px; width: 250px; height: 340px; margin-left: -125px; border-radius: 18px; border: 3px solid var(--blue-d);
+  background: linear-gradient(160deg, #1A2F57, var(--ink)); box-shadow: 0 0 30px rgba(106,150,222,.35); padding: 24px; font-family: var(--mono); font-size: 26px; color: var(--ice); }
+/* cena 3 */
+#s3 .sym { position: absolute; left: 50%; top: 360px; width: 230px; margin-left: -115px; }
+#s3 .name { position: absolute; left: 0; right: 0; top: 650px; text-align: center; font-size: 104px; }
+#s3 .sub { position: absolute; left: 0; right: 0; top: 790px; text-align: center; font-size: 34px; color: var(--mute); }
+#s3 .comment { position: absolute; left: 130px; right: 130px; top: 930px; height: 104px; border-radius: 999px; border: 3px solid var(--blue-d);
+  display: flex; align-items: center; padding: 0 40px; font-size: 40px; color: var(--ice); box-shadow: 0 0 40px rgba(106,150,222,.25); background: rgba(16,29,53,.7); }
+#s3 .send { position: absolute; right: 18px; width: 70px; height: 70px; border-radius: 50%; background: var(--blue); }
+#s3 .follow { position: absolute; left: 50%; top: 1110px; width: 360px; margin-left: -180px; height: 96px; border-radius: 999px; border: 3px solid var(--ice);
+  display: grid; place-items: center; font-size: 40px; font-weight: 600; }
+#brand { position: absolute; left: 0; right: 0; top: 1780px; text-align: center; font-family: var(--mono); font-size: 24px; letter-spacing: .3em; color: rgba(243,244,246,.35); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="floor"></div>
+
+  <div id="s1" class="layer">
+    <div class="l1 h">Você usa IA todo dia.</div>
+    <div class="l2 h">Mas tem <span class="it">método?</span></div>
+  </div>
+
+  <div id="s2" class="layer">
+    <div class="title h"></div>
+    <div class="repo mono"></div>
+    <div class="tags"></div>
+    <div class="num"></div>
+    <div class="card"><div class="bar"><span class="dot" style="background:#E5675C"></span><span class="dot" style="background:#E3B341"></span><span class="dot" style="background:#5CC28A"></span><span class="bt" style="margin-left:14px"></span></div><div class="body"></div></div>
+  </div>
+
+  <div id="s3" class="layer">
+    <svg class="sym" viewBox="0 0 100 100"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg>
+    <div class="name h">Método <span class="it">CRIAR</span></div>
+    <div class="sub mono">FREMEX ACADEMY</div>
+    <div class="comment"><span class="ct"></span><span class="send"></span></div>
+    <div class="follow">Seguir</div>
+  </div>
+
+  <div id="cap"></div>
+  <div id="brand">FREMEX · THE CREATIVE EVOLUTION</div>
+</div>
+
+<script>
+const FPS = 30, DURATION = 13.0;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeIO = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const $ = s => document.querySelector(s);
+
+// Narração planejada: cada palavra tem início em segundos. A palavra entre * fica em azul.
+const WORDS = [
+  [0.15, "Você"], [0.40, "usa"], [0.60, "IA"], [0.85, "todo"], [1.05, "dia."],
+  [1.55, "Mas"], [1.80, "tem"], [2.00, "*método?*"],
+  [2.75, "Primeiro,"], [3.15, "*compreender*"], [3.75, "o"], [3.85, "briefing."],
+  [4.35, "Depois,"], [4.70, "*roteirizar*"], [5.25, "o"], [5.35, "plano."],
+  [5.95, "Aí"], [6.15, "*integrar*"], [6.65, "as"], [6.80, "ferramentas,"],
+  [7.55, "*aprimorar*"], [8.05, "a"], [8.15, "entrega"],
+  [8.75, "e"], [8.90, "*reaproveitar*"], [9.50, "tudo."],
+  [10.05, "Comenta"], [10.45, "*CRIAR*"], [10.95, "que"], [11.10, "eu"], [11.25, "te"], [11.40, "mostro"], [11.75, "o"], [11.90, "método."]
+];
+// Agrupa em blocos de no máximo 3 palavras, quebrando em pontuação.
+const CHUNKS = [];
+{ let cur = [];
+  WORDS.forEach((w, i) => { cur.push(w); const end = /[.,?]$/.test(w[1].replace(/\*/g, "")) || cur.length === 3 || i === WORDS.length - 1;
+    if (end) { CHUNKS.push(cur); cur = []; } }); }
+
+function captions(t) {
+  let chunk = null;
+  for (const c of CHUNKS) if (t >= c[0][0] - 0.05) chunk = c;
+  if (!chunk) { $("#cap").innerHTML = ""; return; }
+  const next = CHUNKS[CHUNKS.indexOf(chunk) + 1];
+  const endT = next ? next[0][0] - 0.05 : DURATION;
+  if (t > endT) { $("#cap").innerHTML = ""; return; }
+  const html = chunk.map(([st, w]) => {
+    const hi = w.startsWith("*"); const txt = w.replace(/\*/g, "");
+    const on = t >= st; const k = easeOut(prog(t, st, st + 0.12));
+    const style = on ? `opacity:${k};display:inline-block;transform:translateY(${(1 - k) * 18}px)` : "opacity:.28;display:inline-block";
+    return hi ? `<b style="${style}">${txt}</b>` : `<span style="${style}">${txt}</span>`;
+  }).join(" ");
+  $("#cap").innerHTML = html;
+}
+
+const STAGES = [
+  { n: "01", t: "Compreender", repo: "etapa C · briefing", tags: [["CHAT", ""], ["1 página", "warm"]], bar: "briefing · nova-orla.md",
+    body: p => ["Objetivo definido", "Público definido", "Restrições anotadas"].map((s, i) => { const on = p > 0.25 + i * 0.22;
+      return `<div class="row ${on ? "on" : ""}"><span class="chk ${on ? "on" : ""}"></span>${s}</div>`; }).join("") },
+  { n: "02", t: "Roteirizar", repo: "etapa R · plano", tags: [["CHAT", ""], ["storyboard", "warm"]], bar: "roteiro · 30s · vertical",
+    body: p => `<div class="frames">${[1,2,3].map(i => `<div style="opacity:${easeOut(prog(p, .1 + i * .15, .35 + i * .15))}"><span>CENA ${i}</span></div>`).join("")}</div>` },
+  { n: "03", t: "Integrar", repo: "etapa I · produção", tags: [["CODE", ""], ["MCP", "warm"]], bar: "zsh · ~/nova-orla",
+    body: p => { const cmd = "claude \"monte a vinheta\""; const k = Math.floor(cmd.length * clamp(p / 0.45));
+      return `<div class="term"><span class="p">$</span> ${cmd.slice(0, k)}${p < .45 ? "▌" : ""}<br>${p > .55 ? '<span class="ok">✓ cenas.html criado</span><br>' : ""}${p > .7 ? '<span class="ok">✓ render → vinheta.mp4</span>' : ""}</div>`; } },
+  { n: "04", t: "Aprimorar", repo: "etapa A · revisão", tags: [["CHECKLIST", ""], ["entrega", "warm"]], bar: "revisão · checklist",
+    body: p => ["Fatos conferidos", "Briefing respeitado", "Direitos ok"].map((s, i) => { const on = p > 0.2 + i * 0.22;
+      return `<div class="row ${on ? "on" : ""}"><span class="chk ${on ? "on" : ""}"></span>${s}</div>`; }).join("") },
+  { n: "05", t: "Reaproveitar", repo: "etapa R · sistema", tags: [["TEMPLATES", ""], ["skills", "warm"]], bar: "biblioteca · fremex",
+    body: p => { const items = ["prompts", "CLAUDE.md", "templates"]; return `<div class="libs">${items.map((s, i) => { const k = easeOut(prog(p, .1, .6));
+      const rot = (i - 1) * 14 * k, x = (i - 1) * 190 * k; return `<div style="transform:translateX(${x}px) rotate(${rot}deg)">${s}</div>`; }).join("")}</div>`; } }
+];
+const S2_START = 2.6, STAGE_LEN = 1.45;
+
+function scene1(t) {
+  const el = $("#s1"); const out = 1 - easeIO(prog(t, 2.35, 2.65));
+  el.style.opacity = out; el.style.display = out <= 0 ? "none" : "block";
+  const a = easeOut(prog(t, 0.1, 0.55)), b = easeOut(prog(t, 1.5, 1.95));
+  $("#s1 .l1").style.cssText += `;opacity:${a};transform:translateY(${(1 - a) * 40}px)`;
+  $("#s1 .l2").style.cssText += `;opacity:${b};transform:scale(${0.92 + 0.08 * b});filter:blur(${(1 - b) * 12}px)`;
+}
+
+function scene2(t) {
+  const el = $("#s2"); const vis = t >= S2_START - 0.1 && t < 10.0;
+  el.style.display = vis ? "block" : "none"; if (!vis) return;
+  const idx = clamp(Math.floor((t - S2_START) / STAGE_LEN), 0, 4); const s = STAGES[idx];
+  const local = (t - S2_START - idx * STAGE_LEN) / STAGE_LEN; const inK = easeOut(clamp(local / 0.22));
+  const fadeOut = 1 - easeIO(prog(t, 9.75, 10.0));
+  el.style.opacity = fadeOut;
+  $("#s2 .title").textContent = s.t; $("#s2 .repo").textContent = s.repo;
+  $("#s2 .tags").innerHTML = s.tags.map(([x, c]) => `<span class="pill ${c}">${x}</span>`).join("");
+  $("#s2 .num").textContent = s.n; $("#s2 .bt").textContent = s.bar;
+  const off = (1 - inK);
+  $("#s2 .title").style.cssText = `opacity:${inK};transform:translateX(${-off * 60}px)`;
+  $("#s2 .repo").style.cssText = `opacity:${inK}`; $("#s2 .tags").style.cssText = `opacity:${inK}`;
+  $("#s2 .num").style.cssText = `opacity:${inK};transform:translateY(${off * 50}px) scale(${1.15 - 0.15 * inK});filter:blur(${off * 10}px)`;
+  $("#s2 .card").style.cssText = `transform:translateY(${off * 120}px) scale(${0.95 + 0.05 * inK});opacity:${inK}`;
+  $("#s2 .body").innerHTML = s.body(clamp(local));
+}
+
+function scene3(t) {
+  const el = $("#s3"); const vis = t >= 9.9; el.style.display = vis ? "block" : "none"; if (!vis) return;
+  const a = easeOut(prog(t, 9.95, 10.5)), b = easeOut(prog(t, 10.25, 10.8)), c = easeOut(prog(t, 10.6, 11.1));
+  $("#s3 .sym").style.cssText = `opacity:${a};transform:translateY(${(1 - a) * 60}px) scale(${0.85 + 0.15 * a})`;
+  $("#s3 .name").style.cssText = `opacity:${b}`; $("#s3 .sub").style.cssText = `opacity:${b}`;
+  $("#s3 .comment").style.cssText = `opacity:${c};transform:translateY(${(1 - c) * 40}px)`;
+  const typed = "CRIAR".slice(0, Math.floor(5 * clamp(prog(t, 10.9, 11.5))));
+  $("#s3 .ct").innerHTML = typed ? typed + (t < 11.8 ? "▌" : "") : '<span style="color:#8C97AB">Adicione um comentário…</span>';
+  const f = easeOut(prog(t, 11.9, 12.2)); const followed = t > 12.3;
+  $("#s3 .follow").style.cssText = `opacity:${c};transform:scale(${1 + 0.06 * Math.sin(Math.PI * f)});${followed ? "background:#F3F4F6;color:#080A0F" : ""}`;
+  $("#s3 .follow").textContent = followed ? "Seguindo ✓" : "Seguir";
+}
+
+function seek(t) {
+  // câmera lenta contínua: o chão "anda" sempre, dando vida entre os cortes
+  $("#floor").style.backgroundPosition = `0 ${t * 60}px`;
+  scene1(t); scene2(t); scene3(t); captions(t);
+}
+window.seek = seek; window.FPS = FPS; window.DURATION = DURATION;
+seek(0);
+</script>
+</body>
+</html>
