@@ -1,0 +1,1663 @@
+<title>Método CRIAR Roteiros</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+
+.doc { padding-block: clamp(32px, 6vw, 72px); }
+.doc > * + * { margin-top: 1rem; }
+.doc h1 { font-size: clamp(1.9rem, 4.5vw, 3.2rem); margin-bottom: 1.5rem; }
+.doc h1:not(:first-child) { margin-top: 6rem; padding-top: 3rem; border-top: 2px solid var(--blue); }
+.doc h2 { font-size: var(--s2); margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.doc h3 { margin-top: 2.5rem; color: var(--ice); }
+.doc p, .doc li { max-width: 72ch; }
+.doc strong { color: var(--ice); font-weight: 600; }
+.doc ul, .doc ol { padding-left: 1.2em; display: grid; gap: 6px; }
+.doc li::marker { color: var(--blue-dig); }
+.doc hr { border: 0; height: 1px; background: var(--line); margin-block: 2.5rem; }
+.doc code { font-family: var(--f-mono); font-size: .88em; background: var(--navy); padding: 1px 6px; border-radius: 3px; color: var(--ice); }
+.doc em { color: var(--mute); }
+.doc a { word-break: break-word; }
+.tbl { overflow-x: auto; margin-block: 1.5rem; border: 1px solid var(--line); }
+.doc table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .9rem; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.doc thead th { font-family: var(--f-mono); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-dig); background: var(--navy); }
+.doc tbody tr:last-child td { border-bottom: 0; }
+.doc td:first-child { white-space: nowrap; }
+.doc h2 + p strong:first-child { color: var(--blue-dig); }
+.mark { width: 28px; height: 28px; }
+.bar .brand { display: flex; align-items: center; gap: 10px; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: var(--s-1); padding-block: 14px; border-bottom: 1px solid var(--line); }
+.toc a { color: var(--mute); text-decoration: none; }
+.toc a:hover { color: var(--ice); }
+.docsep { margin-top: 5rem !important; }
+</style>
+<div class="wrap">
+  <div class="bar"><span class="brand"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="FREMEX símbolo"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg>
+<strong>FREMEX ACADEMY</strong></span><span>Curso · Etapa 4 · Lote 1 · Módulos 00 e 01</span><span>Documento de trabalho</span></div>
+  <nav class="toc" aria-label="Seções"><a href="#s-etapa-4-lote-1-roteiros-dos-módulos-00-e-01">Etapa 4 · Lote 1</a><a href="#s-m00-a01-o-que-você-vai-construir">M00-A01</a><a href="#s-m00-a02-como-estudar-este-curso">M00-A02</a><a href="#s-m00-a03-contas-planos-e-custos-reais">M00-A03</a><a href="#s-m00-a04-seu-computador-está-pronto">M00-A04</a><a href="#s-m00-a05-conheça-a-nova-orla">M00-A05</a><a href="#s-m01-a01-o-mercado-criativo-e-a-ia">M01-A01</a><a href="#s-m01-a02-o-papel-do-profissional-criativo">M01-A02</a><a href="#s-m01-a03-o-ecossistema-claude">M01-A03</a><a href="#s-m01-a04-chat-ou-code">M01-A04</a><a href="#s-m01-a05-o-que-o-claude-não-faz">M01-A05</a><a href="#s-m01-a06-ética-direitos-e-dados">M01-A06</a><a href="#s-nova-orla-briefing-mãe">Nova Orla</a><a href="#s-tabela-de-custos-método-criar">Tabela de custos</a><a href="#s-checklist-de-setup-método-criar">Checklist de setup</a><a href="#s-matriz-chat-ou-code">Matriz: Chat ou Code?</a><a href="#s-padrão-de-roteiro-método-criar">Padrão de roteiro</a></nav>
+  <article class="doc"><h1 id="s-etapa-4-lote-1-roteiros-dos-módulos-00-e-01">Etapa 4 · Lote 1 — Roteiros dos módulos 00 e 01</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026 · <strong>Status:</strong> em avaliação (piloto de estilo)</p>
+<p>Primeiro lote de roteiros do <strong>Método CRIAR</strong>: as 11 aulas dos módulos 00 (Boas-vindas e preparação) e 01 (Fundamentos). Elas servem de piloto. Com o estilo aprovado, os próximos módulos seguem o mesmo padrão.</p>
+<p><strong>Neste lote:</strong>
+- 11 roteiros completos no padrão de 9 itens, mais etapa do CRIAR, nível e data de verificação.
+- Padrão de roteiro com as marcações [CÂMERA], [TELA], [GC], [CORTE] e [PAUSA].
+- Materiais que as aulas usam: briefing-mãe da Nova Orla, tabela de custos, checklist de setup e matriz Chat × Code.</p>
+<p><strong>Antes de gravar:</strong>
+- Itens marcados com ◆ precisam ser reconferidos na fonte oficial na semana da gravação.
+- A aula 00.1 só pode ser gravada depois do Projeto 5 pronto.
+- A aula 01.6 precisa de revisão jurídica.</p>
+<p><strong>O que preciso de você:</strong> aprovar o tom e o formato dos roteiros, ou apontar ajustes. Exemplos do que avaliar: mais ou menos informal, mais ou menos câmera, nível de detalhe das marcações.</p><div class="docsep"></div><h1 id="s-m00-a01-o-que-você-vai-construir">M00-A01 — O que você vai construir</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>00 — Boas-vindas e preparação</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>6 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + tela</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td><strong>Gravar depois que o Projeto 5 estiver pronto</strong>, porque a aula mostra as entregas finais da Nova Orla</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Visualizar o resultado final do curso e entender que ele foi construído com um processo, e não com um único pedido para a IA.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>O que existe dentro do pacote final do projeto Nova Orla.</li>
+<li>Quais partes foram feitas no Claude Chat e quais no Claude Code.</li>
+<li>Por que o curso é organizado em um método, e não em uma lista de ferramentas.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Antes de qualquer explicação, quero te mostrar onde você vai chegar.</p>
+<p>O que você vai ver agora é um job completo para uma marca chamada Nova Orla. Ela não existe. É uma marca fictícia que a gente criou para o curso, para você poder praticar sem expor nenhum cliente real.</p>
+<p>Presta atenção em duas coisas: no que foi entregue e em quantas etapas existem entre o pedido do cliente e essa entrega.</p>
+<p><strong>[CORTE] [TELA]</strong></p>
+<p><em>Abrir a pasta final do Projeto 5, organizada por etapas.</em></p>
+<p>Aqui está a pasta de entrega. Repara na organização: briefing, planejamento, produção, revisão e entrega. Cada pasta é uma etapa do método que você vai aprender.</p>
+<p><em>Abrir o briefing de uma página.</em></p>
+<p>Começa com isto aqui: o briefing de uma página. O cliente mandou um e-mail longo e confuso, e ele virou este documento claro. Isso foi feito no Claude Chat.</p>
+<p><em>Abrir o plano de campanha e os roteiros.</em></p>
+<p>Depois vêm o plano de campanha e os roteiros. Também saíram do chat, mas repara: tem decisão minha em cada página. O Claude propôs, eu escolhi, cortei, ajustei.</p>
+<p><em>Reproduzir a vinheta animada.</em></p>
+<p>Agora a parte que costuma surpreender. Essa vinheta não foi feita num programa de animação. Ela foi escrita em código, com o Claude Code e uma ferramenta chamada HyperFrames, e renderizada como vídeo.</p>
+<p><em>Reproduzir o vídeo com narração.</em></p>
+<p>E este vídeo, com narração e legenda, foi montado com o Remotion. A voz veio do ElevenLabs. Tudo isso foi conectado pelo Claude Code.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Talvez você esteja pensando: "mas eu não sei programar". Ótimo. O curso foi feito exatamente para quem não sabe.</p>
+<p>Você não vai virar programador. Você vai aprender a dirigir: explicar o que quer, conferir o que foi feito e decidir o que fica.</p>
+<p>E quero ser honesto desde já. Nada disso saiu de um pedido só. Teve erro, teve versão que eu descartei, teve renderização que falhou e eu precisei corrigir. É isso que eu vou te ensinar: o processo inteiro, inclusive a parte que dá errado.</p>
+<p><strong>[GC]</strong> C · R · I · A · R</p>
+<p>Esse processo tem nome: Método CRIAR. Compreender, Roteirizar, Integrar, Aprimorar e Reaproveitar. Na próxima aula eu te explico como ele organiza o curso e qual caminho faz mais sentido para você.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Navegação guiada pela pasta final do Projeto 5. Não há passos para o aluno executar nesta aula.</p>
+<p><strong>O que conferir na tela:</strong> cada arquivo mostrado precisa existir no pacote do Projeto 5 distribuído aos alunos, com o mesmo nome.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Nenhuma.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Escreva em três linhas: qual tipo de entrega da Nova Orla mais se parece com o seu trabalho hoje, e qual delas você ainda não sabe fazer.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Visão geral do curso (PDF de uma página).</li>
+<li>Pasta de exemplo do Projeto 5 (disponível no módulo 07).</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>O curso termina em entregas reais: documentos, peças, vídeo e uma pasta organizada para o cliente.</li>
+<li>O Claude Chat ajuda a pensar e planejar. O Claude Code ajuda a construir.</li>
+<li>Nada sai pronto de um pedido só. O curso ensina um processo com decisões humanas em cada etapa.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Usar a música e a vinheta oficial da FREMEX na abertura.</li>
+<li>Os arquivos mostrados precisam ser exatamente os entregues ao aluno.</li>
+</ul><div class="docsep"></div><h1 id="s-m00-a02-como-estudar-este-curso">M00-A02 — Como estudar este curso</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>00 — Boas-vindas e preparação</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + slides</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Slides das trilhas e do Método CRIAR na identidade FREMEX</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Escolher a trilha certa e entender como níveis, materiais e o Método CRIAR organizam o estudo.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>A diferença entre a trilha Essencial e a trilha Completa.</li>
+<li>O que significam os selos Base, Prático e Avançado.</li>
+<li>As cinco etapas do Método CRIAR.</li>
+<li>Onde ficam os materiais de cada aula.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Este curso tem dois caminhos, e o primeiro passo é você escolher o seu.</p>
+<p><strong>[GC]</strong> Trilha Essencial · Trilha Completa</p>
+<p>A <strong>trilha Essencial</strong> é para quem quer usar o Claude no dia a dia sem mexer em terminal: social medias, roteiristas, quem está começando. Você vai aprender a entender briefings, roteirizar, planejar campanhas e organizar conteúdo. São cerca de cinco horas.</p>
+<p>A <strong>trilha Completa</strong> inclui tudo isso e vai além: instalar e usar o Claude Code, conectar ferramentas e produzir vídeo e animação por código. São cerca de treze horas.</p>
+<p>E aqui vai um aviso importante: a trilha Completa exige uma assinatura paga do Claude, porque o Claude Code não faz parte do plano gratuito. Na aula de custos eu mostro tudo com calma, antes de você gastar qualquer coisa.</p>
+<p>Na dúvida, comece pela Essencial. As aulas dela fazem parte da Completa, então nada do que você estudar se perde.</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> Base · Prático · Avançado</p>
+<p>Toda aula tem um selo.</p>
+<ul>
+<li><strong>Base</strong> é conceito ou configuração. Você assiste e entende.</li>
+<li><strong>Prático</strong> é mão na massa. Você faz junto.</li>
+<li><strong>Avançado</strong> pede que você já tenha feito as aulas anteriores.</li>
+</ul>
+<p>Se você já trabalha na área e quer pular uma aula Base, pode. Só não pule as aulas de segurança e de custos. Elas evitam dor de cabeça de verdade.</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> C · R · I · A · R</p>
+<p>Agora, o coração do curso: o Método CRIAR. São cinco etapas que funcionam em qualquer job criativo.</p>
+<ul>
+<li><strong>Compreender:</strong> entender o pedido, o público e o objetivo antes de produzir qualquer coisa.</li>
+<li><strong>Roteirizar:</strong> transformar a ideia em plano. Roteiro, storyboard, instruções.</li>
+<li><strong>Integrar:</strong> produzir, usando o Claude e as ferramentas certas.</li>
+<li><strong>Aprimorar:</strong> revisar, testar, corrigir e entregar.</li>
+<li><strong>Reaproveitar:</strong> guardar o que funcionou para o próximo job começar mais adiantado.</li>
+</ul>
+<p>E uma regra atravessa todas as etapas: <strong>você dirige, o Claude propõe e executa.</strong> A decisão final é sempre sua.</p>
+<p>Cada aula mostra no canto da tela em qual etapa do método ela está. Assim você nunca perde a noção do todo.</p>
+<p><strong>[CORTE]</strong></p>
+<p>Sobre os materiais: embaixo de cada aula você encontra o resumo, os arquivos e o exercício. Os prompts ficam na biblioteca, organizados por finalidade. Os checklists ficam numa área própria, para você imprimir ou deixar aberto enquanto trabalha.</p>
+<p><strong>[CÂMERA]</strong></p>
+<p>Uma última coisa. Ferramentas de IA mudam rápido. Por isso toda aula técnica tem a data da última verificação, e existe um módulo de atualizações. Se a sua tela estiver diferente da minha, confira primeiro esse módulo.</p>
+<p>Na próxima aula, a gente fala de dinheiro: quais contas você precisa e quanto custa acompanhar cada trilha.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Não se aplica. Aula conceitual.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Nenhuma.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Preencha a <strong>Ficha do aluno</strong> com três informações: a trilha escolhida, seu sistema operacional e o tipo de trabalho que você faz hoje.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Ficha CRIAR (modelo de job).</li>
+<li>Ficha do aluno.</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>A trilha Essencial não usa terminal. A Completa ensina o Claude Code do zero e exige plano pago.</li>
+<li>Os selos Base, Prático e Avançado ajudam você a decidir o ritmo.</li>
+<li>O Método CRIAR tem cinco etapas, e você sempre dirige o processo.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Nos slides das trilhas, mostrar a duração e os módulos de cada uma.</li>
+<li>Usar o mesmo selo de etapa do CRIAR que aparecerá no canto das aulas.</li>
+</ul><div class="docsep"></div><h1 id="s-m00-a03-contas-planos-e-custos-reais">M00-A03 — Contas, planos e custos reais</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>00 — Boas-vindas e preparação</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + tela</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>11/11/2026 · <strong>reconferir todos os valores na semana da gravação</strong></td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Tabela de custos v1.0 aprovada (<code>08-MATERIAIS-COMPLEMENTARES/tabela-de-custos_v0.1.md</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Montar o orçamento mínimo para acompanhar a trilha escolhida, sabendo o que é gratuito, o que é pago e o que muda quando o uso é comercial.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>Qual plano do Claude cada trilha exige.</li>
+<li>Quais ferramentas do curso são gratuitas e quais têm limites.</li>
+<li>A diferença entre uso pessoal e uso comercial nas licenças.</li>
+<li>Onde conferir os preços atualizados.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Vamos falar de dinheiro logo no começo, porque ninguém deveria descobrir um custo no meio de um projeto.</p>
+<p>Primeiro, uma regra: preços de ferramentas mudam. Tudo o que eu mostrar aqui foi conferido na data que aparece na tela. Antes de assinar qualquer coisa, abra a página oficial e confirme.</p>
+<p><strong>[GC]</strong> Valores consultados em [DATA DA GRAVAÇÃO] · Confira sempre a página oficial</p>
+<p><strong>[CORTE] [TELA]</strong></p>
+<p><em>Abrir a página oficial de planos do Claude.</em></p>
+<p>Começando pelo Claude. Existe um plano gratuito, com limite de uso. Ele serve para dar os primeiros passos no chat.</p>
+<p>Só que ele não inclui o Claude Code. Para a trilha Completa, você precisa de pelo menos o plano <strong>Pro</strong>. Na data em que eu consultei, ele custava 20 dólares por mês, ou 17 por mês no pagamento anual. ◆ <em>Atualizar o valor na gravação.</em> Acima dele existem planos com mais uso, para quem trabalha o dia inteiro com a ferramenta.</p>
+<p><em>Destacar na página a menção a limites de uso.</em></p>
+<p>Repara numa coisa: mesmo nos planos pagos existe limite de uso. Não é ilimitado. Mais para frente, no módulo 08, eu ensino a planejar o trabalho para não ficar travado no meio de uma entrega.</p>
+<p><strong>[CORTE]</strong></p>
+<p><em>Abrir a tabela de custos do curso.</em></p>
+<p>Agora, as outras ferramentas. Preparei esta tabela, que está nos materiais da aula.</p>
+<ul>
+<li><strong>Remotion</strong>, que a gente usa para vídeo por código, é gratuito para quem trabalha sozinho e para equipes de até três pessoas. Empresas a partir de quatro pessoas precisam de uma licença paga. ◆</li>
+<li><strong>HyperFrames</strong> é de código aberto. ◆</li>
+<li><strong>ElevenLabs</strong>, para voz, tem plano gratuito. Mas, na data em que conferi, o gratuito <strong>não permite uso comercial</strong>. Se a narração vai para um cliente, você precisa de um plano pago. ◆</li>
+<li><strong>Inkscape</strong>, para gráficos vetoriais, é gratuito e de código aberto.</li>
+<li><strong>Node.js, FFmpeg e Git</strong>, ferramentas técnicas que vamos instalar, são gratuitos.</li>
+<li><strong>Google Drive</strong> você provavelmente já usa. O espaço gratuito resolve para o curso.</li>
+</ul>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Sobre essa diferença entre uso pessoal e comercial: muita gente usa o plano gratuito de uma ferramenta, entrega para o cliente e nem sabe que está fora da licença. Não faça isso. A regra do curso é simples: se o arquivo vai para um cliente ou vai gerar dinheiro, confira a licença antes.</p>
+<p><strong>[GC]</strong> Trilha Essencial: dá para começar com o plano gratuito do Claude
+<strong>[GC]</strong> Trilha Completa: plano Pro ou superior + ElevenLabs pago apenas se a narração for comercial</p>
+<p>Resumindo os dois caminhos.</p>
+<p>Na <strong>trilha Essencial</strong>, você começa com o plano gratuito do Claude. Algumas aulas ficam melhores com o plano pago, e eu aviso quando for o caso.</p>
+<p>Na <strong>trilha Completa</strong>, o custo fixo é o plano Pro do Claude. O resto dá para fazer com planos gratuitos durante o estudo. Você só precisa pagar o ElevenLabs se for usar a voz em um trabalho comercial.</p>
+<p>Agora preencha a sua tabela. Na próxima aula, a gente confere se o seu computador está pronto.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<ol>
+<li>Abrir a página oficial de planos do Claude e localizar o plano Pro.</li>
+<li>Abrir a tabela de custos do curso e preencher a coluna "meu caso".</li>
+</ol>
+<p><strong>O que conferir na tela:</strong> o valor exibido na página oficial precisa bater com o valor do GC. Se não bater, atualizar o GC antes de publicar a aula.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Navegador e a tabela de custos do curso.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Preencha a tabela de custos com o seu caso: trilha escolhida, se o uso será comercial e o total mensal estimado.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Tabela de custos (<code>tabela-de-custos_v0.1</code>).</li>
+<li>Links oficiais de preços de cada ferramenta.</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>O plano gratuito do Claude não inclui o Claude Code. A trilha Completa exige pelo menos o plano Pro.</li>
+<li>Uso comercial muda a licença de várias ferramentas, principalmente de voz e de vídeo para empresas.</li>
+<li>Preços mudam. Confira sempre a página oficial antes de assinar.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>◆ Antes de gravar, reconferir: plano Pro do Claude, licença do Remotion, licença e planos do ElevenLabs e licença do HyperFrames.</li>
+<li>Não mostrar dados de cartão nem da conta pessoal do apresentador na tela.</li>
+</ul><div class="docsep"></div><h1 id="s-m00-a04-seu-computador-está-pronto">M00-A04 — Seu computador está pronto?</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>00 — Boas-vindas e preparação</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Tela (Windows) + notas para macOS</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>11/11/2026 · requisitos do Claude Code em code.claude.com/docs/en/setup</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Checklist de setup v1.0 (<code>08-MATERIAIS-COMPLEMENTARES/checklist-de-setup_v0.1.md</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Verificar se o computador atende aos requisitos da trilha escolhida, antes da primeira aula prática.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>Os requisitos oficiais do Claude Code.</li>
+<li>Como descobrir a versão do sistema operacional e a memória do computador.</li>
+<li>O que é necessário em cada trilha.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Antes de instalar qualquer coisa, vamos conferir se o seu computador dá conta. São só cinco minutos e evitam aquela frustração de travar no meio da instalação.</p>
+<p>Se você está na trilha Essencial, a notícia é boa: você só precisa de um navegador atualizado e de internet. Pode assistir esta aula para conhecer o assunto, mas o checklist da Essencial já está resolvido.</p>
+<p>Na trilha Completa, vamos conferir três coisas: sistema operacional, memória e espaço.</p>
+<p><strong>[CORTE] [TELA]</strong></p>
+<p><strong>[GC]</strong> Requisitos do Claude Code · fonte oficial · consultado em 11/11/2026</p>
+<p><em>Abrir a página oficial de requisitos.</em></p>
+<p>Estes são os requisitos que a própria documentação do Claude Code publica:</p>
+<ul>
+<li>Windows 10 versão 1809 ou mais nova, ou Windows Server 2019 ou mais novo;</li>
+<li>macOS 13 ou mais novo;</li>
+<li>no Linux, Ubuntu 20.04, Debian 10 ou Alpine 3.19 em diante;</li>
+<li>pelo menos 4 GB de memória RAM;</li>
+<li>conexão com a internet.</li>
+</ul>
+<p><strong>[CORTE]</strong></p>
+<p><em>No Windows, abrir Configurações › Sistema › Sobre.</em></p>
+<p>No Windows, vá em Configurações, Sistema e depois Sobre. Aqui você vê duas coisas: a memória instalada, que precisa ser de pelo menos 4 GB, e, mais abaixo, a versão do Windows.</p>
+<p>[PAUSA]</p>
+<p><strong>[GC]</strong> macOS: menu Apple › Sobre este Mac</p>
+<p>No Mac, clique no menu da maçã e em "Sobre este Mac". A versão do sistema e a memória aparecem na primeira tela.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Uma observação prática: 4 GB é o mínimo para o Claude Code funcionar. Mas, no módulo 05, a gente vai renderizar vídeo, e renderização pede mais. Com 8 GB ou mais o trabalho fica bem mais confortável. Se o seu computador tem só o mínimo, você consegue acompanhar, só vai esperar mais nas renderizações.</p>
+<p>Também reserve algum espaço livre no disco. Os projetos de vídeo geram arquivos grandes. ◆ <em>Definir o espaço recomendado depois de medir o tamanho dos projetos 3, 4 e 5.</em></p>
+<p><strong>[CORTE]</strong></p>
+<p>Último ponto: a conta. Você vai precisar de uma conta no Claude com o plano da sua trilha, como vimos na aula anterior. Se ainda não criou, crie agora e deixe o login feito no navegador.</p>
+<p>Pronto. Marque os itens no checklist de setup. Se algum ficou faltando, o próprio checklist diz o que fazer. Na próxima aula você conhece a Nova Orla, o cliente que vai te acompanhar no curso inteiro.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<ol>
+<li>Abrir a página oficial de requisitos do Claude Code.</li>
+<li>No Windows: Configurações › Sistema › Sobre. Conferir a memória e a versão.</li>
+<li>No macOS: menu Apple › Sobre este Mac.</li>
+<li>Marcar os itens no checklist de setup.</li>
+</ol>
+<p><strong>O que conferir na tela:</strong> versão do sistema dentro da lista oficial e memória de pelo menos 4 GB.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Checklist de setup e navegador.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Complete a seção "Computador" do checklist de setup e anote se você está no mínimo ou no recomendado.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Checklist de setup.</li>
+<li>Página oficial de requisitos do Claude Code.</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>A trilha Essencial precisa só de navegador e internet.</li>
+<li>O Claude Code pede Windows 10 1809+, macOS 13+ ou Linux compatível, com 4 GB de RAM ou mais.</li>
+<li>Para renderizar vídeo com conforto, 8 GB ou mais ajudam bastante.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Gravar no Windows 11 com o idioma em português.</li>
+<li>Borrar o nome do computador e outros dados pessoais na tela "Sobre".</li>
+</ul><div class="docsep"></div><h1 id="s-m00-a05-conheça-a-nova-orla">M00-A05 — Conheça a Nova Orla</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>00 — Boas-vindas e preparação</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>Compreender</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>7 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + tela</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Briefing-mãe da Nova Orla (<code>06-PROJETOS/nova-orla/briefing-mae_v0.1.md</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Ler o briefing-mãe do cliente fictício e identificar as informações que vão guiar todos os projetos do curso.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>Quem é a Nova Orla e por que ela é fictícia.</li>
+<li>Como ler um briefing procurando objetivo, público, restrições e entregas.</li>
+<li>Como os cinco projetos do curso se conectam a esse cliente.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>A partir de agora você tem um cliente.</p>
+<p>O nome é Nova Orla, uma marca de bebidas artesanais. Ela é <strong>fictícia</strong>. Inventamos a empresa, a história e o briefing para você praticar com um caso realista, sem usar dados de nenhuma empresa de verdade. Isso também ensina uma regra importante: no curso, a gente não sobe arquivo de cliente real em ferramenta de IA para treinar.</p>
+<p><strong>[CORTE] [TELA]</strong></p>
+<p><em>Abrir o briefing-mãe.</em></p>
+<p>Este é o briefing-mãe, o documento que descreve a marca. Todo projeto do curso volta para ele. Vamos ler juntos procurando quatro coisas.</p>
+<p><strong>[GC]</strong> Objetivo · Público · Restrições · Entregas</p>
+<p><em>Destacar cada trecho enquanto fala.</em></p>
+<p><strong>Objetivo.</strong> O que a marca quer: lançar o sabor de verão e ficar conhecida fora da cidade de origem.</p>
+<p><strong>Público.</strong> Para quem ela fala: adultos de 25 a 40 anos que valorizam produto local e consomem conteúdo em vídeo curto.</p>
+<p><strong>Restrições.</strong> O que não pode: nada de linguagem de energético, nada de promessa de saúde, e a identidade visual tem que ser respeitada.</p>
+<p><strong>Entregas.</strong> O que o cliente espera receber ao longo do ano: campanha, vídeos, peças e uma pasta organizada.</p>
+<p>[PAUSA]</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Repare que um briefing de verdade raramente vem arrumado assim. Este está organizado de propósito, porque é o documento de base. No módulo 02, você vai receber um pedido da Nova Orla do jeito que cliente costuma mandar: um e-mail longo, com informação faltando. E vai transformar aquilo em algo claro.</p>
+<p><strong>[GC]</strong> Projetos 1 a 5 · mesmo cliente</p>
+<p>Os cinco projetos do curso são jobs desse mesmo cliente. Você começa com uma campanha, passa por vídeo vertical, vinheta animada e vídeo com narração, e termina com um job completo. No final, você tem um portfólio coerente, contando uma história só.</p>
+<p>Sua tarefa agora: leia o briefing inteiro e anote as dúvidas que você mandaria para o cliente. Saber perguntar é a primeira habilidade do Método CRIAR, e é exatamente aí que começa o próximo módulo.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Leitura guiada do briefing-mãe, destacando objetivo, público, restrições e entregas.</p>
+<p><strong>O que conferir na tela:</strong> os quatro trechos destacados correspondem às seções do briefing entregue ao aluno.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Briefing-mãe da Nova Orla em PDF.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Liste pelo menos três perguntas que você faria à Nova Orla antes de começar qualquer trabalho. Guarde a lista: ela será usada na aula 02.4.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Briefing-mãe da Nova Orla.</li>
+<li>Manual de marca fictício da Nova Orla (preparado na Etapa 6).</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>A Nova Orla é um cliente fictício que atravessa todos os projetos do curso.</li>
+<li>Todo briefing deve ser lido em busca de objetivo, público, restrições e entregas.</li>
+<li>No curso, não usamos dados de clientes reais para praticar.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Deixar visível no briefing o selo "MARCA FICTÍCIA · USO EDUCACIONAL".</li>
+<li>Os trechos citados na fala precisam ser idênticos aos do briefing-mãe v1.0.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a01-o-mercado-criativo-e-a-ia">M01-A01 — O mercado criativo e a IA</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + slides</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Slide "cadeia de produção criativa"</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Identificar quais etapas da produção criativa a IA já transforma e quais continuam dependendo do profissional.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>A cadeia de produção de um job criativo, do pedido à entrega.</li>
+<li>Onde a IA acelera, onde ela ajuda pouco e onde ela atrapalha.</li>
+<li>Por que o diferencial deixa de ser a execução e passa a ser a direção.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Eu não vou abrir este módulo com estatística assustadora nem com promessa de que a IA vai fazer o seu trabalho. Vou abrir com uma pergunta mais útil: no seu dia a dia, onde vai o seu tempo?</p>
+<p>Pensa num job comum. Um cliente pede um vídeo para o lançamento de um produto. O que acontece entre o pedido e a entrega?</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> Pedido → Entendimento → Ideia → Plano → Produção → Revisão → Entrega → Arquivo</p>
+<p><em>Slide com a cadeia de produção.</em></p>
+<p>Quase todo trabalho criativo passa por estas etapas. Você recebe o pedido, entende o que o cliente quer, tem a ideia, planeja, produz, revisa, entrega e arquiva.</p>
+<p>Agora, onde a IA entra?</p>
+<p><strong>[GC]</strong> Acelera muito · Ajuda · Depende de você</p>
+<p>No <strong>entendimento</strong> e no <strong>plano</strong>, a IA acelera muito. Ela organiza um briefing confuso em minutos, sugere estruturas de roteiro, lista perguntas que você esqueceria de fazer.</p>
+<p>Na <strong>ideia</strong>, ela ajuda, mas com cuidado. Ela gera muitas opções rápido, e muitas são previsíveis. A ideia boa ainda depende do seu repertório e do seu critério para escolher.</p>
+<p>Na <strong>produção</strong>, depende do tipo de trabalho. Tarefas repetitivas, como gerar variações, converter arquivos ou montar vídeos a partir de um modelo, ficam muito mais rápidas, principalmente com o Claude Code. Trabalho que depende de sensibilidade visual fina continua sendo seu.</p>
+<p>Na <strong>revisão</strong>, ela é uma ótima segunda leitura. Mas quem assina a entrega é você.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Repara no padrão. A IA reduz o tempo de execução. O que fica mais valioso é o que vem antes e depois: entender o problema certo, escolher a melhor ideia, garantir a qualidade.</p>
+<p>Isso muda o jogo para quem trabalha com criação. Antes, saber executar bem já era um diferencial enorme. Hoje, quem sabe dirigir o processo, ou seja, pedir com clareza, avaliar com critério e organizar a entrega, consegue produzir mais sem perder qualidade.</p>
+<p><strong>[GC]</strong> Execução fica mais rápida · Direção fica mais valiosa</p>
+<p>E quero deixar uma coisa clara. Não vou te dizer quanto você vai ganhar a mais, nem que o seu trabalho vai viralizar. Ninguém pode prometer isso com honestidade. O que este curso promete é um processo para você produzir melhor e com mais controle.</p>
+<p>Na próxima aula, a gente fala do papel do profissional criativo nesse cenário.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Não se aplica. Aula conceitual.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Nenhuma.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Desenhe a cadeia de produção de um job que você fez recentemente. Para cada etapa, marque se a IA <strong>aceleraria muito</strong>, <strong>ajudaria</strong> ou se <strong>depende de você</strong>.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<p>Modelo da cadeia de produção para preencher (PDF).</p>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>Todo job passa por entendimento, ideia, plano, produção, revisão e entrega.</li>
+<li>A IA acelera muito o entendimento, o planejamento e as tarefas repetitivas.</li>
+<li>O valor do profissional se desloca para a direção: critério, escolha e qualidade.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Não usar números de mercado sem fonte verificável e datada.</li>
+<li>Exemplos visuais: usar peças da Nova Orla, nunca de marcas reais.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a02-o-papel-do-profissional-criativo">M01-A02 — O papel do profissional criativo</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Assumir o papel de diretor no trabalho com IA: definir o que se quer, avaliar o que foi produzido e responder pela entrega.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>As três responsabilidades que não passam para a IA.</li>
+<li>A diferença entre "pedir" e "dirigir".</li>
+<li>Por que o curso repete "você dirige, o Claude propõe e executa".</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Pensa num set de filmagem. Tem câmera, luz, som, edição. Cada pessoa executa uma parte. E tem alguém que sabe o que o filme precisa ser e decide o que fica e o que sai: a direção.</p>
+<p>Trabalhar com IA se parece muito com isso. O Claude pode escrever, organizar, programar e revisar. Mas alguém precisa saber o que o projeto precisa ser. Esse alguém é você.</p>
+<p><strong>[GC]</strong> Você dirige. O Claude propõe e executa.</p>
+<p><strong>[CORTE]</strong></p>
+<p>Na prática, ser diretor significa três responsabilidades que não passam para a máquina.</p>
+<p><strong>[GC]</strong> 1. Intenção</p>
+<p>A primeira é a <strong>intenção</strong>. O que esse trabalho precisa causar em quem vê? A IA não sabe isso sozinha. Se você não define, ela preenche com o mais comum, e o mais comum raramente é o melhor.</p>
+<p><strong>[GC]</strong> 2. Critério</p>
+<p>A segunda é o <strong>critério</strong>. A IA te dá dez opções em segundos. Escolher a certa, e explicar por que as outras não servem, é trabalho seu. E é isso que o cliente está pagando.</p>
+<p><strong>[GC]</strong> 3. Responsabilidade</p>
+<p>A terceira é a <strong>responsabilidade</strong>. Se uma informação está errada, se uma imagem fere um direito autoral, se um dado do cliente vazou, quem responde é você. Não existe "foi a IA que fez".</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Agora, a diferença entre pedir e dirigir.</p>
+<p>Pedir é: "faz um roteiro para um vídeo de suco".</p>
+<p>Dirigir é: "preciso de um roteiro de 30 segundos para Reels, para adultos de 25 a 40 anos que valorizam produto local. O tom é leve e honesto. Não pode parecer bebida energética. Me dá três abordagens diferentes e explica a lógica de cada uma."</p>
+<p>O segundo pedido não é mais longo por enfeite. Ele carrega intenção, público, restrição e critério. Você vai aprender a fazer isso de forma natural no módulo 02.</p>
+<p><strong>[CÂMERA]</strong></p>
+<p>Uma última coisa. Muita gente tem medo de que usar IA tire a autoria do trabalho. Na minha experiência, acontece o contrário quando você dirige de verdade. Suas escolhas aparecem mais, porque você gasta menos tempo em tarefa mecânica e mais tempo decidindo.</p>
+<p>Na próxima aula, a gente conhece o ecossistema Claude e o que cada parte dele faz.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Não se aplica. Aula conceitual.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Nenhuma.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Reescreva um pedido simples que você faria para uma IA ("faz uma legenda para o post do produto X") como um pedido de diretor. Inclua intenção, público, restrição e critério de escolha.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<p>Estrutura de pedido FREMEX (versão resumida, ampliada na aula 02.2).</p>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>Trabalhar com IA é dirigir: o Claude propõe e executa, você decide.</li>
+<li>Três responsabilidades continuam suas: intenção, critério e responsabilidade.</li>
+<li>Dirigir é pedir com intenção, público, restrições e critério de escolha.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Aula toda em câmera. Usar GCs com os três números para dar ritmo.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a03-o-ecossistema-claude">M01-A03 — O ecossistema Claude</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>12 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + tela</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>11/11/2026 · code.claude.com/docs/en/setup · claude.com/pricing</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Diagrama do ecossistema na identidade FREMEX</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Diferenciar os modos de usar o Claude (apps de conversa, Claude Code e API) e saber o que cada um exige.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>O que é o Claude e quem o desenvolve.</li>
+<li>Onde você conversa com ele: web, desktop e celular.</li>
+<li>O que é o Claude Code e em quais lugares ele roda.</li>
+<li>O que é a API e por que este curso quase não a usa diretamente.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>"Claude" é o nome de uma família de modelos de inteligência artificial desenvolvidos pela Anthropic. Só que, no dia a dia, quando alguém diz "usei o Claude", pode estar falando de coisas bem diferentes. Vamos separar.</p>
+<p><strong>[GC]</strong> Modelos · Apps de conversa · Claude Code · API</p>
+<p><strong>[CORTE] [TELA]</strong></p>
+<p><em>Diagrama do ecossistema.</em></p>
+<p>No centro estão os <strong>modelos</strong>. Eles mudam com o tempo: saem versões novas, mais rápidas ou mais capazes. Por isso este curso não depende do nome de um modelo específico. Quando eu precisar falar de modelo, vou mostrar onde você escolhe e como saber qual está usando.</p>
+<p>Em volta dos modelos existem formas diferentes de usar o Claude.</p>
+<p><strong>[GC]</strong> 1. Apps de conversa</p>
+<p><em>Abrir claude.ai no navegador.</em></p>
+<p>A primeira são os <strong>apps de conversa</strong>: o site claude.ai, o app para computador e o app de celular. É aqui que você conversa, envia arquivos, organiza projetos. No curso, a gente chama isso de <strong>Claude Chat</strong>. Ele tem plano gratuito, com limite de uso.</p>
+<p><strong>[GC]</strong> 2. Claude Code</p>
+<p><em>Mostrar o Claude Code no terminal e no app Desktop.</em></p>
+<p>A segunda é o <strong>Claude Code</strong>. Aqui a lógica muda. O Claude Code trabalha dentro de uma pasta no seu computador: lê arquivos, cria arquivos, altera arquivos e roda comandos. Sempre com a sua permissão.</p>
+<p>Ele pode ser usado no terminal, no app Desktop (sem precisar do terminal), em extensões de editores de código como o VS Code e na web. ◆ <em>Confirmar na gravação a lista atual de superfícies.</em> E tem um ponto importante, que já vimos na aula de custos: o Claude Code <strong>não</strong> está no plano gratuito. Ele exige o plano Pro ou superior, ou uma conta de desenvolvedor.</p>
+<p><strong>[GC]</strong> 3. API</p>
+<p>A terceira é a <strong>API</strong>, a porta de entrada para programadores colocarem o Claude dentro dos próprios sistemas. É cobrada por uso, separada da assinatura. Neste curso, a gente não programa direto na API. Ela aparece só quando uma ferramenta pede uma chave, e eu explico isso no módulo 04.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Para fixar, pensa assim:</p>
+<ul>
+<li>No <strong>Chat</strong>, você conversa e recebe respostas: texto, ideias, análises, documentos.</li>
+<li>No <strong>Code</strong>, você dá uma tarefa e o Claude trabalha nos seus arquivos.</li>
+<li>A <strong>API</strong> é para quem constrói software.</li>
+</ul>
+<p>O mesmo "cérebro" pode estar por trás dos três. O que muda é o que ele consegue tocar. No chat, ele toca a conversa. No Code, ele toca o seu projeto.</p>
+<p>Por isso, a pergunta mais importante deste curso não é "qual prompt usar". É: <strong>essa tarefa é de Chat ou de Code?</strong> É exatamente isso que a próxima aula responde.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<ol>
+<li>Abrir o claude.ai e mostrar o seletor de modelo.</li>
+<li>Mostrar o app Desktop do Claude, com a área de Claude Code. ◆</li>
+<li>Mostrar um terminal com <code>claude --version</code>, apenas como prévia do módulo 03.</li>
+</ol>
+<p><strong>O que conferir na tela:</strong> o aluno reconhece onde fica o chat e onde fica o Claude Code. Não há configuração nesta aula.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Navegador com acesso ao claude.ai.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Liste três tarefas da sua rotina e classifique cada uma: Chat, Code ou nenhum dos dois.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Diagrama do ecossistema Claude (PDF).</li>
+<li>Página oficial de planos e documentação do Claude Code.</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>"Claude" é uma família de modelos, usada por apps de conversa, pelo Claude Code e pela API.</li>
+<li>O Claude Chat conversa. O Claude Code trabalha nos arquivos do seu computador, com permissão.</li>
+<li>O Claude Code exige plano pago. A API é cobrada por uso e fica fora do foco do curso.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>◆ Confirmar na semana da gravação as superfícies do Claude Code (terminal, Desktop, IDE, web) e o nome atual das áreas no app.</li>
+<li>Não citar nomes de modelos na fala, porque mudam com frequência.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a04-chat-ou-code">M01-A04 — Chat ou Code?</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + slides</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>Não se aplica</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Matriz Chat × Code (<code>08-MATERIAIS-COMPLEMENTARES/matriz-chat-ou-code_v0.1.md</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Escolher entre Claude Chat e Claude Code para uma tarefa usando a matriz de decisão FREMEX.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>As seis perguntas da matriz Chat × Code.</li>
+<li>O caminho mais comum de um job pelo Método CRIAR.</li>
+<li>Como evitar os dois erros mais frequentes: usar o Code para conversar e o Chat para produzir arquivos em série.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Escolher a ferramenta errada é a forma mais rápida de perder tempo com IA. Tem gente pedindo para o chat "gerar 200 imagens redimensionadas", recebendo um texto de instruções e achando que a IA não funciona. E tem gente abrindo o Claude Code para pensar na ideia de uma campanha, quando uma conversa resolveria em cinco minutos.</p>
+<p>Para não depender de intuição, a gente usa uma matriz com seis perguntas. Você responde na ordem, e a primeira resposta "sim" indica o caminho.</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> Matriz Chat × Code</p>
+<p><em>Slide com a matriz, revelando uma pergunta por vez.</em></p>
+<p><strong>Um:</strong> o resultado é uma ideia, um texto, uma análise ou uma decisão? Se sim, <strong>Chat</strong>.</p>
+<p><strong>Dois:</strong> você ainda precisa conversar e explorar antes de saber o que quer? <strong>Chat</strong>.</p>
+<p><strong>Três:</strong> o resultado são arquivos no seu computador, como uma página, um vídeo ou uma imagem gerada? <strong>Code</strong>.</p>
+<p><strong>Quatro:</strong> a tarefa mexe em muitos arquivos de uma vez, renomeando, convertendo ou organizando? <strong>Code</strong>.</p>
+<p><strong>Cinco:</strong> precisa rodar uma ferramenta, como renderizar um vídeo ou exportar um SVG? <strong>Code</strong>.</p>
+<p><strong>Seis:</strong> você vai repetir isso toda semana? <strong>Code</strong>, e vale transformar em um fluxo reutilizável.</p>
+<p><strong>[CORTE]</strong></p>
+<p>Vamos testar com tarefas da Nova Orla.</p>
+<p><strong>[GC]</strong> "Transformar o e-mail da cliente em briefing"</p>
+<p>O resultado é um texto. Pergunta um: sim. <strong>Chat</strong>.</p>
+<p><strong>[GC]</strong> "Criar a vinheta animada da marca em vídeo"</p>
+<p>O resultado é um arquivo de vídeo, e precisa rodar uma ferramenta de renderização. <strong>Code</strong>.</p>
+<p><strong>[GC]</strong> "Adaptar 40 fotos para o formato do Instagram"</p>
+<p>Muitos arquivos de uma vez. <strong>Code</strong>.</p>
+<p><strong>[GC]</strong> "Escrever o roteiro do vídeo de 30 segundos"</p>
+<p>Texto. <strong>Chat</strong>.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Repara que, num job inteiro, você usa os dois. O caminho mais comum é este:</p>
+<p><strong>[GC]</strong> Chat → Compreender e Roteirizar · Code → Integrar · os dois → Aprimorar e Reaproveitar</p>
+<p>Você começa no <strong>Chat</strong> para entender e planejar. Leva o plano para o <strong>Code</strong> para construir. E usa os dois para revisar e guardar o que funcionou.</p>
+<p>Se você está na trilha Essencial, vai passar a maior parte do tempo nas duas primeiras etapas, no chat. E isso já muda muito o seu trabalho. Quando quiser dar o próximo passo, o Code estará esperando no módulo 03.</p>
+<p>Na próxima aula: o que o Claude não faz. É uma das aulas mais importantes do curso.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Aplicação guiada da matriz a quatro tarefas da Nova Orla.</p>
+<p><strong>O que conferir na tela:</strong> cada exemplo aponta para o mesmo modo indicado na matriz impressa.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Matriz Chat × Code (PDF).</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Aplique a matriz a cinco tarefas da sua rotina. Para cada uma, escreva a pergunta que decidiu o modo.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<p>Matriz Chat × Code.</p>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>Seis perguntas decidem o modo. A primeira resposta "sim" vale.</li>
+<li>Texto, ideia e análise ficam no Chat. Arquivos, lotes e ferramentas ficam no Code.</li>
+<li>Um job completo usa os dois: Chat para pensar, Code para construir.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>Animar a matriz revelando uma pergunta por vez.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a05-o-que-o-claude-não-faz">M01-A05 — O que o Claude não faz</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>Aprimorar</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + tela</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>11/11/2026 · revisar exemplos na semana da gravação</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td>Conversa de exemplo gravada com um erro factual real e a correção</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Reconhecer os limites do Claude (erros, invenções, conhecimento datado e limites de uso) e aplicar uma rotina simples de verificação.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>Por que um modelo de linguagem pode errar com confiança.</li>
+<li>O que é a data de corte do conhecimento.</li>
+<li>Quais limites de uso e de arquivos existem.</li>
+<li>A rotina de três verificações FREMEX.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Esta aula existe para te proteger. A maior parte dos problemas com IA no trabalho criativo não vem da ferramenta ser ruim. Vem de esperar dela algo que ela não faz.</p>
+<p>Vou te mostrar cinco limites e, no final, uma rotina simples para lidar com eles.</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> 1. Ele pode errar com confiança</p>
+<p>O Claude gera texto prevendo o que faz sentido a partir do que aprendeu. Na maioria das vezes, isso dá resultados muito bons. Mas, às vezes, ele produz uma informação que soa certa e está errada: uma data, um dado, o nome de um recurso de software, um comando.</p>
+<p><strong>[TELA]</strong></p>
+<p><em>Mostrar a conversa de exemplo com um erro e a correção.</em></p>
+<p>Olha este exemplo. A resposta está bem escrita, segura, e a informação está errada. Quando eu peço a fonte e confiro na documentação oficial, aparece a diferença.</p>
+<p><strong>[CÂMERA]</strong></p>
+<p><strong>[GC]</strong> 2. O conhecimento tem data de corte</p>
+<p>O modelo aprende com informações até uma certa data. O que aconteceu depois disso ele não sabe, a menos que tenha uma ferramenta de busca ligada ou que você forneça o material. Isso pesa muito no nosso assunto: preço de software, recursos novos, mudanças de tela. Para essas coisas, a fonte é sempre a documentação oficial.</p>
+<p><strong>[GC]</strong> 3. Ele não vê o que você não mostra</p>
+<p>O Claude não sabe o que o cliente falou na reunião, qual foi o último feedback nem como é a identidade da marca, a menos que você conte ou envie. Resposta genérica, na maioria das vezes, é contexto que faltou.</p>
+<p><strong>[GC]</strong> 4. Existem limites de uso e de arquivos</p>
+<p>Todo plano tem limite de uso, inclusive os pagos. Também há limites de tamanho e de tipo de arquivo que você pode enviar. ◆ <em>Mostrar na gravação os limites atuais de anexos.</em> Em projetos grandes, isso exige planejamento, e a gente trata disso no módulo 08.</p>
+<p><strong>[GC]</strong> 5. Ele não assume a responsabilidade</p>
+<p>E o último, que vimos na aula sobre o papel do profissional: quem entrega e responde é você.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Agora, a rotina. Antes de qualquer coisa ir para o cliente, faça três verificações.</p>
+<p><strong>[GC]</strong> Rotina de 3 verificações</p>
+<ul>
+<li><strong>Fato:</strong> todo número, data, nome, preço ou afirmação técnica foi conferido numa fonte confiável?</li>
+<li><strong>Briefing:</strong> o resultado respeita o objetivo, o público e as restrições do cliente?</li>
+<li><strong>Direitos:</strong> existe algo que pode ferir direito autoral, de imagem, de voz, ou expor dado do cliente?</li>
+</ul>
+<p>Parece pouco, mas essas três perguntas evitam a maioria dos problemas. Elas também entram no checklist de entrega do curso.</p>
+<p>E uma dica que vale ouro: peça para o próprio Claude te ajudar a verificar. Algo como "liste as afirmações desta resposta que eu preciso conferir numa fonte oficial". Ele é bom em apontar onde pode estar errado. A conferência final, porém, é sua.</p>
+<p>Na próxima aula: ética, direitos e dados.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<ol>
+<li>Mostrar uma conversa em que o Claude dá uma informação técnica incorreta.</li>
+<li>Pedir: "Liste as afirmações desta resposta que eu preciso conferir numa fonte oficial."</li>
+<li>Conferir na documentação oficial e corrigir.</li>
+</ol>
+<p><strong>O que conferir na tela:</strong> o erro mostrado precisa ser real, registrado na data da gravação, e não encenado.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Claude Chat.</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Peça ao Claude uma explicação sobre uma ferramenta que você usa. Depois, peça a lista de afirmações a verificar e confira pelo menos três delas na documentação oficial. Anote o que estava certo e o que não estava.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<p>Cartão "Rotina de 3 verificações" (PDF de uma página).</p>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>O Claude pode errar com confiança, tem data de corte do conhecimento e não sabe o que você não contou.</li>
+<li>Todos os planos têm limites de uso e de arquivos.</li>
+<li>Antes de entregar: verifique fatos, briefing e direitos.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li>◆ Registrar na semana da gravação um erro real para a demonstração. Não encenar.</li>
+<li>◆ Confirmar os limites atuais de anexos no claude.ai.</li>
+</ul><div class="docsep"></div><h1 id="s-m01-a06-ética-direitos-e-dados">M01-A06 — Ética, direitos e dados</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulo</td>
+<td>01 — Fundamentos</td>
+</tr>
+<tr>
+<td>Trilha</td>
+<td>Essencial e Completa</td>
+</tr>
+<tr>
+<td>Nível</td>
+<td>Base</td>
+</tr>
+<tr>
+<td>Etapa do CRIAR</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>12 min</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>Câmera + slides</td>
+</tr>
+<tr>
+<td>Última verificação técnica</td>
+<td>11/11/2026 · revisar os termos das ferramentas na semana da gravação</td>
+</tr>
+<tr>
+<td>Dependências de produção</td>
+<td><strong>Revisão do roteiro por profissional jurídico antes da gravação</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-1-objetivo-de-aprendizagem">1. Objetivo de aprendizagem</h2>
+<p>Aplicar regras práticas sobre dados de clientes, direitos autorais, uso de voz e imagem e transparência no trabalho com IA.</p>
+<h2 id="s-2-o-que-o-aluno-vai-aprender">2. O que o aluno vai aprender</h2>
+<ul>
+<li>O que não enviar para ferramentas de IA.</li>
+<li>Cuidados com referências, estilos e materiais de terceiros.</li>
+<li>Regras para voz, imagem e pessoas reais.</li>
+<li>Como falar com o cliente sobre o uso de IA.</li>
+</ul>
+<h2 id="s-3-roteiro-de-gravação">3. Roteiro de gravação</h2>
+<p><strong>[CÂMERA]</strong></p>
+<p>Antes de começar a usar a ferramenta, a gente precisa combinar algumas regras. Não estou dando consultoria jurídica: cada caso pode ter detalhes que pedem um advogado. O que eu vou te passar são práticas de mercado para você trabalhar com segurança.</p>
+<p><strong>[GC]</strong> Não é aconselhamento jurídico. Em caso de dúvida, consulte um profissional.</p>
+<p><strong>[CORTE]</strong></p>
+<p><strong>[GC]</strong> 1. Dados de clientes</p>
+<p>Primeira regra: pense antes de colar. Contratos, dados pessoais de clientes ou de consumidores, senhas, chaves de acesso e informações confidenciais <strong>não</strong> devem ir para uma ferramenta de IA sem autorização do cliente e sem você saber como aquela ferramenta trata os dados.</p>
+<p>No Brasil, dados pessoais são protegidos pela LGPD, a Lei Geral de Proteção de Dados. Na prática: se tem nome, telefone, e-mail ou CPF de pessoas, trate com cuidado redobrado.</p>
+<p>Leia as configurações de privacidade da sua conta no Claude e de cada ferramenta que você conectar. ◆ <em>Mostrar na gravação onde ficam as configurações de privacidade.</em> E, quando possível, troque dados reais por dados de exemplo. É o que a gente faz com a Nova Orla.</p>
+<p><strong>[GC]</strong> 2. Referências e materiais de terceiros</p>
+<p>Segunda regra: referência é inspiração, não matéria-prima. Usar a imagem de outra marca, a música de alguém ou um trecho de vídeo dentro de uma entrega exige licença, seja feito com IA ou não.</p>
+<p>Pedir "faça no estilo de tal artista" também merece cuidado. Além da questão ética, o resultado tende a ser imitação, e imitação raramente é o que o cliente precisa. No curso, a gente descreve <strong>qualidades</strong>: "luz quente de fim de tarde, tipografia arredondada, ritmo calmo". Isso dá resultado melhor e mais seu.</p>
+<p><strong>[GC]</strong> 3. Voz e imagem de pessoas</p>
+<p>Terceira regra, muito importante para quem trabalha com vídeo: voz e imagem de pessoas reais só com autorização por escrito. Isso vale para clonagem de voz, para avatares e para qualquer recriação de uma pessoa.</p>
+<p>As próprias ferramentas de voz, como o ElevenLabs, têm termos sobre isso, e a gente revisa esses termos no módulo 04. ◆</p>
+<p><strong>[GC]</strong> 4. Licenças das ferramentas</p>
+<p>Quarta regra: confira a licença de uso comercial de cada ferramenta, como vimos na aula de custos. Plano gratuito que não permite uso comercial não pode ir para cliente.</p>
+<p><strong>[GC]</strong> 5. Transparência</p>
+<p>Quinta regra: transparência com o cliente. Você não precisa explicar cada prompt, mas o cliente tem o direito de saber se partes da entrega foram geradas com IA, principalmente voz, imagem e textos publicados. Combine isso no início do job. Alguns clientes têm políticas próprias sobre o assunto, e é melhor saber antes.</p>
+<p><strong>[CORTE] [CÂMERA]</strong></p>
+<p>Para facilitar, preparei um checklist de uma página com essas cinco regras. Ele faz parte do checklist de entrega que você vai usar no curso inteiro.</p>
+<p>E se você ficar na dúvida em algum caso, a regra de ouro é: na dúvida, pergunte ao cliente, e, se o risco for alto, a um advogado. Nunca à IA.</p>
+<p>Com isso, fechamos os fundamentos. No próximo módulo, a gente entra no Claude Chat e começa a trabalhar de verdade.</p>
+<h2 id="s-4-demonstração-prática">4. Demonstração prática</h2>
+<p>Mostrar onde ficam as configurações de privacidade da conta no claude.ai. ◆</p>
+<p><strong>O que conferir na tela:</strong> o caminho até as configurações de privacidade corresponde à interface atual.</p>
+<h2 id="s-5-ferramentas-necessárias">5. Ferramentas necessárias</h2>
+<p>Claude Chat (só para mostrar as configurações).</p>
+<h2 id="s-6-exercício-ou-aplicação">6. Exercício ou aplicação</h2>
+<p>Revise um job recente seu com as cinco regras. Para cada uma, anote "ok", "atenção" ou "não se aplica", com uma frase de justificativa.</p>
+<h2 id="s-7-material-complementar">7. Material complementar</h2>
+<ul>
+<li>Checklist "5 regras de ética, direitos e dados" (PDF).</li>
+<li>Links para a política de privacidade do Claude e os termos das ferramentas do curso.</li>
+</ul>
+<h2 id="s-8-resumo-final">8. Resumo final</h2>
+<ul>
+<li>Não envie dados pessoais, confidenciais ou credenciais sem autorização e sem conhecer a política da ferramenta.</li>
+<li>Referências inspiram. Materiais de terceiros exigem licença.</li>
+<li>Voz e imagem de pessoas reais só com autorização por escrito.</li>
+<li>Confira as licenças comerciais e combine com o cliente a transparência sobre o uso de IA.</li>
+</ul>
+<h2 id="s-9-notas-de-produção">9. Notas de produção</h2>
+<ul>
+<li><strong>Obrigatório:</strong> revisão jurídica do roteiro antes de gravar.</li>
+<li>◆ Confirmar o caminho das configurações de privacidade e os termos de voz do ElevenLabs.</li>
+</ul><div class="docsep"></div><h1 id="s-nova-orla-briefing-mãe">Nova Orla — Briefing-mãe</h1>
+<blockquote>
+<p><strong>MARCA FICTÍCIA · USO EDUCACIONAL.</strong> A Nova Orla, seus produtos, pessoas e dados foram criados para o curso Método CRIAR, da FREMEX ACADEMY. Qualquer semelhança com empresas reais é coincidência.</p>
+</blockquote>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026</p>
+<h2 id="s-a-empresa">A empresa</h2>
+<p>A Nova Orla é uma pequena fabricante de bebidas artesanais não alcoólicas: chás gelados e águas saborizadas feitos com frutas da estação. Nasceu em uma cidade litorânea, vende em cafés, mercados de bairro e feiras, e agora quer chegar a outras cidades.</p>
+<p><strong>Personalidade:</strong> leve, solar, honesta, local. Fala como um amigo que conhece o produtor da fruta.</p>
+<h2 id="s-objetivo">Objetivo</h2>
+<p>Lançar o <strong>sabor de verão (Maracujá &amp; Hortelã)</strong> e tornar a marca conhecida fora da cidade de origem ao longo do ano.</p>
+<h2 id="s-público">Público</h2>
+<ul>
+<li><strong>Principal:</strong> adultos de 25 a 40 anos, moradores de cidades médias e grandes, que valorizam produto local e ingredientes simples.</li>
+<li><strong>Hábitos:</strong> consomem conteúdo em vídeo curto (Reels, TikTok, Shorts) e descobrem marcas pequenas por indicação e redes sociais.</li>
+</ul>
+<h2 id="s-mensagem-central">Mensagem central</h2>
+<p><em>"Feito com a fruta da estação, do jeito que tem que ser."</em></p>
+<h2 id="s-restrições">Restrições</h2>
+<ul>
+<li>Não usar linguagem de bebida energética ou esportiva.</li>
+<li>Não fazer promessas de saúde ou benefícios medicinais.</li>
+<li>Não usar imagens ou referências de outras marcas de bebida.</li>
+<li>Respeitar a identidade visual: areia, verde-água e laranja-maracujá. Tipografia arredondada.</li>
+<li>Todo conteúdo com pessoas precisa de autorização de uso de imagem.</li>
+</ul>
+<h2 id="s-entregas-previstas-no-ano-projetos-do-curso">Entregas previstas no ano (projetos do curso)</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Projeto</th>
+<th>Entrega</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Campanha de lançamento para redes sociais</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Vídeo vertical de 30 s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Vinheta animada da marca</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Vídeo explicativo de 45 s com narração e legendas</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Pacote completo do lançamento nacional</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-contato-fictício">Contato fictício</h2>
+<p>Responsável de marketing: <strong>Marina Costa</strong> (personagem fictícia). Aprovações por e-mail em até 48 h.</p><div class="docsep"></div><h1 id="s-tabela-de-custos-método-criar">Tabela de custos — Método CRIAR</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Consulta:</strong> 11/11/2026 · <strong>Confira sempre a página oficial antes de assinar.</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Ferramenta</th>
+<th>Para que serve no curso</th>
+<th>Gratuito?</th>
+<th>Quando é preciso pagar</th>
+<th>Status da informação</th>
+<th>Meu caso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude (chat)</td>
+<td>Planejamento, roteiros, análise</td>
+<td>Sim, com limite de uso</td>
+<td>Para mais uso e recursos. O plano Pro custava US$ 20/mês (US$ 17/mês no anual) na consulta</td>
+<td>Oficial</td>
+<td></td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>Construir projetos, automações, vídeo por código</td>
+<td><strong>Não</strong></td>
+<td>Exige Pro, Max, Ultra, Team, Enterprise ou conta Console</td>
+<td>Oficial</td>
+<td></td>
+</tr>
+<tr>
+<td>Remotion</td>
+<td>Vídeo com React</td>
+<td>Sim, para indivíduos e equipes de até 3 pessoas</td>
+<td>Empresas com 4 pessoas ou mais precisam de licença</td>
+<td>◆ A confirmar na fonte oficial</td>
+<td></td>
+</tr>
+<tr>
+<td>HyperFrames</td>
+<td>Vídeo a partir de HTML</td>
+<td>Código aberto</td>
+<td>Renderização em nuvem da HeyGen pode ter custo</td>
+<td>◆ A confirmar</td>
+<td></td>
+</tr>
+<tr>
+<td>ElevenLabs</td>
+<td>Narração e voz</td>
+<td>Sim, com créditos limitados e <strong>sem uso comercial</strong></td>
+<td>Uso comercial exige plano pago</td>
+<td>◆ A confirmar</td>
+<td></td>
+</tr>
+<tr>
+<td>Inkscape</td>
+<td>Gráficos vetoriais (SVG)</td>
+<td>Sim, código aberto</td>
+<td>—</td>
+<td>Conhecimento público</td>
+<td></td>
+</tr>
+<tr>
+<td>Node.js, FFmpeg, Git</td>
+<td>Ferramentas técnicas de base</td>
+<td>Sim</td>
+<td>—</td>
+<td>Conhecimento público</td>
+<td></td>
+</tr>
+<tr>
+<td>Google Drive</td>
+<td>Organização e entrega de arquivos</td>
+<td>Sim, com espaço limitado</td>
+<td>Para mais espaço de armazenamento</td>
+<td>Conhecimento público</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-resumo-por-trilha">Resumo por trilha</h2>
+<ul>
+<li><strong>Essencial:</strong> comece com o plano gratuito do Claude. Algumas aulas ficam melhores com um plano pago.</li>
+<li><strong>Completa:</strong> plano Pro do Claude ou superior. ElevenLabs pago somente para narração de uso comercial. Licença do Remotion somente para empresas com 4 pessoas ou mais.</li>
+</ul>
+<h2 id="s-meu-orçamento-mensal">Meu orçamento mensal</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude</td>
+<td></td>
+</tr>
+<tr>
+<td>ElevenLabs (se uso comercial)</td>
+<td></td>
+</tr>
+<tr>
+<td>Outros</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div><div class="docsep"></div><h1 id="s-checklist-de-setup-método-criar">Checklist de setup — Método CRIAR</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Requisitos consultados em:</strong> 11/11/2026 (code.claude.com/docs/en/setup)</p>
+<h2 id="s-trilha-essencial">Trilha Essencial</h2>
+<ul>
+<li>[ ] Navegador atualizado (Chrome, Edge, Firefox ou Safari)</li>
+<li>[ ] Internet estável</li>
+<li>[ ] Conta no Claude criada e com login feito</li>
+<li>[ ] Pasta <code>Metodo-CRIAR</code> criada no computador ou no Google Drive</li>
+</ul>
+<h2 id="s-trilha-completa-computador">Trilha Completa — computador</h2>
+<ul>
+<li>[ ] Sistema: Windows 10 versão 1809+ · macOS 13+ · Ubuntu 20.04+ · Debian 10+ · Alpine 3.19+</li>
+<li>[ ] Memória: 4 GB de RAM ou mais (8 GB ou mais recomendado para renderizar vídeo)</li>
+<li>[ ] Espaço livre em disco: ◆ valor recomendado a definir depois de medir os projetos</li>
+<li>[ ] Processador x64 ou ARM64</li>
+</ul>
+<h2 id="s-trilha-completa-contas">Trilha Completa — contas</h2>
+<ul>
+<li>[ ] Claude com plano Pro ou superior</li>
+<li>[ ] Conta no ElevenLabs (o plano gratuito serve para estudo; para uso comercial, plano pago)</li>
+<li>[ ] Conta Google (Drive)</li>
+</ul>
+<h2 id="s-trilha-completa-instalações-feitas-no-módulo-03-e-no-05">Trilha Completa — instalações (feitas no módulo 03 e no 05)</h2>
+<ul>
+<li>[ ] Claude Code: <code>claude --version</code> mostra um número de versão</li>
+<li>[ ] <code>claude doctor</code> sem erros</li>
+<li>[ ] Windows: Git for Windows instalado (recomendado)</li>
+<li>[ ] Node.js ◆ (versão mínima a confirmar com Remotion e HyperFrames)</li>
+<li>[ ] FFmpeg ◆</li>
+<li>[ ] Inkscape</li>
+</ul>
+<h2 id="s-se-algo-falhar">Se algo falhar</h2>
+<ol>
+<li>Anote a mensagem de erro exatamente como aparece.</li>
+<li>Confira a aula de instalação do seu sistema e a página oficial de solução de problemas do Claude Code.</li>
+<li>Consulte o módulo de atualizações do curso.</li>
+</ol><div class="docsep"></div><h1 id="s-matriz-chat-ou-code">Matriz: Chat ou Code?</h1>
+<p><strong>Versão:</strong> 0.1 · Usada na aula 01.4</p>
+<p>Responda às perguntas na ordem. A primeira resposta "sim" indica o modo.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pergunta</th>
+<th>Se sim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>O resultado é uma ideia, um texto, uma análise ou uma decisão?</td>
+<td><strong>Chat</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Você precisa conversar e explorar opções antes de saber o que quer?</td>
+<td><strong>Chat</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>O resultado são arquivos no seu computador (páginas, vídeos, imagens, planilhas geradas)?</td>
+<td><strong>Code</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>A tarefa envolve muitos arquivos de uma vez (renomear, converter, organizar)?</td>
+<td><strong>Code</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>A tarefa precisa rodar uma ferramenta (renderizar vídeo, exportar SVG, instalar algo)?</td>
+<td><strong>Code</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Você vai repetir essa tarefa toda semana?</td>
+<td><strong>Code</strong>, transformando em fluxo reutilizável</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-o-caminho-mais-comum-em-um-job">O caminho mais comum em um job</h2>
+<p><strong>Chat</strong> para Compreender e Roteirizar → <strong>Code</strong> para Integrar → Chat e Code juntos para Aprimorar → os dois para Reaproveitar.</p>
+<h2 id="s-exemplos">Exemplos</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Tarefa</th>
+<th>Modo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transformar o e-mail do cliente em briefing</td>
+<td>Chat</td>
+</tr>
+<tr>
+<td>Criar 10 opções de headline</td>
+<td>Chat</td>
+</tr>
+<tr>
+<td>Escrever o roteiro de um vídeo de 30 s</td>
+<td>Chat</td>
+</tr>
+<tr>
+<td>Gerar uma vinheta animada em vídeo</td>
+<td>Code</td>
+</tr>
+<tr>
+<td>Converter 200 imagens para o formato de uma rede social</td>
+<td>Code</td>
+</tr>
+<tr>
+<td>Montar um vídeo com narração e legenda a partir de um roteiro</td>
+<td>Code</td>
+</tr>
+<tr>
+<td>Revisar se a legenda está sem erros</td>
+<td>Chat (ou Code, se for em lote)</td>
+</tr>
+</tbody>
+</table></div><div class="docsep"></div><h1 id="s-padrão-de-roteiro-método-criar">Padrão de roteiro — Método CRIAR</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026</p>
+<h2 id="s-marcações">Marcações</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Marcação</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>[CÂMERA]</strong></td>
+<td>Apresentador em quadro, falando para a câmera</td>
+</tr>
+<tr>
+<td><strong>[TELA]</strong></td>
+<td>Gravação de tela com voz. As ações aparecem em itálico</td>
+</tr>
+<tr>
+<td><strong>[GC]</strong></td>
+<td>Texto na tela (gerador de caracteres): títulos, termos, destaques</td>
+</tr>
+<tr>
+<td><strong>[CORTE]</strong></td>
+<td>Mudança de bloco ou de cena</td>
+</tr>
+<tr>
+<td><strong>[PAUSA]</strong></td>
+<td>Respiro para o aluno executar um passo</td>
+</tr>
+<tr>
+<td>◆</td>
+<td>Informação técnica a confirmar na fonte oficial antes de gravar</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-regras-de-escrita">Regras de escrita</h2>
+<ul>
+<li>Escrever como se fala: frases curtas, "você", exemplos do dia a dia criativo.</li>
+<li>Uma ideia por bloco. Se um bloco passa de 90 segundos de fala, dividir.</li>
+<li>Toda demonstração diz <strong>o que conferir na tela</strong> para o aluno saber que deu certo.</li>
+<li>Nada de números de mercado, promessas de resultado ou depoimentos inventados.</li>
+<li>Preços e recursos sempre com a data de consulta e o lembrete de conferir a página oficial.</li>
+<li>O texto é um guia, não um teleprompter obrigatório. O apresentador pode adaptar as palavras, mas não os fatos.</li>
+</ul>
+<h2 id="s-cabeçalho-de-cada-aula">Cabeçalho de cada aula</h2>
+<p>Módulo · Aula · Trilha · Nível · Etapa do CRIAR · Duração estimada · Formato de gravação · Última verificação técnica · Dependências de produção.</p>
+<h2 id="s-corpo-de-cada-aula">Corpo de cada aula</h2>
+<ol>
+<li>Objetivo de aprendizagem</li>
+<li>O que o aluno vai aprender</li>
+<li>Roteiro de gravação</li>
+<li>Demonstração prática</li>
+<li>Ferramentas necessárias</li>
+<li>Exercício ou aplicação</li>
+<li>Material complementar</li>
+<li>Resumo final</li>
+<li>Notas de produção</li>
+</ol></article>
+</div>

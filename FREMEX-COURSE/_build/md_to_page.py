@@ -18,8 +18,9 @@ SYMBOL = re.sub(r"<title>.*?</title>", "", SYMBOL).replace("<svg ", '<svg class=
 DOC_CSS = """
 .doc { padding-block: clamp(32px, 6vw, 72px); }
 .doc > * + * { margin-top: 1rem; }
-.doc h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); margin-bottom: 1.5rem; }
-.doc h2 { font-size: var(--s2); margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.doc h1 { font-size: clamp(1.9rem, 4.5vw, 3.2rem); margin-bottom: 1.5rem; }
+.doc h1:not(:first-child) { margin-top: 6rem; padding-top: 3rem; border-top: 2px solid var(--blue); }
+.doc h2 { font-size: var(--s2); margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 .doc h3 { margin-top: 2.5rem; color: var(--ice); }
 .doc p, .doc li { max-width: 72ch; }
 .doc strong { color: var(--ice); font-weight: 600; }
@@ -61,6 +62,12 @@ def convert(md_text):
         toc.append((s, re.sub(r"<[^>]+>", "", m.group(1))))
         return f'<h2 id="{s}">{m.group(1)}</h2>'
     html = re.sub(r"<h2>(.*?)</h2>", h2, html)
+
+    def h1(m):
+        s = slug(m.group(1))
+        toc.append((s, "§" + re.sub(r"<[^>]+>", "", m.group(1))))
+        return f'<h1 id="{s}">{m.group(1)}</h1>'
+    html = re.sub(r"<h1>(.*?)</h1>", h1, html)
     return html, toc
 
 
@@ -71,7 +78,10 @@ def main():
         h, t = convert(Path(d).read_text(encoding="utf-8"))
         bodies.append(h if i == 0 else f'<div class="docsep"></div>{h}')
         toc += t
-    toc_html = "".join(f'<a href="#{s}">{n}</a>' for s, n in toc if re.match(r"^\d", n))
+    import os
+    lvl = os.environ.get("TOC", "h2")
+    pick = (lambda n: n.startswith("§")) if lvl == "h1" else (lambda n: re.match(r"^\d", n))
+    toc_html = "".join(f'<a href="#{s}">{n.lstrip("§").split(" — ")[0]}</a>' for s, n in toc if pick(n))
     page = f"""<title>{title}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
