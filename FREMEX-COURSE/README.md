@@ -6,7 +6,7 @@ Desenvolvimento do primeiro curso digital da FREMEX.
 
 | Pasta | Conteúdo | Status |
 |---|---|---|
-| 00-ESTRATEGIA | Planejamento, posicionamento, decisões | Etapa 1 em avaliação |
+| 00-ESTRATEGIA | Planejamento, posicionamento, decisões | Etapa 1 aprovada · Etapa 2 em avaliação |
 | 01-BRANDING | Aplicação da identidade FREMEX ao produto (fonte: `../brand/`) | Aguardando |
 | 02-CURRICULO | Grade curricular definitiva | Etapa 3 |
 | 03-ROTEIROS | Roteiros de gravação por módulo | Etapa 4 |
