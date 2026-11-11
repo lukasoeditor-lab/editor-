@@ -1,0 +1,1185 @@
+<title>Método CRIAR Currículo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+
+.doc { padding-block: clamp(32px, 6vw, 72px); }
+.doc > * + * { margin-top: 1rem; }
+.doc h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); margin-bottom: 1.5rem; }
+.doc h2 { font-size: var(--s2); margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.doc h3 { margin-top: 2.5rem; color: var(--ice); }
+.doc p, .doc li { max-width: 72ch; }
+.doc strong { color: var(--ice); font-weight: 600; }
+.doc ul, .doc ol { padding-left: 1.2em; display: grid; gap: 6px; }
+.doc li::marker { color: var(--blue-dig); }
+.doc hr { border: 0; height: 1px; background: var(--line); margin-block: 2.5rem; }
+.doc code { font-family: var(--f-mono); font-size: .88em; background: var(--navy); padding: 1px 6px; border-radius: 3px; color: var(--ice); }
+.doc em { color: var(--mute); }
+.doc a { word-break: break-word; }
+.tbl { overflow-x: auto; margin-block: 1.5rem; border: 1px solid var(--line); }
+.doc table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .9rem; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.doc thead th { font-family: var(--f-mono); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-dig); background: var(--navy); }
+.doc tbody tr:last-child td { border-bottom: 0; }
+.doc td:first-child { white-space: nowrap; }
+.doc h2 + p strong:first-child { color: var(--blue-dig); }
+.mark { width: 28px; height: 28px; }
+.bar .brand { display: flex; align-items: center; gap: 10px; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: var(--s-1); padding-block: 14px; border-bottom: 1px solid var(--line); }
+.toc a { color: var(--mute); text-decoration: none; }
+.toc a:hover { color: var(--ice); }
+.docsep { margin-top: 5rem !important; }
+</style>
+<div class="wrap">
+  <div class="bar"><span class="brand"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="FREMEX símbolo"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg>
+<strong>FREMEX ACADEMY</strong></span><span>Curso · Etapa 3 de 7 · Currículo</span><span>Documento de trabalho</span></div>
+  <nav class="toc" aria-label="Seções"><a href="#s-1-visão-geral">1. Visão geral</a><a href="#s-2-módulos-e-aulas">2. Módulos e aulas</a><a href="#s-3-projetos">3. Projetos</a><a href="#s-4-atividades-e-avaliação">4. Atividades e avaliação</a><a href="#s-5-materiais-ligados-ao-currículo">5. Materiais ligados ao currículo</a><a href="#s-6-itens-que-dependem-de-verificação-oficial-etapa-4">6. Itens ◆ que dependem de verificação oficial (Etapa 4)</a><a href="#s-7-decisões-que-preciso-de-você">7. Decisões que preciso de você</a></nav>
+  <article class="doc"><h1>Etapa 3 — Currículo do Método CRIAR</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026 · <strong>Status:</strong> em avaliação</p>
+<p><strong>MÉTODO CRIAR</strong> — Claude Chat e Claude Code para profissionais criativos: do briefing à entrega, mesmo sem saber programar. <em>Um curso FREMEX ACADEMY.</em></p>
+<p>Esta é a grade definitiva proposta: módulos, aulas, objetivos de aprendizagem e projetos. Depois de aprovada, ela orienta os roteiros (Etapa 4). Recursos que dependem de plano ou que ainda precisam de verificação oficial estão marcados com <strong>◆</strong>.</p>
+<hr />
+<h2 id="s-1-visão-geral">1. Visão geral</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>Trilha Essencial</th>
+<th>Trilha Completa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Para quem</td>
+<td>Social medias, roteiristas, iniciantes</td>
+<td>Videomakers, designers, motion designers, quem quer automatizar</td>
+</tr>
+<tr>
+<td>Módulos</td>
+<td>00, 01, 02, 06 e parte do 08</td>
+<td>00 a 08</td>
+</tr>
+<tr>
+<td>Aulas</td>
+<td>30</td>
+<td>67</td>
+</tr>
+<tr>
+<td>Duração estimada</td>
+<td>~5 h 15 min</td>
+<td>~13 h (acima da estimativa de 10–12 h da Etapa 1; ver seção 7)</td>
+</tr>
+<tr>
+<td>Projetos</td>
+<td>1 e 2</td>
+<td>1 a 5</td>
+</tr>
+<tr>
+<td>Usa terminal</td>
+<td>Não</td>
+<td>Sim, ensinado do zero</td>
+</tr>
+<tr>
+<td>Assinatura mínima do Claude</td>
+<td>Gratuita para começar; algumas aulas pedem plano pago ◆</td>
+<td>Pro ou superior</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Legenda das tabelas</strong>
+- <strong>Nível:</strong> B = Base · P = Prático · A = Avançado
+- <strong>CRIAR:</strong> C = Compreender · R = Roteirizar · I = Integrar · A = Aprimorar · Re = Reaproveitar
+- <strong>Trilha:</strong> E = Essencial e Completa · C = só Completa
+- <strong>Min:</strong> duração estimada em minutos</p>
+<p><strong>Formato padrão de cada aula</strong> (detalhado na Etapa 4):
+- Os nove itens do briefing.
+- Etapa do CRIAR, nível e data da última verificação técnica.
+- O que conferir na tela.</p>
+<hr />
+<h2 id="s-2-módulos-e-aulas">2. Módulos e aulas</h2>
+<h3>Módulo 00 — Boas-vindas e preparação</h3>
+<p><strong>Objetivo do módulo:</strong> deixar o aluno com contas, custos e computador resolvidos antes da primeira aula prática.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00.1</td>
+<td>O que você vai construir</td>
+<td>Visualizar o resultado final do curso a partir do projeto Nova Orla pronto</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>6</td>
+</tr>
+<tr>
+<td>00.2</td>
+<td>Como estudar este curso</td>
+<td>Escolher a trilha certa e entender níveis, materiais e o Método CRIAR</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>8</td>
+</tr>
+<tr>
+<td>00.3</td>
+<td>Contas, planos e custos reais</td>
+<td>Montar o orçamento mínimo para acompanhar sua trilha, com alternativas gratuitas</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>00.4</td>
+<td>Seu computador está pronto?</td>
+<td>Verificar os requisitos de Windows ou macOS com o checklist de setup</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>8</td>
+</tr>
+<tr>
+<td>00.5</td>
+<td>Conheça a Nova Orla</td>
+<td>Ler o briefing-mãe do cliente fictício que atravessa o curso</td>
+<td>B</td>
+<td>C</td>
+<td>E</td>
+<td>7</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Entrega:</strong> checklist de setup preenchido e orçamento pessoal de ferramentas.</p>
+<h3>Módulo 01 — Fundamentos</h3>
+<p><strong>Objetivo do módulo:</strong> entender o que o Claude é, o que ele não é e quando usar cada modo.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01.1</td>
+<td>O mercado criativo e a IA</td>
+<td>Identificar quais etapas da produção criativa a IA já transforma e quais continuam humanas</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>01.2</td>
+<td>O papel do profissional criativo</td>
+<td>Assumir o papel de diretor: critério, decisão e responsabilidade pela entrega</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>8</td>
+</tr>
+<tr>
+<td>01.3</td>
+<td>O ecossistema Claude</td>
+<td>Diferenciar o app de chat, o Claude Code, o app Desktop e a API, e saber o que cada um exige</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>01.4</td>
+<td>Chat ou Code?</td>
+<td>Escolher o modo certo para uma tarefa usando a matriz de decisão FREMEX</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>01.5</td>
+<td>O que o Claude não faz</td>
+<td>Reconhecer erros, invenções, conhecimento datado e limites de uso, e saber verificar</td>
+<td>B</td>
+<td>A</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>01.6</td>
+<td>Ética, direitos e dados</td>
+<td>Aplicar regras sobre dados de clientes, direitos autorais, voz, imagem e transparência no uso de IA</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>12</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Entrega:</strong> mapa pessoal de uso de IA no seu fluxo de trabalho.</p>
+<h3>Módulo 02 — Claude Chat para criativos</h3>
+<p><strong>Objetivo do módulo:</strong> usar o chat como parceiro de compreensão, planejamento e escrita criativa.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>02.1</td>
+<td>A interface e seus recursos</td>
+<td>Usar conversas, anexos, Projects ◆ e artifacts ◆ com segurança</td>
+<td>B</td>
+<td>—</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>02.2</td>
+<td>Como conversar com o Claude</td>
+<td>Escrever pedidos com a estrutura FREMEX: contexto, papel, objetivo, formato e critérios</td>
+<td>B</td>
+<td>C</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>02.3</td>
+<td>Iterar como um diretor</td>
+<td>Dar feedback que melhora o resultado e comparar versões</td>
+<td>P</td>
+<td>A</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>02.4</td>
+<td>Decodificar briefings</td>
+<td>Transformar o briefing bagunçado de um cliente em um briefing de uma página</td>
+<td>P</td>
+<td>C</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>02.5</td>
+<td>Analisar referências e arquivos</td>
+<td>Extrair direção de imagens, PDFs e planilhas, sabendo o que o Claude consegue ou não ler</td>
+<td>P</td>
+<td>C</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>02.6</td>
+<td>Conceito e direção de arte</td>
+<td>Desenvolver conceito criativo, paleta, tipografia e referências em texto</td>
+<td>P</td>
+<td>R</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>02.7</td>
+<td>Roteiros</td>
+<td>Escrever roteiros de vídeo curto, institucional e carrossel com estrutura e ritmo</td>
+<td>P</td>
+<td>R</td>
+<td>E</td>
+<td>14</td>
+</tr>
+<tr>
+<td>02.8</td>
+<td>Estratégia de campanha</td>
+<td>Planejar objetivos, mensagens e canais de uma campanha</td>
+<td>P</td>
+<td>R</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>02.9</td>
+<td>Seu estúdio no Claude</td>
+<td>Criar um Project com instruções e arquivos reutilizáveis e conhecer os conectores ◆</td>
+<td>P</td>
+<td>Re</td>
+<td>E</td>
+<td>12</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Projeto 1:</strong> campanha de lançamento da Nova Orla (ver seção 3).</p>
+<h3>Módulo 03 — Claude Code do zero</h3>
+<p><strong>Objetivo do módulo:</strong> instalar, entender e orientar o Claude Code com segurança, sem saber programar.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>03.1</td>
+<td>O que é o Claude Code</td>
+<td>Entender que ele lê e altera arquivos e executa comandos no seu computador, com a sua permissão</td>
+<td>B</td>
+<td>—</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>03.2</td>
+<td>Instalação no Windows</td>
+<td>Instalar, verificar com <code>claude --version</code> e <code>claude doctor</code> e configurar o Git for Windows</td>
+<td>B</td>
+<td>—</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>03.3</td>
+<td>macOS e app Desktop</td>
+<td>Instalar no macOS e usar o app Desktop como alternativa ao terminal</td>
+<td>B</td>
+<td>—</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>03.4</td>
+<td>Terminal sem medo</td>
+<td>Navegar em pastas e usar os comandos essenciais do dia a dia</td>
+<td>B</td>
+<td>—</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>03.5</td>
+<td>Primeira sessão</td>
+<td>Fazer login, abrir uma pasta de projeto, fazer um pedido e revisar o que mudou</td>
+<td>B</td>
+<td>I</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>03.6</td>
+<td>Como orientar o Claude Code</td>
+<td>Fazer pedidos claros, planejar antes de executar ◆ e pedir explicações</td>
+<td>P</td>
+<td>R</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>03.7</td>
+<td>CLAUDE.md: a memória do projeto</td>
+<td>Criar e manter as instruções permanentes de um projeto</td>
+<td>P</td>
+<td>Re</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>03.8</td>
+<td>Permissões e segurança</td>
+<td>Controlar o que o Claude pode fazer, aprovar comandos e proteger arquivos sensíveis</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>03.9</td>
+<td>Programação para criativos</td>
+<td>Ler HTML, CSS, JavaScript, JSON e npm o suficiente para revisar o que foi feito</td>
+<td>B</td>
+<td>A</td>
+<td>C</td>
+<td>15</td>
+</tr>
+<tr>
+<td>03.10</td>
+<td>Git: versões e desfazer</td>
+<td>Salvar pontos de restauração e voltar quando algo der errado</td>
+<td>P</td>
+<td>A</td>
+<td>C</td>
+<td>12</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Entrega:</strong> pasta <code>nova-orla-estudio</code> organizada, com uma página de apresentação da marca gerada e revisada.</p>
+<h3>Módulo 04 — Integrações e ferramentas</h3>
+<p><strong>Objetivo do módulo:</strong> conectar o Claude a ferramentas externas com segurança e controle de custo.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>04.1</td>
+<td>MCP e conectores</td>
+<td>Diferenciar conectores do claude.ai de servidores MCP no Claude Code</td>
+<td>B</td>
+<td>I</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>04.2</td>
+<td>Adicionar um servidor MCP</td>
+<td>Usar <code>claude mcp add</code>, escolher o escopo e gerenciar com <code>/mcp</code></td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>04.3</td>
+<td>Chaves, credenciais e riscos</td>
+<td>Guardar chaves de API fora do código e reconhecer injeção de prompt</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>04.4</td>
+<td>Google Drive</td>
+<td>Usar o conector do Drive no claude.ai ◆ e uma pasta sincronizada no Claude Code para organizar entregas</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>04.5</td>
+<td>ElevenLabs</td>
+<td>Gerar narração com licença adequada ◆ via MCP ou API e respeitar direitos de voz</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>04.6</td>
+<td>Inkscape e SVG</td>
+<td>Preparar gráficos vetoriais para motion e exportar pela linha de comando ◆</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>04.7</td>
+<td>APIs, custos e limites</td>
+<td>Entender o que é uma API, cobrança por uso e como estimar custo</td>
+<td>B</td>
+<td>I</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>04.8</td>
+<td>Avaliar uma ferramenta nova</td>
+<td>Decidir se vale integrar uma ferramenta usando o checklist FREMEX</td>
+<td>P</td>
+<td>Re</td>
+<td>C</td>
+<td>8</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Entrega:</strong> kit de integração configurado (Drive, ElevenLabs e Inkscape) e checklist de segurança assinado.</p>
+<h3>Módulo 05 — Audiovisual e motion por código</h3>
+<p><strong>Objetivo do módulo:</strong> planejar um vídeo no chat e produzi-lo por código com HyperFrames e Remotion.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>05.1</td>
+<td>Planejar um vídeo</td>
+<td>Definir objetivo, formato, duração e plataforma antes de produzir</td>
+<td>B</td>
+<td>C</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>05.2</td>
+<td>Roteiro e decupagem</td>
+<td>Transformar a ideia em roteiro decupado cena a cena</td>
+<td>P</td>
+<td>R</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>05.3</td>
+<td>O brief técnico</td>
+<td>Escrever a especificação que o Claude Code vai seguir: cenas, tempos, textos, assets</td>
+<td>P</td>
+<td>R</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>05.4</td>
+<td>Direção de arte para motion</td>
+<td>Traduzir a marca em tokens, tipografia e ritmo de animação</td>
+<td>P</td>
+<td>R</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>05.5</td>
+<td>HyperFrames: primeiros passos</td>
+<td>Instalar ◆ e criar o primeiro vídeo a partir de HTML</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>05.6</td>
+<td>HyperFrames: animação de marca</td>
+<td>Construir a vinheta animada da Nova Orla</td>
+<td>A</td>
+<td>I</td>
+<td>C</td>
+<td>18</td>
+</tr>
+<tr>
+<td>05.7</td>
+<td>Remotion: primeiros passos</td>
+<td>Entender a licença ◆, criar um projeto e usar o Studio</td>
+<td>P</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>05.8</td>
+<td>Remotion: dados, legendas e voz</td>
+<td>Montar um vídeo com dados, legendas e narração do ElevenLabs</td>
+<td>A</td>
+<td>I</td>
+<td>C</td>
+<td>18</td>
+</tr>
+<tr>
+<td>05.9</td>
+<td>Renderização</td>
+<td>Renderizar em formatos e resoluções corretos e resolver erros comuns</td>
+<td>P</td>
+<td>A</td>
+<td>C</td>
+<td>12</td>
+</tr>
+<tr>
+<td>05.10</td>
+<td>Revisão de vídeo</td>
+<td>Revisar com o checklist técnico e criativo antes de entregar</td>
+<td>P</td>
+<td>A</td>
+<td>C</td>
+<td>10</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Projetos 3 e 4</strong> (ver seção 3).</p>
+<h3>Módulo 06 — Social media e marketing</h3>
+<p><strong>Objetivo do módulo:</strong> organizar planejamento, produção e entrega de conteúdo com o Claude.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>06.1</td>
+<td>Planejamento de conteúdo</td>
+<td>Definir pilares, objetivos e formatos</td>
+<td>B</td>
+<td>C</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>06.2</td>
+<td>Calendário editorial</td>
+<td>Gerar e revisar um calendário em planilha</td>
+<td>P</td>
+<td>R</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>06.3</td>
+<td>Campanha multicanal</td>
+<td>Adaptar uma mensagem para cada rede sem perder a identidade</td>
+<td>P</td>
+<td>R</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>06.4</td>
+<td>Produção em lote</td>
+<td>Criar legendas, variações e roteiros em série com controle de qualidade</td>
+<td>P</td>
+<td>I</td>
+<td>E</td>
+<td>12</td>
+</tr>
+<tr>
+<td>06.5</td>
+<td>Vídeo vertical do roteiro à edição</td>
+<td>Planejar no chat um vídeo vertical e levá-lo ao seu editor de vídeo</td>
+<td>P</td>
+<td>R · I</td>
+<td>E</td>
+<td>14</td>
+</tr>
+<tr>
+<td>06.6</td>
+<td>Organização de entregas</td>
+<td>Nomear, organizar e enviar arquivos para aprovação do cliente</td>
+<td>B</td>
+<td>A</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>06.7</td>
+<td>Automação de tarefas repetitivas</td>
+<td>Usar o Claude Code para renomear, converter e gerar variações de arquivos</td>
+<td>A</td>
+<td>I</td>
+<td>C</td>
+<td>14</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Projeto 2</strong> (ver seção 3).</p>
+<h3>Módulo 07 — Projeto integrador</h3>
+<p><strong>Objetivo do módulo:</strong> aplicar o Método CRIAR completo em um job de ponta a ponta.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>07.1</td>
+<td>O briefing final</td>
+<td>Ler e decodificar o briefing de lançamento nacional da Nova Orla</td>
+<td>P</td>
+<td>C</td>
+<td>C</td>
+<td>8</td>
+</tr>
+<tr>
+<td>07.2</td>
+<td>Plano completo</td>
+<td>Montar roteiros, storyboard, brief técnico e cronograma</td>
+<td>A</td>
+<td>R</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>07.3</td>
+<td>Produção</td>
+<td>Produzir peças, vídeo e voz integrando as ferramentas do curso</td>
+<td>A</td>
+<td>I</td>
+<td>C</td>
+<td>20</td>
+</tr>
+<tr>
+<td>07.4</td>
+<td>Revisão e pacote de entrega</td>
+<td>Revisar, renderizar e organizar a pasta final do cliente</td>
+<td>A</td>
+<td>A</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>07.5</td>
+<td>Apresentação ao cliente</td>
+<td>Montar a apresentação da entrega e explicar o processo</td>
+<td>P</td>
+<td>A</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>07.6</td>
+<td>Transformar em fluxo</td>
+<td>Converter o job em modelo reutilizável para o próximo cliente</td>
+<td>A</td>
+<td>Re</td>
+<td>C</td>
+<td>12</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Projeto 5</strong> (ver seção 3).</p>
+<h3>Módulo 08 — Sistema profissional</h3>
+<p><strong>Objetivo do módulo:</strong> transformar o que foi aprendido em um sistema próprio de trabalho.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Aula</th>
+<th>Título</th>
+<th>Objetivo de aprendizagem</th>
+<th>Nível</th>
+<th>CRIAR</th>
+<th>Trilha</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>08.1</td>
+<td>Biblioteca de prompts</td>
+<td>Organizar, nomear e versionar seus prompts</td>
+<td>P</td>
+<td>Re</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>08.2</td>
+<td>Templates de projeto</td>
+<td>Criar pastas-modelo e um CLAUDE.md padrão</td>
+<td>P</td>
+<td>Re</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>08.3</td>
+<td>Skills e comandos reutilizáveis</td>
+<td>Empacotar processos repetidos em skills ◆</td>
+<td>A</td>
+<td>Re</td>
+<td>C</td>
+<td>14</td>
+</tr>
+<tr>
+<td>08.4</td>
+<td>Tempo, custo e limites</td>
+<td>Planejar o uso dos limites do plano e escolher a ferramenta certa por custo</td>
+<td>B</td>
+<td>Re</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>08.5</td>
+<td>Apresentar entregas</td>
+<td>Comunicar ao cliente o uso de IA com transparência e valor</td>
+<td>P</td>
+<td>A</td>
+<td>E</td>
+<td>10</td>
+</tr>
+<tr>
+<td>08.6</td>
+<td>Continuar evoluindo</td>
+<td>Acompanhar mudanças nas ferramentas e manter seu sistema atualizado</td>
+<td>B</td>
+<td>Re</td>
+<td>E</td>
+<td>8</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Entrega:</strong> biblioteca pessoal (prompts, templates e checklist) pronta para o próximo job.</p>
+<h3>Módulo + — Atualizações</h3>
+<p>Aulas curtas publicadas quando uma ferramenta mudar de forma relevante, com a data de publicação e a aula afetada. Revisão programada a cada três meses.</p>
+<hr />
+<h2 id="s-3-projetos">3. Projetos</h2>
+<p>Todos usam a marca fictícia <strong>Nova Orla</strong> (bebidas artesanais). Cada projeto é documentado nas cinco etapas do CRIAR e segue a estrutura pedida no briefing: briefing, objetivo, arquivos, ferramentas, instruções, processo, resultado esperado, erros comuns, correção e desafio.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Projeto</th>
+<th>Módulo</th>
+<th>Briefing resumido</th>
+<th>Ferramentas</th>
+<th>O aluno recebe</th>
+<th>Entregável</th>
+<th>Custo extra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 · Campanha para redes sociais</strong></td>
+<td>02</td>
+<td>Lançamento do sabor de verão nas redes</td>
+<td>Claude Chat</td>
+<td>Briefing-mãe, manual de marca fictício, referências</td>
+<td>Briefing de 1 página, conceito, plano de campanha, 3 roteiros e direção de arte</td>
+<td>Nenhum</td>
+</tr>
+<tr>
+<td><strong>2 · Vídeo vertical</strong></td>
+<td>06</td>
+<td>Reels/TikTok de 30 s para o lançamento</td>
+<td>Claude Chat + editor de vídeo do aluno</td>
+<td>Roteiro-base, imagens de produto fictício</td>
+<td>Roteiro decupado, lista de cenas, legendas e vídeo editado</td>
+<td>Nenhum</td>
+</tr>
+<tr>
+<td><strong>3 · Animação com HyperFrames</strong></td>
+<td>05</td>
+<td>Vinheta animada da marca para abrir vídeos</td>
+<td>Claude Code + HyperFrames + Inkscape</td>
+<td>Logo em SVG, tokens de marca, brief técnico</td>
+<td>Vinheta de 5–8 s renderizada em MP4</td>
+<td>Nenhum ◆</td>
+</tr>
+<tr>
+<td><strong>4 · Vídeo com Remotion e ElevenLabs</strong></td>
+<td>05</td>
+<td>Vídeo explicativo de 45 s com narração e legendas</td>
+<td>Claude Code + Remotion + ElevenLabs</td>
+<td>Roteiro, dados do produto, projeto inicial</td>
+<td>Vídeo renderizado com voz e legendas</td>
+<td>Plano ElevenLabs com uso comercial ◆; licença Remotion para empresas com 4 pessoas ou mais ◆</td>
+</tr>
+<tr>
+<td><strong>5 · Fluxo completo para um cliente</strong></td>
+<td>07</td>
+<td>Lançamento nacional: campanha, vídeo e pacote de entrega</td>
+<td>Todas as anteriores</td>
+<td>Briefing final e Projects 1 a 4 como base</td>
+<td>Pacote de entrega, apresentação e modelo reutilizável</td>
+<td>Os mesmos dos projetos 3 e 4</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Para cada projeto, a FREMEX fornece:</strong>
+- Arquivos iniciais.
+- A versão pronta, para comparar.
+- O passo a passo em texto.
+- Uma lista de erros comuns com correção.
+- Um desafio extra.</p>
+<h2 id="s-4-atividades-e-avaliação">4. Atividades e avaliação</h2>
+<ul>
+<li><strong>Fim de cada módulo:</strong> desafio prático com critérios de avaliação publicados. O aluno se autoavalia com gabarito comentado.</li>
+<li><strong>Quizzes curtos</strong> (5 a 8 perguntas) nos módulos 01, 03 e 04, que têm mais conceitos e regras de segurança.</li>
+<li><strong>Conclusão:</strong> assistir às aulas da trilha e entregar o Projeto 2 (Essencial) ou o Projeto 5 (Completa). A forma de certificado depende da plataforma escolhida (Etapa 7).</li>
+</ul>
+<h2 id="s-5-materiais-ligados-ao-currículo">5. Materiais ligados ao currículo</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Material</th>
+<th>Onde entra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Checklist de setup</td>
+<td>00.4, 03.2, 03.3</td>
+</tr>
+<tr>
+<td>Tabela de custos</td>
+<td>00.3, 04.7, 08.4</td>
+</tr>
+<tr>
+<td>Matriz Chat × Code</td>
+<td>01.4</td>
+</tr>
+<tr>
+<td>Estrutura de pedido FREMEX</td>
+<td>02.2 e toda a biblioteca de prompts</td>
+</tr>
+<tr>
+<td>Ficha CRIAR (modelo de job)</td>
+<td>00.2 e todos os projetos</td>
+</tr>
+<tr>
+<td>Checklist de segurança</td>
+<td>03.8, 04.3</td>
+</tr>
+<tr>
+<td>Checklist de avaliação de ferramentas</td>
+<td>04.8</td>
+</tr>
+<tr>
+<td>Checklist de revisão de vídeo</td>
+<td>05.10, 07.4</td>
+</tr>
+<tr>
+<td>Modelo de CLAUDE.md</td>
+<td>03.7, 08.2</td>
+</tr>
+<tr>
+<td>Glossário</td>
+<td>Todo o curso</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-6-itens-que-dependem-de-verificação-oficial-etapa-4">6. Itens ◆ que dependem de verificação oficial (Etapa 4)</h2>
+<ul>
+<li>Disponibilidade de Projects, artifacts, conectores e skills por plano no claude.ai.</li>
+<li>Modo de planejamento e modos de permissão atuais do Claude Code.</li>
+<li>Requisitos e comandos do HyperFrames.</li>
+<li>Licença e requisitos do Remotion.</li>
+<li>Planos, uso comercial e MCP do ElevenLabs.</li>
+<li>Linha de comando do Inkscape 1.x.</li>
+</ul>
+<p>Se algum recurso tiver mudado, a aula afetada será adaptada antes do roteiro, e eu aviso você.</p>
+<h2 id="s-7-decisões-que-preciso-de-você">7. Decisões que preciso de você</h2>
+<ol>
+<li><strong>A grade está aprovada?</strong> Ou quer mover, cortar ou acrescentar aulas.</li>
+<li><strong>Duração:</strong> a soma das aulas deu cerca de 13 h, acima das 10 a 12 h estimadas na Etapa 1. Posso manter, ou enxugar cerca de 1 h 30 min (por exemplo, juntando as aulas 03.3 e 03.4 e encurtando o módulo 04). Recomendo manter: o excesso está nos módulos técnicos, onde o iniciante mais precisa de tempo.</li>
+<li><strong>Por qual módulo começamos os roteiros?</strong> Recomendo o <strong>00 e o 01</strong>: não dependem das verificações pendentes e definem o tom do curso. Assim você valida o estilo dos roteiros antes da produção em série.</li>
+</ol></article>
+</div>
