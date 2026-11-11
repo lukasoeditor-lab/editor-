@@ -2,7 +2,7 @@
 
 Desenvolvimento do primeiro curso digital da FREMEX.
 
-**Etapa atual:** 1 — Planejamento (em avaliação).
+**Etapa atual:** 2 — Posicionamento (em avaliação). Etapa 1 aprovada; decisões em `00-ESTRATEGIA/registro-de-decisoes.md`.
 
 | Pasta | Conteúdo | Status |
 |---|---|---|

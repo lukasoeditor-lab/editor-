@@ -1,0 +1,455 @@
+<title>FREMEX Curso Posicionamento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+
+.doc { padding-block: clamp(32px, 6vw, 72px); }
+.doc > * + * { margin-top: 1rem; }
+.doc h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); margin-bottom: 1.5rem; }
+.doc h2 { font-size: var(--s2); margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.doc h3 { margin-top: 2.5rem; color: var(--ice); }
+.doc p, .doc li { max-width: 72ch; }
+.doc strong { color: var(--ice); font-weight: 600; }
+.doc ul, .doc ol { padding-left: 1.2em; display: grid; gap: 6px; }
+.doc li::marker { color: var(--blue-dig); }
+.doc hr { border: 0; height: 1px; background: var(--line); margin-block: 2.5rem; }
+.doc code { font-family: var(--f-mono); font-size: .88em; background: var(--navy); padding: 1px 6px; border-radius: 3px; color: var(--ice); }
+.doc em { color: var(--mute); }
+.doc a { word-break: break-word; }
+.tbl { overflow-x: auto; margin-block: 1.5rem; border: 1px solid var(--line); }
+.doc table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .9rem; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.doc thead th { font-family: var(--f-mono); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-dig); background: var(--navy); }
+.doc tbody tr:last-child td { border-bottom: 0; }
+.doc td:first-child { white-space: nowrap; }
+.doc h2 + p strong:first-child { color: var(--blue-dig); }
+.mark { width: 28px; height: 28px; }
+.bar .brand { display: flex; align-items: center; gap: 10px; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: var(--s-1); padding-block: 14px; border-bottom: 1px solid var(--line); }
+.toc a { color: var(--mute); text-decoration: none; }
+.toc a:hover { color: var(--ice); }
+.docsep { margin-top: 5rem !important; }
+</style>
+<div class="wrap">
+  <div class="bar"><span class="brand"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="FREMEX símbolo"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg>
+<strong>FREMEX ACADEMY</strong></span><span>Curso · Etapa 2 de 7 · Posicionamento</span><span>Documento de trabalho</span></div>
+  <nav class="toc" aria-label="Seções"><a href="#s-1-para-quem-estamos-falando">1. Para quem estamos falando</a><a href="#s-2-o-que-diferencia-o-curso">2. O que diferencia o curso</a><a href="#s-3-as-três-opções">3. As três opções</a><a href="#s-4-comparativo">4. Comparativo</a><a href="#s-5-recomendação">5. Recomendação</a><a href="#s-6-promessa-educacional">6. Promessa educacional</a><a href="#s-7-textos-base">7. Textos-base</a><a href="#s-8-antes-de-bater-o-martelo">8. Antes de bater o martelo</a><a href="#s-9-decisão-que-preciso-de-você">9. Decisão que preciso de você</a></nav>
+  <article class="doc"><h1>Etapa 2 — Posicionamento</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026 · <strong>Status:</strong> em avaliação</p>
+<p>As decisões da Etapa 1 estão em <code>registro-de-decisoes.md</code>. Aqui estão três opções de nome comercial, subtítulo e proposta de valor, para você escolher uma ou pedir ajustes. O currículo definitivo (Etapa 3) parte da opção aprovada.</p>
+<hr />
+<h2 id="s-1-para-quem-estamos-falando">1. Para quem estamos falando</h2>
+<p>Três perfis guiam o posicionamento. São perfis de planejamento, não dados de pesquisa.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>Situação hoje</th>
+<th>O que quer</th>
+<th>O que trava</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Social media iniciante</strong></td>
+<td>Usa IA para legendas e ideias, sem processo</td>
+<td>Produzir mais e melhor, com organização</td>
+<td>Nunca abriu um terminal e acha que "código não é para mim"</td>
+</tr>
+<tr>
+<td><strong>Videomaker ou editor experiente</strong></td>
+<td>Domina edição, mas faz tudo manualmente</td>
+<td>Automatizar etapas repetitivas e explorar motion por código</td>
+<td>Não sabe por onde começar com Claude Code nem quanto custa</td>
+</tr>
+<tr>
+<td><strong>Designer ou motion designer</strong></td>
+<td>Usa ferramentas visuais tradicionais</td>
+<td>Criar animações e peças a partir de código e dados</td>
+<td>Medo de perder a qualidade visual e o controle criativo</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>O que os três têm em comum:</strong> querem um <strong>processo confiável</strong>, não truques de prompt. É isso que o posicionamento precisa vender.</p>
+<h2 id="s-2-o-que-diferencia-o-curso">2. O que diferencia o curso</h2>
+<ul>
+<li><strong>Do chat ao arquivo entregue.</strong> A maioria dos conteúdos para de ensinar no texto gerado. Este curso vai até o vídeo renderizado, a peça exportada e a pasta organizada para o cliente.</li>
+<li><strong>Claude Code para quem não programa.</strong> Ensinado do zero, em Windows, com o app Desktop como alternativa ao terminal.</li>
+<li><strong>Método próprio.</strong> O C.R.I.A.R. continua valendo quando as ferramentas mudam.</li>
+<li><strong>Honestidade técnica.</strong> Custos, limites, permissões e segurança fazem parte das aulas.</li>
+<li><strong>Projetos com começo, meio e fim.</strong> Um cliente fictício atravessa o curso e vira portfólio.</li>
+</ul>
+<hr />
+<h2 id="s-3-as-três-opções">3. As três opções</h2>
+<h3>Opção A — MÉTODO CRIAR</h3>
+<p><strong>Subtítulo:</strong> Planeje, produza e entregue projetos criativos com Claude Chat e Claude Code.</p>
+<p><strong>Proposta de valor:</strong> um método de cinco etapas para transformar briefings em entregas reais usando inteligência artificial, mesmo para quem nunca programou.</p>
+<p><strong>Ângulo:</strong> o método é o produto. As ferramentas servem ao método.</p>
+<p><strong>Exemplo de headline:</strong></p>
+<blockquote>
+<p>Você já pede coisas para a IA. Agora aprenda a dirigir um projeto inteiro com ela.</p>
+</blockquote>
+<p><strong>Pontos fortes:</strong>
+- É o nome mais próprio da FREMEX. O método pode virar a "assinatura" de futuros cursos (CRIAR para Motion, CRIAR para Social).
+- Envelhece bem: não depende do nome de nenhuma ferramenta.
+- Em português, claro e fácil de dizer.</p>
+<p><strong>Riscos:</strong>
+- "Criar" é palavra comum. Sozinha, a marca é mais difícil de registrar. "FREMEX CRIAR" ou "Método CRIAR FREMEX" é mais forte para registro.
+- Sem o subtítulo, não diz que é sobre IA.</p>
+<h3>Opção B — CÓDIGO CRIATIVO</h3>
+<p><strong>Subtítulo:</strong> Claude Chat e Claude Code para videomakers, designers e social medias, do briefing ao vídeo renderizado.</p>
+<p><strong>Proposta de valor:</strong> aprenda a usar Claude Code para criar animações, páginas e automações sem ser programador, com o Claude Chat no planejamento.</p>
+<p><strong>Ângulo:</strong> a ponte entre o criativo e o código, que é o maior diferencial do curso.</p>
+<p><strong>Exemplo de headline:</strong></p>
+<blockquote>
+<p>Você não precisa virar programador. Precisa saber o que pedir, como revisar e como entregar.</p>
+</blockquote>
+<p><strong>Pontos fortes:</strong>
+- Diz exatamente o que o curso tem de raro: código para criativos.
+- Atrai o videomaker e o motion designer, que são o público de maior valor.</p>
+<p><strong>Riscos:</strong>
+- "Código" pode afastar o iniciante da trilha Essencial, que não usa terminal.
+- Expressão genérica, provavelmente já usada por outros cursos e eventos. Precisa de busca de marca.</p>
+<h3>Opção C — CREATIVE EVOLUTION</h3>
+<p><strong>Subtítulo:</strong> O programa da FREMEX ACADEMY para criar com Claude Chat, Claude Code e ferramentas integradas.</p>
+<p><strong>Proposta de valor:</strong> evolua a forma como você cria. Do briefing à entrega, com inteligência artificial integrada ao seu processo.</p>
+<p><strong>Ângulo:</strong> a marca FREMEX em primeiro plano, ligada à assinatura <em>The Creative Evolution</em>.</p>
+<p><strong>Exemplo de headline:</strong></p>
+<blockquote>
+<p>A criatividade não mudou. O jeito de produzir, sim.</p>
+</blockquote>
+<p><strong>Pontos fortes:</strong>
+- Reforça a marca FREMEX e conversa com a ambição internacional.
+- Comporta futuras edições ("Creative Evolution 2027").</p>
+<p><strong>Riscos:</strong>
+- Em inglês, comunica menos ao público brasileiro iniciante.
+- Mais aspiracional que concreto: depende do subtítulo para explicar o que se aprende.
+- Se o nome do curso for igual à assinatura da marca, a assinatura deixa de ser exclusiva da FREMEX.</p>
+<hr />
+<h2 id="s-4-comparativo">4. Comparativo</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Critério</th>
+<th>A · Método CRIAR</th>
+<th>B · Código Criativo</th>
+<th>C · Creative Evolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clareza para o iniciante</td>
+<td>Alta, com o subtítulo</td>
+<td>Média</td>
+<td>Baixa</td>
+</tr>
+<tr>
+<td>Diferencial comunicado</td>
+<td>Método</td>
+<td>Código para criativos</td>
+<td>Marca e aspiração</td>
+</tr>
+<tr>
+<td>Durabilidade se as ferramentas mudarem</td>
+<td>Alta</td>
+<td>Média</td>
+<td>Alta</td>
+</tr>
+<tr>
+<td>Potencial de série de cursos</td>
+<td>Alto</td>
+<td>Médio</td>
+<td>Alto</td>
+</tr>
+<tr>
+<td>Facilidade de registro (a verificar no INPI)</td>
+<td>Média; melhor com FREMEX</td>
+<td>Baixa</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Avaliação qualitativa, para orientar a decisão. Não é pesquisa com público.</em></p>
+<h2 id="s-5-recomendação">5. Recomendação</h2>
+<p><strong>Opção A, com o diferencial da B no subtítulo:</strong></p>
+<blockquote>
+<p><strong>MÉTODO CRIAR</strong>
+Claude Chat e Claude Code para profissionais criativos: do briefing à entrega, mesmo sem saber programar.
+<em>Um curso FREMEX ACADEMY.</em></p>
+</blockquote>
+<p>O nome é dono do método, o subtítulo diz o que é raro no curso, e a assinatura liga o produto à marca.</p>
+<h2 id="s-6-promessa-educacional">6. Promessa educacional</h2>
+<p><strong>O que podemos prometer:</strong></p>
+<blockquote>
+<p>Ao final do curso, você saberá aplicar o Método CRIAR para planejar, produzir, revisar e organizar projetos criativos usando Claude Chat e Claude Code, conectados a ferramentas como Remotion, HyperFrames, ElevenLabs e Google Drive. Você terá concluído projetos práticos que podem compor seu portfólio.</p>
+</blockquote>
+<p><strong>O que não vamos prometer:</strong>
+- Ganhos financeiros, clientes ou aumento de faturamento.
+- Viralização ou números de seguidores.
+- Que a IA faz o trabalho sozinha.
+- Domínio de programação.</p>
+<h2 id="s-7-textos-base">7. Textos-base</h2>
+<p><strong>Descrição curta (até 160 caracteres):</strong></p>
+<blockquote>
+<p>Aprenda a planejar, produzir e entregar projetos criativos com Claude Chat e Claude Code, do briefing à entrega, mesmo sem saber programar.</p>
+</blockquote>
+<p><strong>Pitch (30 segundos):</strong></p>
+<blockquote>
+<p>O Método CRIAR é o primeiro curso da FREMEX ACADEMY. Ele ensina videomakers, designers e social medias a usar o Claude em duas frentes: no chat, para entender briefings, roteirizar e planejar; e no Claude Code, para construir animações, vídeos e automações de verdade. Tudo organizado em cinco etapas (Compreender, Roteirizar, Integrar, Aprimorar e Reaproveitar), com projetos práticos, custos reais e segurança desde a primeira aula.</p>
+</blockquote>
+<p><strong>Aviso de independência (todos os materiais):</strong></p>
+<blockquote>
+<p>Este curso é um produto independente da FREMEX. Não tem vínculo, patrocínio ou endosso da Anthropic nem dos fabricantes das ferramentas apresentadas. Claude, Claude Code e os demais nomes citados são marcas de seus respectivos proprietários.</p>
+</blockquote>
+<p><strong>Requisitos antes da compra:</strong></p>
+<blockquote>
+<p>Trilha Essencial: conta no Claude (algumas aulas exigem plano pago). Trilha Completa: plano Claude Pro ou superior, computador com Windows 10 ou superior ou macOS 13 ou superior, 4 GB de RAM ou mais e internet. Algumas ferramentas usadas nos projetos têm planos gratuitos com limitações e planos pagos opcionais.</p>
+</blockquote>
+<h2 id="s-8-antes-de-bater-o-martelo">8. Antes de bater o martelo</h2>
+<ul>
+<li>[ ] Fazer a busca de marca no INPI para o nome escolhido e para a combinação com FREMEX.</li>
+<li>[ ] Verificar a disponibilidade do domínio e dos perfis sociais.</li>
+<li>[ ] Conferir as diretrizes de marca da Anthropic sobre o uso de "Claude" em títulos de produtos de terceiros.</li>
+</ul>
+<h2 id="s-9-decisão-que-preciso-de-você">9. Decisão que preciso de você</h2>
+<ol>
+<li><strong>Qual opção seguimos?</strong> A, B, C, a recomendação (A + subtítulo da B) ou outra combinação.</li>
+<li><strong>Algum ajuste de tom no subtítulo ou na headline?</strong></li>
+</ol><div class="docsep"></div><h1>Registro de decisões</h1>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Etapa</th>
+<th>Decisão</th>
+<th>Origem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Método <strong>C.R.I.A.R.</strong>: Compreender, Roteirizar, Integrar, Aprimorar, Reaproveitar</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Duas trilhas: <strong>Essencial</strong> (sem terminal) e <strong>Completa</strong></td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Apresentação mista: apresentador na câmera em aberturas e aulas conceituais; tela com voz nas demonstrações</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Demonstrações gravadas em <strong>Windows</strong>, com notas para macOS</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>A trilha Completa exige pelo menos o plano <strong>Pro</strong> do Claude. Isso fica informado antes da compra</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Curso <strong>completo</strong> (estimativa de 10 a 12 h na trilha Completa)</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td>Cliente fictício <strong>Nova Orla</strong>, marca de bebidas artesanais, sempre identificada como fictícia</td>
+<td>Recomendação aprovada</td>
+</tr>
+<tr>
+<td>11/11/2026</td>
+<td>1</td>
+<td><strong>Pendente:</strong> liberar na rede do ambiente remotion.dev, hyperframes.heygen.com, elevenlabs.io, inkscape.org e support.claude.com antes da Etapa 4</td>
+<td>Ação do responsável pelo projeto</td>
+</tr>
+</tbody>
+</table></div></article>
+</div>
