@@ -1,0 +1,269 @@
+<title>FREMEX Logotipo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="FREMEX — Etapa 2: construção do logotipo, lettering, sistema de versões, redução e movimento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+{{base_css}}
+/* Etapa 2 */
+.decisions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 860px) { .decisions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .decisions { grid-template-columns: minmax(0, 1fr); } }
+.decisions > div { border: 1px solid var(--line); padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.decisions b { font-weight: 600; }
+.hero-stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); border: 1px solid var(--line); background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); }
+@media (max-width: 860px) { .hero-stage { grid-template-columns: minmax(0, 1fr); } }
+.hero-stage > div { padding: clamp(28px, 5vw, 64px); display: grid; place-items: center; gap: 14px; }
+.hero-stage > div + div { border-left: 1px solid var(--line); }
+@media (max-width: 860px) { .hero-stage > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+.hero-stage .lock { width: 100%; height: auto; max-width: 560px; }
+.hero-stage .motion { width: 150px; }
+.diagram { width: 100%; height: auto; }
+.rules { display: grid; gap: 0; margin: 0; }
+.rules div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-block: 12px; }
+.rules dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.rules dd { margin: 0; }
+@media (max-width: 480px) { .rules div { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.compare { display: grid; gap: 8px; }
+.compare .t svg.word { max-width: 640px; }
+.versions { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
+.v { border: 1px solid var(--line); padding: 18px; display: grid; gap: 16px; align-content: space-between; min-width: 0; min-height: 190px; }
+.v .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); display: flex; gap: 10px; }
+.v .cap b { color: var(--blue-dig); font-weight: 500; }
+.v.light { background: var(--ice); border-color: var(--ice); }
+.v.light .cap { color: #4A5468; }
+.v.light .cap b { color: var(--blue); }
+.v.on-blue { background: var(--blue); border-color: var(--blue); }
+.v.on-blue .cap, .v.on-blue .cap b { color: rgba(243,244,246,.9); }
+.v .lock { height: 52px; width: auto; max-width: 100%; }
+.v .vlock { height: 116px; width: auto; }
+.v .sym { width: 96px; }
+.v .word { width: 100%; max-width: 320px; height: auto; }
+.v .center { display: grid; place-items: center; }
+.ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.ic svg { width: 52%; height: 52%; }
+.ic.fav { background: var(--blue); border-radius: 20%; box-shadow: none; }
+.ic.fav svg { width: 64%; height: 64%; }
+.row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.reduce { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .reduce { grid-template-columns: minmax(0, 1fr); } }
+.reduce .row span { display: block; }
+.minsizes { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; min-width: 520px; }
+.minsizes th, .minsizes td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.minsizes th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.files { columns: 2; column-gap: 40px; font-family: var(--f-mono); font-size: .85rem; padding: 0; margin: 0; }
+.files li { list-style: none; break-inside: avoid; padding-block: 6px; border-top: 1px solid var(--line); }
+@media (max-width: 720px) { .files { columns: 1; } }
+.status { font-family: var(--f-mono); font-size: .7rem; padding: 2px 8px; border-radius: 999px; justify-self: start; }
+.st-ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.st-you { background: rgba(230,170,60,.16); color: #F0C77A; }
+/* movimento */
+.motion .sl { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .motion path { transform-box: fill-box; }
+  .motion .mF { animation: mF 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl0 { animation: sl0 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl1 { animation: sl1 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl2 { animation: sl2 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .mX { animation: mX 5s ease infinite; }
+  .motion .mA { animation: mA 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  @keyframes mF { 0% { opacity: 0; transform: translateX(-14%); } 14%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes sl0 { 0%, 10% { opacity: 0; transform: translateX(40%); } 26% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes sl1 { 0%, 14% { opacity: 0; transform: translateX(70%); } 30% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes sl2 { 0%, 18% { opacity: 0; transform: translateX(100%); } 34% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes mX { 0%, 40% { opacity: 0; } 50%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes mA { 0%, 50% { opacity: 0; transform: scale(.4); transform-origin: 0 0; } 62%, 92% { opacity: 1; transform: none; transform-origin: 0 0; } 100% { opacity: 0; } }
+}
+</style>
+
+<div class="wrap">
+  <div class="bar"><strong>FREMEX</strong><span>Etapa 2 de 6 · Logotipo</span><span>Em avaliação · ajustes ainda são esperados</span></div>
+
+  <header class="top hero">
+    <p class="eyebrow">Direção aprovada · A · Vetor</p>
+    <h1>O logotipo da <span>FREMEX</span>, construído.</h1>
+    <p class="mute" style="font-size: var(--s1); line-height: 1.5;">Segui as opções recomendadas na Etapa 1. Aqui o símbolo Vetor ganhou regras de construção, o lettering foi redesenhado do zero e o sistema completo de dez versões foi gerado em SVG. As faixas da direção C entraram como linguagem de movimento.</p>
+    <ol class="steps" aria-label="Etapas do projeto">
+      <li><b>01</b>Direção criativa</li>
+      <li class="now"><b>02</b>Logotipo</li>
+      <li><b>03</b>Identidade visual</li>
+      <li><b>04</b>Aplicações</li>
+      <li><b>05</b>Website</li>
+      <li><b>06</b>Brand book</li>
+    </ol>
+  </header>
+</div>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack"><p class="eyebrow">Decisões da Etapa 1</p><h2>O que ficou definido</h2></div>
+    <div class="decisions">
+      <div><span class="status st-ok">aprovado</span><b>Direção A · Vetor</b><p class="mute">Ligadura F+X como símbolo da marca.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Faixas da C no movimento</b><p class="mute">Usadas em animação, transições e progresso. Nunca no símbolo estático.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Lettering pesado e expandido</b><p class="mute">Com cortes no ângulo do vetor.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Azul digital #6A96DE</b><p class="mute">Só para texto e linhas finas em telas escuras.</p></div>
+    </div>
+    <div class="decisions" style="grid-template-columns: minmax(0, 1fr);">
+      <div><span class="status st-you">pendente com você</span><b>Busca de marca e domínio</b><p class="mute">A busca no INPI (classes 41, 42 e 9), o domínio e os perfis sociais precisam ser verificados por você ou por um advogado de propriedade intelectual antes de registrar e aplicar a marca em peças definitivas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="hero-stage">
+      <div>{{h}}</div>
+      <div>{{motion}}<span class="eyebrow">Abertura animada</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Construção do símbolo</p>
+      <h2>Uma regra, um ângulo</h2>
+      <p class="mute">O símbolo inteiro sai de três números: a espessura do traço, o ângulo da diagonal e o respiro entre as letras. Isso deixa a marca reproduzível em qualquer escala e dá ao brand book uma explicação precisa.</p>
+      <dl class="rules">
+        <div><dt>Caixa</dt><dd>100 × 100 unidades, grade de 10.</dd></div>
+        <div><dt>Traço (S)</dt><dd>17 u no F; 17,7 u nas diagonais, para compensar opticamente a inclinação.</dd></div>
+        <div><dt>Ângulo do vetor</dt><dd>24,2° da vertical. Todo corte diagonal da marca, inclusive no lettering, usa esse ângulo.</dd></div>
+        <div><dt>Respiro</dt><dd>6 u entre o F e a diagonal do X, sempre paralelo a ela.</dd></div>
+        <div><dt>Eixo</dt><dd>A barra média do F e o cruzamento do X ficam exatamente no eixo 50.</dd></div>
+        <div><dt>Cor</dt><dd>F em branco gelo (ou preto), X em azul elétrico. O azul é o ponto de virada.</dd></div>
+      </dl>
+    </div>
+    <div class="t" style="padding: 24px;">{{construction}}</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Lettering</p>
+      <h2>FREMEX desenhado letra por letra</h2>
+      <p class="mute">Nenhuma fonte pronta: as seis letras foram construídas sobre a mesma grade do símbolo. A versão da Etapa 1 aparece abaixo para comparação.</p>
+    </div>
+    <div class="compare">
+      <div class="t"><span class="cap">Etapa 2 · lettering final proposto</span>{{word}}</div>
+      <div class="t" style="opacity:.6"><span class="cap">Etapa 1 · estudo</span>{{word_old}}</div>
+    </div>
+    <div class="grid3">
+      <div class="principle"><span class="n">E · F</span><h3>Cortes no ângulo do vetor</h3><p class="mute">As barras terminam em diagonal de 24,2°, a mesma da ligadura. O nome e o símbolo falam a mesma língua.</p></div>
+      <div class="principle"><span class="n">R</span><h3>Bojo chanfrado</h3><p class="mute">Canto superior do R cortado a 45° e perna com a inclinação do vetor. É a letra com mais personalidade do nome.</p></div>
+      <div class="principle"><span class="n">M · X</span><h3>Vértice alto e X aberto</h3><p class="mute">O vértice do M para em 74% da altura, abrindo espaço interno. O X tem ângulo mais aberto para fechar a palavra com peso.</p></div>
+      <div class="principle"><span class="n">Traço</span><h3>20 u, caixa-alta 100 u</h3><p class="mute">Peso alto para leitura em vídeo e redes sociais, com contraformas de pelo menos 20 u.</p></div>
+      <div class="principle"><span class="n">Espaços</span><h3>Kerning óptico</h3><p class="mute">Espaçamento ajustado par a par (FR, RE, EM, ME, EX), em vez de tracking fixo.</p></div>
+      <div class="principle"><span class="n">Proporção</span><h3>Nome a 58% do símbolo</h3><p class="mute">Na assinatura horizontal, a altura das letras é 58% do símbolo, centralizada no eixo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Sistema de versões</p>
+      <h2>As dez versões do briefing</h2>
+      <p class="mute">Numeradas na ordem do briefing. Cada uma tem arquivo SVG próprio em <code>brand/logos/fremex/</code>.</p>
+    </div>
+    <div class="versions">
+      <div class="v span6"><span class="cap"><b>01</b>Logotipo principal</span>{{word}}</div>
+      <div class="v span3"><span class="cap"><b>02</b>Símbolo independente</span><div class="center">{{symbol}}</div></div>
+      <div class="v span3"><span class="cap"><b>03</b>Monograma · selo</span><div class="center">{{monogram}}</div></div>
+      <div class="v span8"><span class="cap"><b>04</b>Horizontal</span>{{h}}</div>
+      <div class="v span4"><span class="cap"><b>05</b>Vertical</span><div class="center">{{v}}</div></div>
+      <div class="v span6"><span class="cap"><b>06</b>Monocromática branca</span>{{h_mono_w}}</div>
+      <div class="v light span6"><span class="cap"><b>07</b>Monocromática preta</span>{{h_mono_k}}</div>
+      <div class="v span6"><span class="cap"><b>08</b>Destaque azul · X do nome em azul</span>{{h_xblue}}</div>
+      <div class="v on-blue span6"><span class="cap"><b>08</b>Variação · sobre azul</span>{{h_mono_w}}</div>
+      <div class="v span6"><span class="cap"><b>09</b>Ícone de app · favicon</span>
+        <div class="row"><div class="ic" style="width:96px;height:96px">{{symbol}}</div><div class="ic" style="width:60px;height:60px;border-radius:50%">{{symbol}}</div><div class="ic fav" style="width:32px;height:32px">{{symbol_mono_w_reduced}}</div><div class="ic fav" style="width:16px;height:16px">{{symbol_mono_w_reduced}}</div></div></div>
+      <div class="v span6"><span class="cap"><b>10</b>Marca d'água em vídeo</span>
+        <div class="frame" role="img" aria-label="Quadro de vídeo de exemplo com marca d'água"><div class="safe"></div><span class="tc">00:01:12:08</span><span class="fmt">4K · 25p</span><div class="wm">{{symbol_mono_w_reduced}}</div></div></div>
+      <div class="v light span12"><span class="cap"><b>04</b>Horizontal sobre fundo claro</span>{{h_light}}</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Redução</p>
+      <h2>Uma versão própria para tamanhos pequenos</h2>
+      <p class="mute">Abaixo de 24 px o respiro entre F e X desaparece. A versão reduzida tem traço de 20 u e respiro de 10 u. No favicon, o símbolo vai todo em branco sobre azul, porque o azul sobre preto perde contraste nesse tamanho.</p>
+    </div>
+    <div class="reduce">
+      <div class="t"><span class="cap">Símbolo padrão · 64 / 32 / 24 / 16 px</span>
+        <div class="row"><span style="width:64px">{{symbol}}</span><span style="width:32px">{{symbol}}</span><span style="width:24px">{{symbol}}</span><span style="width:16px">{{symbol}}</span></div></div>
+      <div class="t"><span class="cap">Símbolo reduzido · 64 / 32 / 24 / 16 px</span>
+        <div class="row"><span style="width:64px">{{symbol_reduced}}</span><span style="width:32px">{{symbol_reduced}}</span><span style="width:24px">{{symbol_reduced}}</span><span style="width:16px">{{symbol_reduced}}</span></div></div>
+    </div>
+    <div class="scroll">
+      <table class="minsizes">
+        <thead><tr><th>Versão</th><th>Mínimo digital</th><th>Mínimo impresso</th><th>Abaixo disso</th></tr></thead>
+        <tbody>
+          <tr><td>Símbolo padrão</td><td>24 px</td><td>8 mm</td><td>Usar símbolo reduzido</td></tr>
+          <tr><td>Símbolo reduzido</td><td>16 px</td><td>5 mm</td><td>Não reduzir</td></tr>
+          <tr><td>Horizontal</td><td>120 px de largura</td><td>30 mm</td><td>Usar só o símbolo</td></tr>
+          <tr><td>Vertical</td><td>72 px de largura</td><td>20 mm</td><td>Usar só o símbolo</td></tr>
+          <tr><td>Marca d'água</td><td>5–7% da largura do vídeo</td><td>—</td><td>Opacidade 60–75%, dentro da área de segurança</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Área de proteção</p>
+      <h2>2S ao redor</h2>
+      <p class="mute">Nenhum texto, imagem ou borda entra na área de duas vezes a espessura do traço (2S = 34 u) em volta da marca. Em um logotipo de 100 px de altura, isso dá 34 px de cada lado.</p>
+    </div>
+    <div class="t" style="padding: 24px;">{{clearspace}}</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Movimento</p>
+      <h2>As faixas viram o gesto da marca</h2>
+      <p class="mute">Na abertura, o F entra, a diagonal chega em três faixas que se fundem no traço sólido e o braço inferior do X completa o símbolo. É a ideia da direção C (evolução em quadros) aplicada sem mudar o desenho estático.</p>
+      <p class="mute">Na Etapa 3 o mesmo recurso vai virar transição de vídeo, barra de progresso dos cursos e divisor de seção do site.</p>
+    </div>
+    <div class="t" style="place-items:center; padding: 40px;"><div style="width:min(220px, 60vw)">{{motion}}</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack"><p class="eyebrow">Arquivos</p><h2>O que está no repositório</h2></div>
+    <ul class="files">
+      <li>01-logotipo.svg</li><li>01-logotipo-preto.svg</li><li>02-simbolo.svg</li><li>02-simbolo-fundo-claro.svg</li>
+      <li>03-monograma.svg</li><li>04-horizontal.svg</li><li>04-horizontal-fundo-claro.svg</li><li>05-vertical.svg</li>
+      <li>05-vertical-fundo-claro.svg</li><li>06-mono-branca.svg</li><li>07-mono-preta.svg</li><li>08-destaque-azul.svg</li>
+      <li>08-sobre-azul.svg</li><li>09-icone-app.svg</li><li>09-favicon.svg</li><li>10-marca-dagua.svg</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Para avançar à Etapa 3</p>
+      <h2>Aprovar ou ajustar</h2>
+      <p class="mute">Com o logotipo aprovado, desenvolvo a identidade visual completa: tipografia de apoio, grid, padrões gráficos, ícones, fotografia e as assinaturas das frentes Academy, Lab, AI e Creative.</p>
+    </div>
+    <ol class="qs">
+      <li><p><strong>O símbolo está aprovado?</strong> Ou quer testar algo, por exemplo um respiro maior ou traço mais fino.</p></li>
+      <li><p><strong>O lettering está aprovado?</strong> Atenção especial ao R chanfrado, que é o detalhe mais autoral.</p></li>
+      <li><p><strong>Alguma versão faltou ou sobrou?</strong></p></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">FREMEX · The creative evolution · Etapa 2 · Logotipo gerado em SVG a partir de brand/_build/logo.py.</div>
+</footer>

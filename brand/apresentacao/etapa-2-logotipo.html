@@ -1,0 +1,444 @@
+<title>FREMEX Logotipo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="FREMEX — Etapa 2: construção do logotipo, lettering, sistema de versões, redução e movimento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+
+/* Etapa 2 */
+.decisions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 860px) { .decisions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .decisions { grid-template-columns: minmax(0, 1fr); } }
+.decisions > div { border: 1px solid var(--line); padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.decisions b { font-weight: 600; }
+.hero-stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); border: 1px solid var(--line); background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); }
+@media (max-width: 860px) { .hero-stage { grid-template-columns: minmax(0, 1fr); } }
+.hero-stage > div { padding: clamp(28px, 5vw, 64px); display: grid; place-items: center; gap: 14px; }
+.hero-stage > div + div { border-left: 1px solid var(--line); }
+@media (max-width: 860px) { .hero-stage > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+.hero-stage .lock { width: 100%; height: auto; max-width: 560px; }
+.hero-stage .motion { width: 150px; }
+.diagram { width: 100%; height: auto; }
+.rules { display: grid; gap: 0; margin: 0; }
+.rules div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-block: 12px; }
+.rules dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.rules dd { margin: 0; }
+@media (max-width: 480px) { .rules div { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.compare { display: grid; gap: 8px; }
+.compare .t svg.word { max-width: 640px; }
+.versions { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
+.v { border: 1px solid var(--line); padding: 18px; display: grid; gap: 16px; align-content: space-between; min-width: 0; min-height: 190px; }
+.v .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); display: flex; gap: 10px; }
+.v .cap b { color: var(--blue-dig); font-weight: 500; }
+.v.light { background: var(--ice); border-color: var(--ice); }
+.v.light .cap { color: #4A5468; }
+.v.light .cap b { color: var(--blue); }
+.v.on-blue { background: var(--blue); border-color: var(--blue); }
+.v.on-blue .cap, .v.on-blue .cap b { color: rgba(243,244,246,.9); }
+.v .lock { height: 52px; width: auto; max-width: 100%; }
+.v .vlock { height: 116px; width: auto; }
+.v .sym { width: 96px; }
+.v .word { width: 100%; max-width: 320px; height: auto; }
+.v .center { display: grid; place-items: center; }
+.ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.ic svg { width: 52%; height: 52%; }
+.ic.fav { background: var(--blue); border-radius: 20%; box-shadow: none; }
+.ic.fav svg { width: 64%; height: 64%; }
+.row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.reduce { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .reduce { grid-template-columns: minmax(0, 1fr); } }
+.reduce .row span { display: block; }
+.minsizes { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; min-width: 520px; }
+.minsizes th, .minsizes td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.minsizes th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.files { columns: 2; column-gap: 40px; font-family: var(--f-mono); font-size: .85rem; padding: 0; margin: 0; }
+.files li { list-style: none; break-inside: avoid; padding-block: 6px; border-top: 1px solid var(--line); }
+@media (max-width: 720px) { .files { columns: 1; } }
+.status { font-family: var(--f-mono); font-size: .7rem; padding: 2px 8px; border-radius: 999px; justify-self: start; }
+.st-ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.st-you { background: rgba(230,170,60,.16); color: #F0C77A; }
+/* movimento */
+.motion .sl { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .motion path { transform-box: fill-box; }
+  .motion .mF { animation: mF 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl0 { animation: sl0 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl1 { animation: sl1 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .sl2 { animation: sl2 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  .motion .mX { animation: mX 5s ease infinite; }
+  .motion .mA { animation: mA 5s cubic-bezier(.2,.7,.2,1) infinite; }
+  @keyframes mF { 0% { opacity: 0; transform: translateX(-14%); } 14%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes sl0 { 0%, 10% { opacity: 0; transform: translateX(40%); } 26% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes sl1 { 0%, 14% { opacity: 0; transform: translateX(70%); } 30% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes sl2 { 0%, 18% { opacity: 0; transform: translateX(100%); } 34% { opacity: 1; transform: none; } 44% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes mX { 0%, 40% { opacity: 0; } 50%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes mA { 0%, 50% { opacity: 0; transform: scale(.4); transform-origin: 0 0; } 62%, 92% { opacity: 1; transform: none; transform-origin: 0 0; } 100% { opacity: 0; } }
+}
+</style>
+
+<div class="wrap">
+  <div class="bar"><strong>FREMEX</strong><span>Etapa 2 de 6 · Logotipo</span><span>Em avaliação · ajustes ainda são esperados</span></div>
+
+  <header class="top hero">
+    <p class="eyebrow">Direção aprovada · A · Vetor</p>
+    <h1>O logotipo da <span>FREMEX</span>, construído.</h1>
+    <p class="mute" style="font-size: var(--s1); line-height: 1.5;">Segui as opções recomendadas na Etapa 1. Aqui o símbolo Vetor ganhou regras de construção, o lettering foi redesenhado do zero e o sistema completo de dez versões foi gerado em SVG. As faixas da direção C entraram como linguagem de movimento.</p>
+    <ol class="steps" aria-label="Etapas do projeto">
+      <li><b>01</b>Direção criativa</li>
+      <li class="now"><b>02</b>Logotipo</li>
+      <li><b>03</b>Identidade visual</li>
+      <li><b>04</b>Aplicações</li>
+      <li><b>05</b>Website</li>
+      <li><b>06</b>Brand book</li>
+    </ol>
+  </header>
+</div>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack"><p class="eyebrow">Decisões da Etapa 1</p><h2>O que ficou definido</h2></div>
+    <div class="decisions">
+      <div><span class="status st-ok">aprovado</span><b>Direção A · Vetor</b><p class="mute">Ligadura F+X como símbolo da marca.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Faixas da C no movimento</b><p class="mute">Usadas em animação, transições e progresso. Nunca no símbolo estático.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Lettering pesado e expandido</b><p class="mute">Com cortes no ângulo do vetor.</p></div>
+      <div><span class="status st-ok">aprovado</span><b>Azul digital #6A96DE</b><p class="mute">Só para texto e linhas finas em telas escuras.</p></div>
+    </div>
+    <div class="decisions" style="grid-template-columns: minmax(0, 1fr);">
+      <div><span class="status st-you">pendente com você</span><b>Busca de marca e domínio</b><p class="mute">A busca no INPI (classes 41, 42 e 9), o domínio e os perfis sociais precisam ser verificados por você ou por um advogado de propriedade intelectual antes de registrar e aplicar a marca em peças definitivas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="hero-stage">
+      <div><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div><svg class="sym motion" viewBox="0 0 100 100" role="img" aria-label="Animação de abertura do símbolo"><path class="mF" fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path class="sl sl0" fill="#2459A6" d="M79.77 0 L88.3 0 L43.38 100 L34.85 100Z"/><path class="sl sl1" fill="#2459A6" d="M89.65 0 L94.69 0 L49.77 100 L44.73 100Z"/><path class="sl sl2" fill="#2459A6" d="M96.05 0 L99.15 0 L54.23 100 L51.13 100Z"/><path class="mX" fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100Z"/><path class="mA" fill="#2459A6" d="M57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg><span class="eyebrow">Abertura animada</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Construção do símbolo</p>
+      <h2>Uma regra, um ângulo</h2>
+      <p class="mute">O símbolo inteiro sai de três números: a espessura do traço, o ângulo da diagonal e o respiro entre as letras. Isso deixa a marca reproduzível em qualquer escala e dá ao brand book uma explicação precisa.</p>
+      <dl class="rules">
+        <div><dt>Caixa</dt><dd>100 × 100 unidades, grade de 10.</dd></div>
+        <div><dt>Traço (S)</dt><dd>17 u no F; 17,7 u nas diagonais, para compensar opticamente a inclinação.</dd></div>
+        <div><dt>Ângulo do vetor</dt><dd>24,2° da vertical. Todo corte diagonal da marca, inclusive no lettering, usa esse ângulo.</dd></div>
+        <div><dt>Respiro</dt><dd>6 u entre o F e a diagonal do X, sempre paralelo a ela.</dd></div>
+        <div><dt>Eixo</dt><dd>A barra média do F e o cruzamento do X ficam exatamente no eixo 50.</dd></div>
+        <div><dt>Cor</dt><dd>F em branco gelo (ou preto), X em azul elétrico. O azul é o ponto de virada.</dd></div>
+      </dl>
+    </div>
+    <div class="t" style="padding: 24px;"><svg class="diagram" viewBox="-32 -12 160 136" role="img" aria-label="Construção do símbolo sobre grade de 10 unidades"><path d="M0 0V100M0 0H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M10 0V100M0 10H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M20 0V100M0 20H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M30 0V100M0 30H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M40 0V100M0 40H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M50 0V100M0 50H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M60 0V100M0 60H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M70 0V100M0 70H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M80 0V100M0 80H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M90 0V100M0 90H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path d="M100 0V100M0 100H100" stroke="#2459A6" stroke-opacity=".28" stroke-width=".25"/><path fill="#F3F4F6" fill-opacity=".1" stroke="#F3F4F6" stroke-width=".5" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" fill-opacity=".35" stroke="#6A96DE" stroke-width=".5" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><path d="M89.46 -8 L44.54 108" stroke="#6A96DE" stroke-width=".4" stroke-dasharray="1.5 1"/><path d="M44.54 108 V70" stroke="#9BA6BA" stroke-width=".4" stroke-dasharray="1 1"/><path d="M44.54 84 A24 24 0 0 0 54.38 86.11" fill="none" stroke="#6A96DE" stroke-width=".5"/><text x="22.54" y="80" font-family="IBM Plex Mono, monospace" font-size="4" fill="#9BA6BA">24,2°</text><path d="M0 108H17M0 106V110M17 106V110" stroke="#F3F4F6" stroke-width=".5"/><text x="0" y="116" font-family="IBM Plex Mono, monospace" font-size="4" fill="#9BA6BA">S = 17 u</text><path d="M-6 50H106" stroke="#F3F4F6" stroke-opacity=".5" stroke-width=".3" stroke-dasharray="2 1.5"/><text x="-30" y="51.4" font-family="IBM Plex Mono, monospace" font-size="4" fill="#9BA6BA">eixo 50</text><circle cx="60.5" cy="50" r="5.5" fill="none" stroke="#F0C77A" stroke-width=".5"/><path d="M57 54 L40 72" stroke="#F0C77A" stroke-width=".4"/><text x="20" y="77" font-family="IBM Plex Mono, monospace" font-size="4" fill="#9BA6BA" fill="#F0C77A">respiro 6 u</text><text x="102" y="4" font-family="IBM Plex Mono, monospace" font-size="4" fill="#9BA6BA">100 u</text></svg></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Lettering</p>
+      <h2>FREMEX desenhado letra por letra</h2>
+      <p class="mute">Nenhuma fonte pronta: as seis letras foram construídas sobre a mesma grade do símbolo. A versão da Etapa 1 aparece abaixo para comparação.</p>
+    </div>
+    <div class="compare">
+      <div class="t"><span class="cap">Etapa 2 · lettering final proposto</span><svg class="word" viewBox="0 0 575 100" role="img" aria-label="FREMEX"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></svg></div>
+      <div class="t" style="opacity:.6"><span class="cap">Etapa 1 · estudo</span><svg class="word" viewBox="0 0 567 100" role="img" aria-label="FREMEX, versão da Etapa 1"><path fill="#F3F4F6" d="M0 0 L19 0 L19 100 L0 100ZM0 0 L74 0 L63.55 19 L0 19ZM0 40.5 L60.68 40.5 L50.23 59.5 L0 59.5Z"/><path fill="#F3F4F6" d="M89 0 L108 0 L108 100 L89 100ZM89 0 L169 0 L169 19 L89 19ZM150 0 L169 0 L169 56 L150 56ZM89 37 L169 37 L169 56 L89 56ZM122.26 46.5 L143.74 46.5 L169.29 100 L147.81 100Z"/><path fill="#F3F4F6" d="M184 0 L203 0 L203 100 L184 100ZM184 0 L258 0 L247.55 19 L184 19ZM184 40.5 L244.68 40.5 L234.23 59.5 L184 59.5ZM184 81 L258 81 L247.55 100 L184 100Z"/><path fill="#F3F4F6" d="M273 0 L292 0 L292 100 L273 100ZM358 0 L377 0 L377 100 L358 100ZM272.01 0 L294.89 0 L336.44 62 L313.56 62ZM355.11 0 L377.99 0 L336.44 62 L313.56 62Z"/><path fill="#F3F4F6" d="M392 0 L411 0 L411 100 L392 100ZM392 0 L466 0 L455.55 19 L392 19ZM392 40.5 L452.68 40.5 L442.23 59.5 L392 59.5ZM392 81 L466 81 L455.55 100 L392 100Z"/><path fill="#F3F4F6" d="M481.02 0 L504.54 0 L566.98 100 L543.46 100ZM543.46 0 L566.98 0 L504.54 100 L481.02 100Z"/></svg></div>
+    </div>
+    <div class="grid3">
+      <div class="principle"><span class="n">E · F</span><h3>Cortes no ângulo do vetor</h3><p class="mute">As barras terminam em diagonal de 24,2°, a mesma da ligadura. O nome e o símbolo falam a mesma língua.</p></div>
+      <div class="principle"><span class="n">R</span><h3>Bojo chanfrado</h3><p class="mute">Canto superior do R cortado a 45° e perna com a inclinação do vetor. É a letra com mais personalidade do nome.</p></div>
+      <div class="principle"><span class="n">M · X</span><h3>Vértice alto e X aberto</h3><p class="mute">O vértice do M para em 74% da altura, abrindo espaço interno. O X tem ângulo mais aberto para fechar a palavra com peso.</p></div>
+      <div class="principle"><span class="n">Traço</span><h3>20 u, caixa-alta 100 u</h3><p class="mute">Peso alto para leitura em vídeo e redes sociais, com contraformas de pelo menos 20 u.</p></div>
+      <div class="principle"><span class="n">Espaços</span><h3>Kerning óptico</h3><p class="mute">Espaçamento ajustado par a par (FR, RE, EM, ME, EX), em vez de tracking fixo.</p></div>
+      <div class="principle"><span class="n">Proporção</span><h3>Nome a 58% do símbolo</h3><p class="mute">Na assinatura horizontal, a altura das letras é 58% do símbolo, centralizada no eixo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Sistema de versões</p>
+      <h2>As dez versões do briefing</h2>
+      <p class="mute">Numeradas na ordem do briefing. Cada uma tem arquivo SVG próprio em <code>brand/logos/fremex/</code>.</p>
+    </div>
+    <div class="versions">
+      <div class="v span6"><span class="cap"><b>01</b>Logotipo principal</span><svg class="word" viewBox="0 0 575 100" role="img" aria-label="FREMEX"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></svg></div>
+      <div class="v span3"><span class="cap"><b>02</b>Símbolo independente</span><div class="center"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></div></div>
+      <div class="v span3"><span class="cap"><b>03</b>Monograma · selo</span><div class="center"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Monograma FREMEX"><path fill="#2459A6" d="M0 0 L78 0 L100 22 L100 100 L0 100Z"/><g transform="translate(22 22) scale(.56)"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#080A0F" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></g></svg></div></div>
+      <div class="v span8"><span class="cap"><b>04</b>Horizontal</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div class="v span4"><span class="cap"><b>05</b>Vertical</span><div class="center"><svg class="vlock" viewBox="0 0 195.5 170" role="img" aria-label="Assinatura vertical FREMEX"><g transform="translate(47.75 0)"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></g><g transform="translate(0 136) scale(0.34)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div></div>
+      <div class="v span6"><span class="cap"><b>06</b>Monocromática branca</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#F3F4F6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div class="v light span6"><span class="cap"><b>07</b>Monocromática preta</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#080A0F" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#080A0F" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#080A0F" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#080A0F" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#080A0F" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#080A0F" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#080A0F" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#080A0F" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#080A0F" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div class="v span6"><span class="cap"><b>08</b>Destaque azul · X do nome em azul</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#2459A6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div class="v on-blue span6"><span class="cap"><b>08</b>Variação · sobre azul</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#F3F4F6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+      <div class="v span6"><span class="cap"><b>09</b>Ícone de app · favicon</span>
+        <div class="row"><div class="ic" style="width:96px;height:96px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></div><div class="ic" style="width:60px;height:60px;border-radius:50%"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></div><div class="ic fav" style="width:32px;height:32px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX branco"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#F3F4F6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></div><div class="ic fav" style="width:16px;height:16px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX branco"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#F3F4F6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></div></div></div>
+      <div class="v span6"><span class="cap"><b>10</b>Marca d'água em vídeo</span>
+        <div class="frame" role="img" aria-label="Quadro de vídeo de exemplo com marca d'água"><div class="safe"></div><span class="tc">00:01:12:08</span><span class="fmt">4K · 25p</span><div class="wm"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX branco"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#F3F4F6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></div></div></div>
+      <div class="v light span12"><span class="cap"><b>04</b>Horizontal sobre fundo claro</span><svg class="lock" viewBox="0 0 473.5 100" role="img" aria-label="Assinatura horizontal FREMEX"><path fill="#080A0F" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#080A0F" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#080A0F" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#080A0F" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#080A0F" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#080A0F" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#080A0F" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#080A0F" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Redução</p>
+      <h2>Uma versão própria para tamanhos pequenos</h2>
+      <p class="mute">Abaixo de 24 px o respiro entre F e X desaparece. A versão reduzida tem traço de 20 u e respiro de 10 u. No favicon, o símbolo vai todo em branco sobre azul, porque o azul sobre preto perde contraste nesse tamanho.</p>
+    </div>
+    <div class="reduce">
+      <div class="t"><span class="cap">Símbolo padrão · 64 / 32 / 24 / 16 px</span>
+        <div class="row"><span style="width:64px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></span><span style="width:32px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></span><span style="width:24px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></span><span style="width:16px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></span></div></div>
+      <div class="t"><span class="cap">Símbolo reduzido · 64 / 32 / 24 / 16 px</span>
+        <div class="row"><span style="width:64px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX reduzido"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#2459A6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></span><span style="width:32px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX reduzido"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#2459A6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></span><span style="width:24px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX reduzido"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#2459A6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></span><span style="width:16px"><svg class="sym" viewBox="0 0 100 100" role="img" aria-label="Símbolo FREMEX reduzido"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L66.35 0 L58.11 20 L0 20ZM0 40 L49.87 40 L41.63 60 L0 60Z"/><path fill="#2459A6" d="M76.35 0 L98.85 0 L57.65 100 L35.15 100ZM55.75 50 L78.25 50 L98.85 100 L76.35 100Z"/></svg></span></div></div>
+    </div>
+    <div class="scroll">
+      <table class="minsizes">
+        <thead><tr><th>Versão</th><th>Mínimo digital</th><th>Mínimo impresso</th><th>Abaixo disso</th></tr></thead>
+        <tbody>
+          <tr><td>Símbolo padrão</td><td>24 px</td><td>8 mm</td><td>Usar símbolo reduzido</td></tr>
+          <tr><td>Símbolo reduzido</td><td>16 px</td><td>5 mm</td><td>Não reduzir</td></tr>
+          <tr><td>Horizontal</td><td>120 px de largura</td><td>30 mm</td><td>Usar só o símbolo</td></tr>
+          <tr><td>Vertical</td><td>72 px de largura</td><td>20 mm</td><td>Usar só o símbolo</td></tr>
+          <tr><td>Marca d'água</td><td>5–7% da largura do vídeo</td><td>—</td><td>Opacidade 60–75%, dentro da área de segurança</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Área de proteção</p>
+      <h2>2S ao redor</h2>
+      <p class="mute">Nenhum texto, imagem ou borda entra na área de duas vezes a espessura do traço (2S = 34 u) em volta da marca. Em um logotipo de 100 px de altura, isso dá 34 px de cada lado.</p>
+    </div>
+    <div class="t" style="padding: 24px;"><svg class="diagram" viewBox="-36 -36 545.5 172" role="img" aria-label="Área de proteção do logotipo"><rect x="-34.0" y="-34.0" width="541.5" height="168" fill="none" stroke="#F0C77A" stroke-width="1.2" stroke-dasharray="5 4"/><rect x="-34.0" y="-34.0" width="34.0" height="34.0" fill="#F0C77A" fill-opacity=".18"/><text x="-30.0" y="-12.0" font-family="IBM Plex Mono, monospace" font-size="9" fill="#F0C77A">2S</text><rect x="0" y="0" width="473.5" height="100" fill="none" stroke="#9BA6BA" stroke-width=".6" stroke-opacity=".5"/><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/><g transform="translate(140 21) scale(0.58)"><path fill="#F3F4F6" d="M0 0 L20 0 L20 100 L0 100ZM0 0 L76 0 L67.02 20 L0 20ZM0 40 L63.84 40 L54.86 60 L0 60Z"/><path fill="#F3F4F6" fill-rule="evenodd" transform="translate(88 0)" d="M0 0 L66 0 L84 18 L84 62 L0 62ZM20 42 L64 42 L64 29.72 L54.28 20 L20 20Z"/><path fill="#F3F4F6" d="M88 0 L108 0 L108 100 L88 100ZM122.71 42 L145.95 42 L172 100 L148.76 100Z"/><path fill="#F3F4F6" d="M188 0 L208 0 L208 100 L188 100ZM188 0 L264 0 L255.02 20 L188 20ZM188 40 L251.84 40 L242.86 60 L188 60ZM188 80 L264 80 L255.02 100 L188 100Z"/><path fill="#F3F4F6" d="M279 0 L299 0 L299 100 L279 100ZM365 0 L385 0 L385 100 L365 100ZM278.27 0 L301.73 0 L343.73 74 L320.27 74ZM362.27 0 L385.73 0 L343.73 74 L320.27 74Z"/><path fill="#F3F4F6" d="M400 0 L420 0 L420 100 L400 100ZM400 0 L476 0 L467.02 20 L400 20ZM400 40 L463.84 40 L454.86 60 L400 60ZM400 80 L476 80 L467.02 100 L400 100Z"/><path fill="#F3F4F6" d="M484.87 0 L509.93 0 L575.13 100 L550.07 100ZM550.07 0 L575.13 0 L509.93 100 L484.87 100Z"/></g></svg></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Movimento</p>
+      <h2>As faixas viram o gesto da marca</h2>
+      <p class="mute">Na abertura, o F entra, a diagonal chega em três faixas que se fundem no traço sólido e o braço inferior do X completa o símbolo. É a ideia da direção C (evolução em quadros) aplicada sem mudar o desenho estático.</p>
+      <p class="mute">Na Etapa 3 o mesmo recurso vai virar transição de vídeo, barra de progresso dos cursos e divisor de seção do site.</p>
+    </div>
+    <div class="t" style="place-items:center; padding: 40px;"><div style="width:min(220px, 60vw)"><svg class="sym motion" viewBox="0 0 100 100" role="img" aria-label="Animação de abertura do símbolo"><path class="mF" fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path class="sl sl0" fill="#2459A6" d="M79.77 0 L88.3 0 L43.38 100 L34.85 100Z"/><path class="sl sl1" fill="#2459A6" d="M89.65 0 L94.69 0 L49.77 100 L44.73 100Z"/><path class="sl sl2" fill="#2459A6" d="M96.05 0 L99.15 0 L54.23 100 L51.13 100Z"/><path class="mX" fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100Z"/><path class="mA" fill="#2459A6" d="M57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack"><p class="eyebrow">Arquivos</p><h2>O que está no repositório</h2></div>
+    <ul class="files">
+      <li>01-logotipo.svg</li><li>01-logotipo-preto.svg</li><li>02-simbolo.svg</li><li>02-simbolo-fundo-claro.svg</li>
+      <li>03-monograma.svg</li><li>04-horizontal.svg</li><li>04-horizontal-fundo-claro.svg</li><li>05-vertical.svg</li>
+      <li>05-vertical-fundo-claro.svg</li><li>06-mono-branca.svg</li><li>07-mono-preta.svg</li><li>08-destaque-azul.svg</li>
+      <li>08-sobre-azul.svg</li><li>09-icone-app.svg</li><li>09-favicon.svg</li><li>10-marca-dagua.svg</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Para avançar à Etapa 3</p>
+      <h2>Aprovar ou ajustar</h2>
+      <p class="mute">Com o logotipo aprovado, desenvolvo a identidade visual completa: tipografia de apoio, grid, padrões gráficos, ícones, fotografia e as assinaturas das frentes Academy, Lab, AI e Creative.</p>
+    </div>
+    <ol class="qs">
+      <li><p><strong>O símbolo está aprovado?</strong> Ou quer testar algo, por exemplo um respiro maior ou traço mais fino.</p></li>
+      <li><p><strong>O lettering está aprovado?</strong> Atenção especial ao R chanfrado, que é o detalhe mais autoral.</p></li>
+      <li><p><strong>Alguma versão faltou ou sobrou?</strong></p></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">FREMEX · The creative evolution · Etapa 2 · Logotipo gerado em SVG a partir de brand/_build/logo.py.</div>
+</footer>

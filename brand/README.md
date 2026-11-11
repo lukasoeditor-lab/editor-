@@ -3,7 +3,10 @@
 Processo em 6 etapas: direção criativa → logotipo → identidade visual → aplicações → website → brand book.
 Cada etapa é apresentada para aprovação antes de avançar.
 
-**Etapa atual: 1 — Pesquisa e direção criativa** (aguardando escolha de direção).
+**Etapa atual: 2 — Logotipo** (direção A · Vetor aprovada; aguardando aprovação do logotipo).
+
+- `logos/fremex/` — sistema de 10 versões (gerado por `_build/logo.py`)
+- `apresentacao/etapa-2-logotipo.html` — apresentação da Etapa 2 (`python3 brand/_build/presentation2.py`)
 
 ## Estrutura
 
