@@ -97,6 +97,30 @@ npm install playwright
 npx playwright install chromium
 ```
 
+**VoiceStudio · voz local e gratuita (opcional, recomendado):** aplicativo de código aberto que gera narração, cria e clona vozes, dubla e transcreve **no próprio computador**, sem custo por uso. Pergunte se o usuário quer instalar e explique antes:
+- precisa de cerca de **10 GB livres** em disco; placa de vídeo NVIDIA acelera, mas não é obrigatória;
+- o modelo padrão (OmniVoice, cerca de 2,3 GB) tem pesos com licença **CC-BY-NC, que não permite uso comercial**. Para trabalho de cliente, escolha no aplicativo (Model Manager) um mecanismo cuja licença permita uso comercial, ou use o ElevenLabs com plano pago.
+
+Confira memória, disco e placa de vídeo. Depois instale com o instalador oficial:
+
+Windows (PowerShell):
+```powershell
+irm https://voicestudio.sh/install.ps1 | iex
+```
+macOS e Linux:
+```bash
+curl -fsSL https://voicestudio.sh/install | sh
+```
+Abra o aplicativo, deixe o próprio app baixar o que precisa e **deixe a pergunta de estatísticas de uso para o usuário responder**. Confira se está no ar:
+```bash
+curl http://localhost:3900/health
+```
+Conecte ao Claude Code (servidor MCP do próprio VoiceStudio):
+```bash
+claude mcp add --transport http --scope user voicestudio http://localhost:3900/mcp/
+```
+O VoiceStudio precisa estar aberto para o Claude usar a voz. Antes de baixar qualquer modelo, informe o tamanho e a licença e peça autorização.
+
 **Watch (assistir vídeos):** rode a configuração da própria skill e siga as perguntas dela:
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/../watch/scripts/setup.py" --json
@@ -110,7 +134,8 @@ Explique que estas etapas exigem login e, às vezes, pagamento, então quem faz 
 | Serviço | Para quê | Como conectar | Custo |
 |---|---|---|---|
 | **Claude** (plano Pro ou superior) | Usar o Claude Code | Já está em uso, se o Claude Code abriu | Pago |
-| **ElevenLabs** | Narração dos vídeos | claude.ai → Configurações → Conectores → ElevenLabs. Depois, no Claude Code, `/mcp` mostra se está ativo | Gratuito sem uso comercial; pago para clientes |
+| **VoiceStudio** | Narração local e gratuita (instalado acima) | Aplicativo aberto + `/mcp` mostra `voicestudio` | Gratuito; atenção à licença do modelo |
+| **ElevenLabs** | Narração na nuvem, vozes profissionais | claude.ai → Configurações → Conectores → ElevenLabs. Depois, no Claude Code, `/mcp` mostra se está ativo | Gratuito sem uso comercial; pago para clientes |
 | **Google Drive** | Organizar e entregar arquivos | claude.ai → Configurações → Conectores → Google Drive | Gratuito com espaço limitado |
 
 Peça para o usuário avisar quando terminar e confira o que estiver disponível com `/mcp`.
