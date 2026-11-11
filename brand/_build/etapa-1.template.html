@@ -1,0 +1,494 @@
+<title>FREMEX Direção Criativa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="FREMEX — Etapa 1: análise estratégica e três direções criativas para a identidade.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+</style>
+
+<div class="wrap">
+  <div class="bar"><strong>FREMEX</strong><span>Etapa 1 de 6 · Pesquisa e direção criativa</span><span>Documento de trabalho · nada aqui é definitivo</span></div>
+
+  <header class="top hero">
+    <p class="eyebrow">The creative evolution · Direção de arte</p>
+    <h1>Três caminhos para a <span>FREMEX</span>.</h1>
+    <p class="mute" style="font-size: var(--s1); line-height: 1.5;">Antes de desenhar a marca final, organizei o que a FREMEX precisa resolver e transformei isso em três direções criativas. Cada uma tem um símbolo, um logotipo, testes de tamanho e aplicações iniciais. São rascunhos de estudo: a geometria e o lettering serão refinados no caminho que você escolher.</p>
+    <ol class="steps" aria-label="Etapas do projeto">
+      <li class="now"><b>01</b>Direção criativa</li>
+      <li><b>02</b>Logotipo</li>
+      <li><b>03</b>Identidade visual</li>
+      <li><b>04</b>Aplicações</li>
+      <li><b>05</b>Website</li>
+      <li><b>06</b>Brand book</li>
+    </ol>
+  </header>
+</div>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Análise estratégica</p>
+      <h2>O que a marca precisa resolver</h2>
+    </div>
+    <div class="grid2">
+      <div class="stack">
+        <h3>Leitura do nome</h3>
+        <div class="name" aria-label="FREMEX"><span class="k">F</span><span>R</span><span>E</span><span>M</span><span>E</span><span class="x">X</span></div>
+        <p>O nome tem seis letras, todas retas, e um centro simétrico: <strong>E·M·E</strong>. Nas pontas ficam as duas letras com mais carga de significado. Essa estrutura dá ao logotipo um eixo natural e torna o par F/X o ponto de partida mais forte para o símbolo.</p>
+        <dl class="readings">
+          <div><dt>F</dt><dd>Início, fundamento, <em>frame</em>. A letra que constrói: haste e barras, como um andaime.</dd></div>
+          <div><dt>X</dt><dd>A variável, o cruzamento, o fator de multiplicação. No audiovisual, FX são os efeitos. Em tecnologia, X marca o que vem depois.</dd></div>
+          <div><dt>F → X</dt><dd>Do fundamento à variável. É a própria assinatura: <em>the creative evolution</em>.</dd></div>
+        </dl>
+      </div>
+      <div class="stack">
+        <h3>Tensões que a identidade precisa equilibrar</h3>
+        <div class="tension"><span>Educação</span><span>×</span><span>Tecnologia</span></div>
+        <div class="tension"><span>Autoridade</span><span>×</span><span>Proximidade</span></div>
+        <div class="tension"><span>Audiovisual hoje</span><span>×</span><span>Ecossistema amanhã</span></div>
+        <div class="tension"><span>Mercado brasileiro</span><span>×</span><span>Leitura internacional</span></div>
+        <div class="tension"><span>Sofisticação</span><span>×</span><span>Energia criativa</span></div>
+        <p class="mute">Conclusão: o símbolo não pode depender de câmera, play ou timeline para comunicar. Precisa ser abstrato o bastante para abrigar Academy, Lab, AI e Creative, e concreto o bastante para ser lembrado em um ícone de 32 px.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3>Princípios de design para as três direções</h3>
+      <div class="grid3">
+        <div class="principle"><span class="n">P1</span><h3>Geometria construída</h3><p class="mute">Toda forma nasce de uma grade e de uma regra que pode ser explicada no brand book. Nada de traço livre ou efeito.</p></div>
+        <div class="principle"><span class="n">P2</span><h3>Preto como palco</h3><p class="mute">O preto profundo é o ambiente padrão, como uma sala de edição. O branco gelo é a voz.</p></div>
+        <div class="principle"><span class="n">P3</span><h3>Azul como sinal</h3><p class="mute">O azul marca o ponto de virada (o X, o vetor, o corte). Nunca é fundo de tudo.</p></div>
+        <div class="principle"><span class="n">P4</span><h3>Movimento implícito</h3><p class="mute">O símbolo sugere movimento parado, para que a animação venha da própria forma e não de efeitos.</p></div>
+        <div class="principle"><span class="n">P5</span><h3>Funciona em 16 px</h3><p class="mute">Favicon, avatar e marca d'água em vídeo são testes eliminatórios, não detalhes de acabamento.</p></div>
+        <div class="principle"><span class="n">P6</span><h3>Sem tecnologia caricata</h3><p class="mute">Sem circuitos, brilhos neon, cérebros ou partículas. A sofisticação vem da precisão.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Paleta · diagnóstico</p>
+      <h2>A paleta funciona, com um ajuste para telas</h2>
+      <p class="mute">Mantive as quatro cores definidas. Ao medir o contraste, o azul elétrico #2459A6 fica escuro demais para texto e linhas finas sobre preto e marinho. Proponho um quinto tom, apenas digital, para essas situações. É uma sugestão: só entra no sistema se você aprovar.</p>
+    </div>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#080A0F"></div><div class="meta"><b>Preto profundo</b>#080A0F<br>RGB 8 10 15</div></div>
+      <div class="sw"><div class="chip" style="background:#101D35"></div><div class="meta"><b>Azul-marinho</b>#101D35<br>RGB 16 29 53</div></div>
+      <div class="sw"><div class="chip" style="background:#2459A6"></div><div class="meta"><b>Azul elétrico</b>#2459A6<br>RGB 36 89 166</div></div>
+      <div class="sw"><div class="chip" style="background:#F3F4F6"></div><div class="meta"><b>Branco gelo</b>#F3F4F6<br>RGB 243 244 246</div></div>
+      <div class="sw prop"><div class="chip" style="background:#6A96DE"></div><div class="meta"><b>Azul digital (proposta)</b>#6A96DE<br>RGB 106 150 222</div></div>
+    </div>
+    <div class="scroll">
+      <table class="contrast">
+        <thead><tr><th>Combinação</th><th>Contraste</th><th>Uso em texto (WCAG AA)</th><th>Uso em formas grandes</th></tr></thead>
+        <tbody>
+          <tr><td>Branco gelo sobre preto</td><td>18,0 : 1</td><td><span class="pill ok">aprovado</span></td><td><span class="pill ok">aprovado</span></td></tr>
+          <tr><td>Azul elétrico sobre branco gelo</td><td>6,3 : 1</td><td><span class="pill ok">aprovado</span></td><td><span class="pill ok">aprovado</span></td></tr>
+          <tr><td>Azul elétrico sobre preto</td><td>2,9 : 1</td><td><span class="pill bad">insuficiente</span></td><td><span class="pill warn">no limite</span></td></tr>
+          <tr><td>Azul elétrico sobre marinho</td><td>2,5 : 1</td><td><span class="pill bad">insuficiente</span></td><td><span class="pill bad">fraco</span></td></tr>
+          <tr><td>Azul digital sobre marinho</td><td>5,6 : 1</td><td><span class="pill ok">aprovado</span></td><td><span class="pill ok">aprovado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mute">Na prática: o azul elétrico continua sendo a cor da marca (símbolo, superfícies, impressos, botões com texto branco em tamanho grande). O azul digital aparece só em links, ícones de linha e textos de destaque sobre fundos escuros.</p>
+  </div>
+</section>
+
+<!-- ============================================================ A -->
+<section id="direcao-a">
+  <div class="wrap stack-lg">
+    <div class="dir-head">
+      <div class="stack">
+        <p class="eyebrow">Direção A</p>
+        <h2>Vetor</h2>
+        <p class="mute">O F e o X fundidos numa única ligadura. A barra média do F aponta para o cruzamento do X: o traço que nasce como letra e se torna direção.</p>
+      </div>
+      <div class="dir-letter" aria-hidden="true">A</div>
+    </div>
+
+    <div class="stage">
+      <div class="big">{{A.symbol}}</div>
+      <div class="concept">
+        <p class="quote">"Evoluir é escolher uma direção." O símbolo é um F que vira vetor.</p>
+        <p class="mute">Construção: haste e barras do F com terminais cortados no ângulo exato da diagonal do X (cerca de 24° da vertical). O braço superior esquerdo do X foi retirado; o topo do F ocupa o lugar dele. Um respiro constante separa as duas letras.</p>
+        <p class="mute">Lettering: grotesca expandida e pesada, com os mesmos cortes diagonais nas barras do E e do F. Referência de família para o refinamento: sans expandidas (ex.: Archivo Expanded). Texto de apoio em IBM Plex Sans.</p>
+      </div>
+    </div>
+
+    <div class="tests">
+      <div class="t span8"><span class="cap">Assinatura horizontal · fundo escuro</span>{{A.horizontal}}</div>
+      <div class="t span4"><span class="cap">Vertical</span>{{A.vertical}}</div>
+      <div class="t light span8"><span class="cap">Horizontal · fundo claro</span>{{A.horizontal_dark}}</div>
+      <div class="t span4"><span class="cap">Logotipo isolado</span>{{A.word}}</div>
+      <div class="t span4"><span class="cap">Teste de redução · 64 / 32 / 24 / 16 px</span>
+        <div class="sizes"><span style="width:64px">{{A.symbol}}</span><span style="width:32px">{{A.symbol}}</span><span style="width:24px">{{A.symbol}}</span><span style="width:16px">{{A.symbol}}</span></div></div>
+      <div class="t span4"><span class="cap">Monocromáticas · branca / preta / sobre azul</span>
+        <div class="mono-row"><div style="background:var(--ink);border:1px solid var(--line)">{{A.symbol_mono_w}}</div><div style="background:var(--ice)">{{A.symbol_mono_k}}</div><div style="background:var(--blue)">{{A.symbol_mono_w}}</div></div></div>
+      <div class="t span4"><span class="cap">Ícone de app e avatar</span>
+        <div class="appicon"><div class="ic" style="width:76px;height:76px">{{A.symbol}}</div><div class="ic round" style="width:52px;height:52px">{{A.symbol}}</div><div class="ic" style="width:32px;height:32px">{{A.symbol}}</div></div></div>
+      <div class="t span6"><span class="cap">Marca d'água em vídeo · dentro da área de segurança</span>
+        <div class="frame" role="img" aria-label="Quadro de vídeo de exemplo com marca d'água"><div class="safe"></div><span class="tc">00:01:12:08</span><span class="fmt">4K · 25p</span><div class="wm">{{A.symbol_mono_w}}</div></div></div>
+      <div class="t span6"><span class="cap">Arquitetura · frentes da marca</span>
+        <div class="subs">
+          <div class="sub"><span class="s">{{A.symbol}}</span><span class="w">{{A.word}}</span><i></i><span>ACADEMY</span></div>
+          <div class="sub"><span class="s">{{A.symbol}}</span><span class="w">{{A.word}}</span><i></i><span>LAB</span></div>
+          <div class="sub"><span class="s">{{A.symbol}}</span><span class="w">{{A.word}}</span><i></i><span>AI</span></div>
+          <div class="sub"><span class="s">{{A.symbol}}</span><span class="w">{{A.word}}</span><i></i><span>CREATIVE</span></div>
+        </div></div>
+      <div class="t span4"><span class="cap">Linguagem gráfica · post de exemplo</span>
+        <div class="post post-a"><div class="vec">{{A.symbol}}</div><span class="tag">EXEMPLO</span><div class="copy"><small>FREMEX ACADEMY</small><b>Mais que criação. Uma nova forma de evoluir.</b></div></div></div>
+      <div class="t span8 stack"><span class="cap">Sistema gráfico que nasce daqui</span>
+        <p>Linhas paralelas no ângulo do vetor viram grade de composição, textura de fundo e transição de vídeo (um corte diagonal que atravessa a tela). O vetor também pode virar seta de navegação e indicador de progresso nos cursos.</p>
+        <p class="mute">Animação natural: a barra média do F desliza até o centro e o X se completa. Dura menos de um segundo e funciona como vinheta de abertura.</p></div>
+    </div>
+
+    <div class="verdict">
+      <div><h3>Pontos fortes</h3><ul><li>Usa as duas letras-chave do nome numa forma só, difícil de confundir.</li><li>FX tem leitura imediata para quem trabalha com vídeo, sem precisar de ícone de câmera.</li><li>O ângulo do vetor gera um sistema gráfico inteiro.</li></ul></div>
+      <div><h3>Riscos</h3><ul><li>Em 16 px o respiro entre F e X some; vai pedir uma versão simplificada para favicon.</li><li>O peso alto pode parecer agressivo em contextos educacionais delicados.</li></ul></div>
+      <div><h3>Quando escolher</h3><p>Se a FREMEX deve parecer uma marca de tecnologia com energia de movimento, mais perto de ferramenta e performance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ B -->
+<section id="direcao-b">
+  <div class="wrap stack-lg">
+    <div class="dir-head">
+      <div class="stack">
+        <p class="eyebrow">Direção B</p>
+        <h2>Frame</h2>
+        <p class="mute">O F é o canto de um enquadramento; o X fecha o canto oposto. Juntos, desenham uma moldura aberta: o espaço onde a criação acontece.</p>
+      </div>
+      <div class="dir-letter" aria-hidden="true">B</div>
+    </div>
+
+    <div class="stage">
+      <div class="big">{{B.symbol}}</div>
+      <div class="concept">
+        <p class="quote">"Toda criação começa com um enquadramento." O símbolo é um quadro em construção.</p>
+        <p class="mute">Construção: a haste e o topo do F ocupam toda a altura e largura do quadrado, como duas bordas de um frame. O X ocupa exatamente o quadrante inferior direito, no mesmo peso de traço. A moldura nunca fecha: o quadro fica aberto para o que vem.</p>
+        <p class="mute">Lettering: grotesca de proporção normal, monolinear, com um único detalhe autoral: o bojo do R aberto no canto, como um corte de frame. Referência para o refinamento: grotescas neutras de desenho editorial. Texto de apoio em IBM Plex Sans.</p>
+      </div>
+    </div>
+
+    <div class="tests">
+      <div class="t span8"><span class="cap">Assinatura horizontal · fundo escuro</span>{{B.horizontal}}</div>
+      <div class="t span4"><span class="cap">Vertical</span>{{B.vertical}}</div>
+      <div class="t light span8"><span class="cap">Horizontal · fundo claro</span>{{B.horizontal_dark}}</div>
+      <div class="t span4"><span class="cap">Logotipo isolado</span>{{B.word}}</div>
+      <div class="t span4"><span class="cap">Teste de redução · 64 / 32 / 24 / 16 px</span>
+        <div class="sizes"><span style="width:64px">{{B.symbol}}</span><span style="width:32px">{{B.symbol}}</span><span style="width:24px">{{B.symbol}}</span><span style="width:16px">{{B.symbol}}</span></div></div>
+      <div class="t span4"><span class="cap">Monocromáticas · branca / preta / sobre azul</span>
+        <div class="mono-row"><div style="background:var(--ink);border:1px solid var(--line)">{{B.symbol_mono_w}}</div><div style="background:var(--ice)">{{B.symbol_mono_k}}</div><div style="background:var(--blue)">{{B.symbol_mono_w}}</div></div></div>
+      <div class="t span4"><span class="cap">Ícone de app e avatar</span>
+        <div class="appicon"><div class="ic" style="width:76px;height:76px">{{B.symbol}}</div><div class="ic round" style="width:52px;height:52px">{{B.symbol}}</div><div class="ic" style="width:32px;height:32px">{{B.symbol}}</div></div></div>
+      <div class="t span6"><span class="cap">Marca d'água em vídeo · dentro da área de segurança</span>
+        <div class="frame" role="img" aria-label="Quadro de vídeo de exemplo com marca d'água"><div class="safe"></div><span class="tc">00:01:12:08</span><span class="fmt">4K · 25p</span><div class="wm">{{B.symbol_mono_w}}</div></div></div>
+      <div class="t span6"><span class="cap">Arquitetura · frentes da marca</span>
+        <div class="subs">
+          <div class="sub"><span class="s">{{B.symbol}}</span><span class="w">{{B.word}}</span><i></i><span>ACADEMY</span></div>
+          <div class="sub"><span class="s">{{B.symbol}}</span><span class="w">{{B.word}}</span><i></i><span>LAB</span></div>
+          <div class="sub"><span class="s">{{B.symbol}}</span><span class="w">{{B.word}}</span><i></i><span>AI</span></div>
+          <div class="sub"><span class="s">{{B.symbol}}</span><span class="w">{{B.word}}</span><i></i><span>CREATIVE</span></div>
+        </div></div>
+      <div class="t span4"><span class="cap">Linguagem gráfica · post de exemplo</span>
+        <div class="post post-b">
+          <svg class="crop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path fill="none" stroke="#F3F4F6" stroke-width="1.2" d="M0 14V0H14M86 0H100V14M100 86V100H86M14 100H0V86"/><path fill="none" stroke="#2459A6" stroke-width="1.2" d="M50 46V54M46 50H54"/></svg>
+          <span class="tag">EXEMPLO</span><div class="logo">{{B.symbol}}</div><div class="copy"><small>FREMEX ACADEMY</small><b>Mais que criação. Uma nova forma de evoluir.</b></div></div></div>
+      <div class="t span8 stack"><span class="cap">Sistema gráfico que nasce daqui</span>
+        <p>Marcas de corte, cantos de moldura e proporções de tela (16:9, 9:16, 1:1, 4:5) viram o grid de todas as peças. Cada conteúdo é apresentado como um quadro, o que conecta audiovisual, design e produto digital sem citar nenhum software.</p>
+        <p class="mute">Animação natural: as bordas do F correm pela tela como um recorte e o X "carimba" o canto final, como o fim de um render.</p></div>
+    </div>
+
+    <div class="verdict">
+      <div><h3>Pontos fortes</h3><ul><li>A mais editorial e sóbria das três; envelhece bem.</li><li>O sistema de molduras é o mais versátil para conteúdo, cursos e redes sociais.</li><li>Ótimo comportamento em fundo claro.</li></ul></div>
+      <div><h3>Riscos</h3><ul><li>Em tamanhos pequenos o conjunto pode ser lido como "fx", o ícone de fórmula das planilhas. Precisa de ajuste de proporção se for o caminho escolhido.</li><li>Menos proprietário: molduras e cantos são recursos comuns em estúdios.</li></ul></div>
+      <div><h3>Quando escolher</h3><p>Se a FREMEX deve parecer um estúdio criativo premium e uma escola de alto padrão, com a tecnologia mais nos bastidores.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ C -->
+<section id="direcao-c">
+  <div class="wrap stack-lg">
+    <div class="dir-head">
+      <div class="stack">
+        <p class="eyebrow">Direção C</p>
+        <h2>Iteração</h2>
+        <p class="mute">Um X em que uma das hastes é sólida e a outra se divide em faixas. A parte constante e a parte que está em transformação, no mesmo sinal.</p>
+      </div>
+      <div class="dir-letter" aria-hidden="true">C</div>
+    </div>
+
+    <div class="stage">
+      <div class="big">{{C.symbol}}</div>
+      <div class="concept">
+        <p class="quote">"Evolução é versão após versão." O símbolo mostra o movimento congelado em quadros.</p>
+        <p class="mute">Construção: a haste "/" é sólida, em branco gelo, e passa por cima. A haste "\" é decomposta em três faixas azuis de espessura decrescente (44%, 26% e 16% da haste), como quadros de uma animação ou camadas de uma timeline. O X deixa de ser só uma letra e vira a assinatura de "evolution".</p>
+        <p class="mute">Lettering: grotesca leve, monolinear e com espaçamento aberto, para que o símbolo carregue o peso. Referência para o refinamento: sans geométricas finas. Texto de apoio em IBM Plex Sans.</p>
+      </div>
+    </div>
+
+    <div class="tests">
+      <div class="t span8"><span class="cap">Assinatura horizontal · fundo escuro</span>{{C.horizontal}}</div>
+      <div class="t span4"><span class="cap">Vertical</span>{{C.vertical}}</div>
+      <div class="t light span8"><span class="cap">Horizontal · fundo claro</span>{{C.horizontal_dark}}</div>
+      <div class="t span4"><span class="cap">Logotipo isolado</span>{{C.word}}</div>
+      <div class="t span4"><span class="cap">Teste de redução · 64 / 32 / 24 / 16 px</span>
+        <div class="sizes"><span style="width:64px">{{C.symbol}}</span><span style="width:32px">{{C.symbol}}</span><span style="width:24px">{{C.symbol}}</span><span style="width:16px">{{C.symbol}}</span></div></div>
+      <div class="t span4"><span class="cap">Monocromáticas · branca / preta / sobre azul</span>
+        <div class="mono-row"><div style="background:var(--ink);border:1px solid var(--line)">{{C.symbol_mono_w}}</div><div style="background:var(--ice)">{{C.symbol_mono_k}}</div><div style="background:var(--blue)">{{C.symbol_mono_w}}</div></div></div>
+      <div class="t span4"><span class="cap">Ícone de app e avatar</span>
+        <div class="appicon"><div class="ic" style="width:76px;height:76px">{{C.symbol}}</div><div class="ic round" style="width:52px;height:52px">{{C.symbol}}</div><div class="ic" style="width:32px;height:32px">{{C.symbol}}</div></div></div>
+      <div class="t span6"><span class="cap">Marca d'água em vídeo · dentro da área de segurança</span>
+        <div class="frame" role="img" aria-label="Quadro de vídeo de exemplo com marca d'água"><div class="safe"></div><span class="tc">00:01:12:08</span><span class="fmt">4K · 25p</span><div class="wm">{{C.symbol_mono_w}}</div></div></div>
+      <div class="t span6"><span class="cap">Arquitetura · frentes da marca</span>
+        <div class="subs">
+          <div class="sub"><span class="s">{{C.symbol}}</span><span class="w">{{C.word}}</span><i></i><span>ACADEMY</span></div>
+          <div class="sub"><span class="s">{{C.symbol}}</span><span class="w">{{C.word}}</span><i></i><span>LAB</span></div>
+          <div class="sub"><span class="s">{{C.symbol}}</span><span class="w">{{C.word}}</span><i></i><span>AI</span></div>
+          <div class="sub"><span class="s">{{C.symbol}}</span><span class="w">{{C.word}}</span><i></i><span>CREATIVE</span></div>
+        </div></div>
+      <div class="t span4"><span class="cap">Linguagem gráfica · post de exemplo</span>
+        <div class="post post-c"><div class="ghost">{{C.symbol}}</div><span class="tag">EXEMPLO</span><div class="copy"><small>FREMEX ACADEMY</small><b>Mais que criação. Uma nova forma de evoluir.</b></div></div></div>
+      <div class="t span8 stack"><span class="cap">Sistema gráfico que nasce daqui</span>
+        <p>As faixas viram um recurso de marca reconhecível sem o símbolo: barras de progresso dos cursos, divisores de seção, transições de vídeo e indicadores de versão (v1, v2, v3) nos produtos do FREMEX LAB e do FREMEX AI.</p>
+        <p class="mute">Animação natural: as três faixas entram em sequência, como quadros, e se fundem na haste sólida. É a direção com maior potencial de motion.</p></div>
+    </div>
+
+    <div class="verdict">
+      <div><h3>Pontos fortes</h3><ul><li>A forma mais simples e memorável das três: um sinal, não uma sigla.</li><li>Traduz "evolution" de forma visual, sem texto.</li><li>A mais flexível para animação e para as frentes AI e Lab.</li></ul></div>
+      <div><h3>Riscos</h3><ul><li>Símbolos em X são comuns no mercado de tecnologia, inclusive em marcas muito conhecidas. A diferenciação depende totalmente das faixas, que precisam ser protegidas no desenho final.</li><li>Abaixo de 24 px as faixas se fundem; exige versão reduzida com duas faixas.</li></ul></div>
+      <div><h3>Quando escolher</h3><p>Se a FREMEX deve ter um sinal icônico para crescer como ecossistema, com o nome aprendido ao longo do tempo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack-lg">
+    <div class="stack">
+      <p class="eyebrow">Comparativo</p>
+      <h2>As três lado a lado</h2>
+      <p class="mute">Avaliação minha, como diretor de arte do projeto, para orientar a conversa. Não é pesquisa com público.</p>
+    </div>
+    <div class="scroll">
+      <table class="cmp">
+        <thead><tr><th scope="col">Critério</th><th scope="col">A · Vetor</th><th scope="col">B · Frame</th><th scope="col">C · Iteração</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Memorabilidade</th><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●<i>●●</i></span></td><td><span class="dots">●●●●●</span></td></tr>
+          <tr><th scope="row">Exclusividade da forma</th><td><span class="dots">●●●●●</span><small>Ligadura F+X própria.</small></td><td><span class="dots">●●●<i>●●</i></span><small>Molduras são recurso comum.</small></td><td><span class="dots">●●●<i>●●</i></span><small>X é comum; as faixas diferenciam.</small></td></tr>
+          <tr><th scope="row">Leitura em 16–24 px</th><td><span class="dots">●●●<i>●●</i></span></td><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●<i>●●</i></span></td></tr>
+          <tr><th scope="row">Abrigar Academy, Lab, AI e Creative</th><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●●●</span></td></tr>
+          <tr><th scope="row">Potencial de animação</th><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●<i>●●</i></span></td><td><span class="dots">●●●●●</span></td></tr>
+          <tr><th scope="row">Distância de clichês de tecnologia</th><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●●<i>●</i></span></td><td><span class="dots">●●●<i>●●</i></span></td></tr>
+          <tr><th scope="row">Risco de associação indesejada</th><td>Baixo</td><td>Médio · "fx" de planilha</td><td>Médio · outras marcas em X</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rec">
+      <p class="eyebrow">Recomendação</p>
+      <h2 style="font-size: var(--s2);">Seguir com A (Vetor), levando as faixas da C como linguagem de movimento.</h2>
+      <p>A ligadura F+X é a forma mais proprietária, carrega o nome inteiro (do F ao X) e conversa direto com audiovisual sem clichê. As faixas da direção C são o melhor recurso de motion das três e podem entrar no sistema como transições, barras de progresso e vinhetas, sem competir com o símbolo.</p>
+      <p class="mute">Essa é a minha leitura. A decisão é sua, e qualquer combinação ou ajuste é possível na Etapa 2.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div class="stack">
+      <p class="eyebrow">Para avançar à Etapa 2</p>
+      <h2>O que preciso de você</h2>
+      <p class="mute">Com essas respostas, desenvolvo o logotipo do caminho escolhido em detalhe: lettering final, grade de construção, versão reduzida para favicon e as dez versões pedidas no briefing.</p>
+    </div>
+    <ol class="qs">
+      <li><p><strong>Qual direção seguimos?</strong> A, B, C ou uma combinação (por exemplo, a recomendação A + faixas da C).</p></li>
+      <li><p><strong>Peso do lettering.</strong> Prefere o FREMEX pesado e expandido (A), neutro (B) ou leve e espaçado (C)?</p></li>
+      <li><p><strong>Azul digital.</strong> Aprova o tom #6A96DE apenas para texto e linhas finas em telas?</p></li>
+      <li><p><strong>Registro do nome.</strong> Já fez busca de marca para FREMEX no INPI (classes 41, 42 e 9) e de domínio e perfis sociais? Não consigo confirmar disponibilidade por aqui, e isso vale antes de investir na identidade final.</p></li>
+      <li><p><strong>Algo que você viu e não gostou?</strong> Reações negativas ajudam tanto quanto as positivas.</p></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">FREMEX · The creative evolution · Etapa 1 · Estudos conceituais gerados em SVG. Conteúdos marcados como exemplo são demonstrativos.</div>
+</footer>
