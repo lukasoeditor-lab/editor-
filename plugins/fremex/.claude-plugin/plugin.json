@@ -1,7 +1,7 @@
 {
   "name": "fremex",
   "displayName": "FREMEX",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "FREMEX · The Creative Evolution. Configura o ambiente de vídeo por código e produz reels no estilo FREMEX com Claude Code.",
   "author": { "name": "FREMEX" },
   "keywords": ["video", "reels", "remotion", "hyperframes", "elevenlabs", "fremex"],

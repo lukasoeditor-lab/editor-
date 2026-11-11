@@ -32,7 +32,8 @@ Descubra o sistema operacional e rode as verificações abaixo. Não pare se uma
 | npm | `npm --version` | qualquer |
 | FFmpeg | `ffmpeg -version` | qualquer (renderização de vídeo) |
 | Git | `git --version` | qualquer |
-| Python | `python3 --version` (Windows: `python --version`) | 3.10+ (opcional: legendas sincronizadas) |
+| Python | `python3 --version` (Windows: `python --version`) | 3.10+ (legendas, cortes, Watch) |
+| yt-dlp | `yt-dlp --version` | qualquer (assistir vídeos de links, skill Watch) |
 
 Mostre uma tabela com ✅ / ❌ para cada item.
 
@@ -46,17 +47,19 @@ winget install OpenJS.NodeJS.LTS
 winget install Gyan.FFmpeg
 winget install Git.Git
 winget install Python.Python.3.12
+winget install yt-dlp.yt-dlp
 ```
 Depois de instalar no Windows, peça para o usuário **fechar e abrir o terminal** (ou o Claude Code) para os comandos serem reconhecidos, e rode o diagnóstico de novo.
 
 **macOS (Homebrew):** se `brew --version` falhar, explique que o Homebrew é instalado pelo site oficial brew.sh e peça para o usuário instalar antes.
 ```bash
-brew install node ffmpeg git python
+brew install node ffmpeg git python yt-dlp
 ```
 
 **Linux (Debian/Ubuntu):**
 ```bash
-sudo apt update && sudo apt install -y ffmpeg git python3 python3-pip
+sudo apt update && sudo apt install -y ffmpeg git python3 python3-pip pipx
+pipx install yt-dlp
 ```
 Para Node.js 22+ no Linux, oriente o usuário a usar o instalador oficial em nodejs.org, porque a versão do apt costuma ser antiga.
 
@@ -82,11 +85,23 @@ Depois:
 - Rode `npx hyperframes doctor` para conferir o ambiente do HyperFrames.
 - Avise que os plugins só aparecem numa **nova sessão** do Claude Code (ou depois de `/reload-plugins`).
 
-**Opcional · legendas sincronizadas palavra por palavra** (usado pela skill `/fremex:reels`):
+**Ferramentas do estúdio FREMEX** (legendas, cortes, capas e reels):
 ```bash
-pip install faster-whisper
+pip install faster-whisper numpy
 ```
-Explique que, no primeiro uso, ele baixa um modelo de transcrição da internet (algumas centenas de MB).
+Explique que, no primeiro uso, o faster-whisper baixa um modelo de transcrição da internet (algumas centenas de MB). No Windows, use `python -m pip install faster-whisper numpy` se `pip` não for reconhecido.
+
+Para capas e reels, que renderizam páginas HTML, o Playwright é instalado **na pasta de cada projeto**, quando a skill precisar:
+```bash
+npm install playwright
+npx playwright install chromium
+```
+
+**Watch (assistir vídeos):** rode a configuração da própria skill e siga as perguntas dela:
+```bash
+python3 "${CLAUDE_SKILL_DIR}/../watch/scripts/setup.py" --json
+```
+Recomende o motor **local** para material de clientes, porque o vídeo não sai do computador. O motor Gemini envia o vídeo ao Google: explique isso antes, se o usuário quiser usá-lo.
 
 ## Passo 5 · Contas e conexões (o usuário faz)
 
@@ -107,7 +122,7 @@ Crie `FREMEX-STATUS.md` na pasta atual com:
 - tabela do diagnóstico final (✅ / ❌);
 - plugins instalados;
 - conexões confirmadas e pendentes;
-- próximos passos: "Abra uma nova sessão e peça: `/fremex:reels faça um reel sobre ...`".
+- próximos passos: "Abra uma nova sessão, coloque um vídeo na pasta e peça: `/fremex:editar transforma esse vídeo em reels com legenda`".
 
 Termine com uma mensagem curta: o que ficou pronto, o que falta e o primeiro comando para testar.
 
