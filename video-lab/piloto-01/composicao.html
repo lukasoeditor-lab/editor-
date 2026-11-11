@@ -102,7 +102,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--
 </div>
 
 <script>
-const FPS = 30, DURATION = 13.0;
+const FPS = 30, DURATION = 15.6;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const prog = (t, a, b) => clamp((t - a) / (b - a));
 const easeOut = x => 1 - Math.pow(1 - x, 3);
@@ -110,16 +110,7 @@ const easeIO = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 const $ = s => document.querySelector(s);
 
 // Narração planejada: cada palavra tem início em segundos. A palavra entre * fica em azul.
-const WORDS = [
-  [0.15, "Você"], [0.40, "usa"], [0.60, "IA"], [0.85, "todo"], [1.05, "dia."],
-  [1.55, "Mas"], [1.80, "tem"], [2.00, "*método?*"],
-  [2.75, "Primeiro,"], [3.15, "*compreender*"], [3.75, "o"], [3.85, "briefing."],
-  [4.35, "Depois,"], [4.70, "*roteirizar*"], [5.25, "o"], [5.35, "plano."],
-  [5.95, "Aí"], [6.15, "*integrar*"], [6.65, "as"], [6.80, "ferramentas,"],
-  [7.55, "*aprimorar*"], [8.05, "a"], [8.15, "entrega"],
-  [8.75, "e"], [8.90, "*reaproveitar*"], [9.50, "tudo."],
-  [10.05, "Comenta"], [10.45, "*CRIAR*"], [10.95, "que"], [11.10, "eu"], [11.25, "te"], [11.40, "mostro"], [11.75, "o"], [11.90, "método."]
-];
+const WORDS = [[0.12, "Você"], [0.38, "usa"], [0.66, "IA"], [1.22, "todo"], [1.56, "dia."], [2.32, "Mas"], [2.56, "tem"], [2.88, "*método?*"], [3.78, "Primeiro,"], [4.52, "*compreender*"], [5.04, "o"], [5.18, "briefing."], [6.02, "Depois,"], [6.36, "*roteirizar*"], [7.38, "o"], [7.5, "plano."], [8.32, "Aí"], [8.68, "*integrar*"], [9.22, "as"], [9.32, "ferramentas,"], [10.22, "*aprimorar*"], [10.76, "a"], [10.88, "entrega"], [11.44, "e"], [11.56, "*reaproveitar*"], [12.26, "tudo."], [13.12, "Comenta"], [13.48, "*CRIAR*"], [13.8, "que"], [14.02, "eu"], [14.1, "te"], [14.16, "mostro"], [14.54, "o"], [14.58, "método."]];
 // Agrupa em blocos de no máximo 3 palavras, quebrando em pontuação.
 const CHUNKS = [];
 { let cur = [];
@@ -158,22 +149,23 @@ const STAGES = [
     body: p => { const items = ["prompts", "CLAUDE.md", "templates"]; return `<div class="libs">${items.map((s, i) => { const k = easeOut(prog(p, .1, .6));
       const rot = (i - 1) * 14 * k, x = (i - 1) * 190 * k; return `<div style="transform:translateX(${x}px) rotate(${rot}deg)">${s}</div>`; }).join("")}</div>`; } }
 ];
-const S2_START = 2.6, STAGE_LEN = 1.45;
+const S2_START = 3.75, STAGE_STARTS = [3.75, 6.0, 8.3, 10.2, 11.5], S2_END = 12.85;
 
 function scene1(t) {
-  const el = $("#s1"); const out = 1 - easeIO(prog(t, 2.35, 2.65));
+  const el = $("#s1"); const out = 1 - easeIO(prog(t, 3.45, 3.75));
   el.style.opacity = out; el.style.display = out <= 0 ? "none" : "block";
-  const a = easeOut(prog(t, 0.1, 0.55)), b = easeOut(prog(t, 1.5, 1.95));
+  const a = easeOut(prog(t, 0.1, 0.55)), b = easeOut(prog(t, 2.25, 2.7));
   $("#s1 .l1").style.cssText += `;opacity:${a};transform:translateY(${(1 - a) * 40}px)`;
   $("#s1 .l2").style.cssText += `;opacity:${b};transform:scale(${0.92 + 0.08 * b});filter:blur(${(1 - b) * 12}px)`;
 }
 
 function scene2(t) {
-  const el = $("#s2"); const vis = t >= S2_START - 0.1 && t < 10.0;
+  const el = $("#s2"); const vis = t >= S2_START - 0.1 && t < S2_END;
   el.style.display = vis ? "block" : "none"; if (!vis) return;
-  const idx = clamp(Math.floor((t - S2_START) / STAGE_LEN), 0, 4); const s = STAGES[idx];
-  const local = (t - S2_START - idx * STAGE_LEN) / STAGE_LEN; const inK = easeOut(clamp(local / 0.22));
-  const fadeOut = 1 - easeIO(prog(t, 9.75, 10.0));
+  let idx = 0; STAGE_STARTS.forEach((st, i) => { if (t >= st) idx = i; }); const s = STAGES[idx];
+  const st0 = STAGE_STARTS[idx], st1 = STAGE_STARTS[idx + 1] ?? S2_END;
+  const local = (t - st0) / (st1 - st0); const inK = easeOut(clamp((t - st0) / 0.32));
+  const fadeOut = 1 - easeIO(prog(t, S2_END - 0.3, S2_END));
   el.style.opacity = fadeOut;
   $("#s2 .title").textContent = s.t; $("#s2 .repo").textContent = s.repo;
   $("#s2 .tags").innerHTML = s.tags.map(([x, c]) => `<span class="pill ${c}">${x}</span>`).join("");
@@ -187,14 +179,14 @@ function scene2(t) {
 }
 
 function scene3(t) {
-  const el = $("#s3"); const vis = t >= 9.9; el.style.display = vis ? "block" : "none"; if (!vis) return;
-  const a = easeOut(prog(t, 9.95, 10.5)), b = easeOut(prog(t, 10.25, 10.8)), c = easeOut(prog(t, 10.6, 11.1));
+  const el = $("#s3"); const vis = t >= 12.75; el.style.display = vis ? "block" : "none"; if (!vis) return;
+  const a = easeOut(prog(t, 12.8, 13.3)), b = easeOut(prog(t, 13.0, 13.5)), c = easeOut(prog(t, 13.2, 13.6));
   $("#s3 .sym").style.cssText = `opacity:${a};transform:translateY(${(1 - a) * 60}px) scale(${0.85 + 0.15 * a})`;
   $("#s3 .name").style.cssText = `opacity:${b}`; $("#s3 .sub").style.cssText = `opacity:${b}`;
   $("#s3 .comment").style.cssText = `opacity:${c};transform:translateY(${(1 - c) * 40}px)`;
-  const typed = "CRIAR".slice(0, Math.floor(5 * clamp(prog(t, 10.9, 11.5))));
-  $("#s3 .ct").innerHTML = typed ? typed + (t < 11.8 ? "▌" : "") : '<span style="color:#8C97AB">Adicione um comentário…</span>';
-  const f = easeOut(prog(t, 11.9, 12.2)); const followed = t > 12.3;
+  const typed = "CRIAR".slice(0, Math.floor(5 * clamp(prog(t, 13.45, 13.85))));
+  $("#s3 .ct").innerHTML = typed ? typed + (t < 14.2 ? "▌" : "") : '<span style="color:#8C97AB">Adicione um comentário…</span>';
+  const f = easeOut(prog(t, 14.6, 14.9)); const followed = t > 15.0;
   $("#s3 .follow").style.cssText = `opacity:${c};transform:scale(${1 + 0.06 * Math.sin(Math.PI * f)});${followed ? "background:#F3F4F6;color:#080A0F" : ""}`;
   $("#s3 .follow").textContent = followed ? "Seguindo ✓" : "Seguir";
 }

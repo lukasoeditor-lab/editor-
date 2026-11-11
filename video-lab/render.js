@@ -14,7 +14,9 @@ const path = require('path');
   const { fps, dur } = await page.evaluate(() => ({ fps: window.FPS, dur: window.DURATION }));
   const frames = Math.round(fps * dur);
   const args = ['-y', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-'];
-  if (audio) args.push('-i', audio, '-shortest');
+  // O áudio é completado com silêncio (apad) e o vídeo define o fim. Assim o FFmpeg
+  // nunca para de ler os quadros antes do último.
+  if (audio) args.push('-i', audio, '-af', 'loudnorm=I=-14:TP=-1:LRA=11,apad', '-ar', '48000', '-shortest');
   args.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-movflags', '+faststart');
   if (audio) args.push('-c:a', 'aac', '-b:a', '192k');
   args.push(out);

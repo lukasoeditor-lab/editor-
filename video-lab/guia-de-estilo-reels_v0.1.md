@@ -80,4 +80,17 @@ Os vídeos de referência não foram copiados para o repositório, porque são o
 
 - **Arquivos:** `piloto-01/piloto-01.mp4` (13 s, 1080×1920, 30 fps) e a fonte editável `piloto-01/composicao.html`.
 - **Como renderizar:** `node video-lab/render.js video-lab/piloto-01/composicao.html video-lab/piloto-01/piloto-01.mp4 [narracao.mp3]`
-- **Narração:** o piloto não tem áudio. As legendas estão sincronizadas com uma narração planejada, e o áudio entra como terceiro argumento do renderizador.
+- **Narração:** ElevenLabs, voz "Fernando Nowvaro" (pt-BR, masculina, jovem), modelo eleven_v4. Arquivo `piloto-01/narracao.mp3`, 15 s.
+- **Sincronia das legendas:** transcrição local com faster-whisper (modelo small), gerando os tempos de cada palavra (`piloto-01/palavras.json`). Cada palavra entra na tela no tempo da fala.
+- **Áudio final:** normalizado em -14 LUFS, como nas referências.
+
+## Fluxo de produção de cada reel
+
+1. Roteiro da narração (Claude Chat).
+2. Narração no ElevenLabs, pelo conector.
+3. Tempos das palavras com faster-whisper.
+4. Composição HTML com as cenas ancoradas na fala.
+5. Render: `node video-lab/render.js composicao.html saida.mp4 narracao.mp3`.
+6. Revisão: quadros de controle, volume e leitura em celular.
+
+**Licença da voz:** o uso comercial da narração depende do plano do ElevenLabs da conta. Confirme antes de publicar.
