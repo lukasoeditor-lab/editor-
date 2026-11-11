@@ -1,0 +1,748 @@
+<title>FREMEX Curso Planejamento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: documento de apresentação em faixas largas; cada direção é um "capítulo"
+   com palco escuro, testes de uso e leitura crítica. Tema único, escuro, por escolha:
+   é o território da marca. Os testes sobre fundo claro aparecem em painéis próprios. */
+:root {
+  --ink: #080A0F;        /* preto profundo — palco */
+  --navy: #101D35;       /* azul-marinho — superfícies */
+  --navy-2: #16274A;     /* marinho elevado — bordas */
+  --blue: #2459A6;       /* azul elétrico — sinal */
+  --blue-dig: #6A96DE;   /* tom digital proposto — texto/linhas finas no escuro */
+  --ice: #F3F4F6;        /* branco gelo */
+  --mute: #9BA6BA;       /* texto secundário, neutro com viés azul */
+  --line: rgba(243,244,246,.12);
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.75rem; --s3: 2.5rem; --s4: clamp(2.6rem, 7vw, 5.5rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--ice); font-family: var(--f-body); font-size: var(--s0); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section, header.top, footer { padding-block: clamp(48px, 8vw, 96px); }
+section + section { border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 125%; font-weight: 750; line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-dig); }
+.mute { color: var(--mute); }
+.stack { display: grid; gap: 16px; }
+.stack-lg { display: grid; gap: 32px; }
+a { color: var(--blue-dig); }
+:focus-visible { outline: 2px solid var(--blue-dig); outline-offset: 3px; }
+
+/* topo */
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); padding-block: 20px; border-bottom: 1px solid var(--line); }
+.bar strong { color: var(--ice); font-weight: 500; letter-spacing: .14em; }
+.hero { display: grid; gap: 28px; }
+.hero h1 span { color: var(--blue-dig); }
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.steps li { list-style: none; border-top: 2px solid var(--navy-2); padding-top: 10px; font-size: var(--s-1); color: var(--mute); min-width: 0; }
+.steps li b { display: block; font-family: var(--f-mono); font-weight: 500; color: var(--mute); }
+.steps li.now { border-color: var(--blue); color: var(--ice); }
+.steps li.now b { color: var(--blue-dig); }
+.steps ol { display: contents; }
+@media (max-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; } }
+
+/* análise */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.name { display: flex; gap: clamp(4px, 1.4vw, 14px); font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; }
+.name span { color: var(--mute); opacity: .55; }
+.name .k { color: var(--ice); opacity: 1; }
+.name .x { color: var(--blue-dig); opacity: 1; }
+.readings { display: grid; gap: 14px; margin-top: 8px; }
+.readings div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.readings dt { font-family: var(--f-mono); font-size: var(--s-1); color: var(--blue-dig); }
+.readings dd { margin: 0; }
+.tension { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; }
+.tension span:nth-child(2) { font-family: var(--f-mono); color: var(--blue-dig); }
+.tension span:last-child { text-align: right; }
+.principle h3 { margin-bottom: 6px; }
+.principle .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--mute); display: block; margin-bottom: 6px; }
+
+/* paleta */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sw { border: 1px solid var(--line); min-width: 0; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 10px 12px; font-family: var(--f-mono); font-size: var(--s-1); line-height: 1.5; }
+.sw .meta b { font-family: var(--f-body); font-weight: 600; display: block; font-size: .875rem; }
+.sw.prop { border-style: dashed; border-color: var(--blue-dig); }
+.contrast { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.contrast th, .contrast td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.contrast th { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-1); color: var(--mute); }
+.pill { font-family: var(--f-mono); font-size: .75rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ok { background: rgba(70,170,120,.16); color: #8FD9B2; }
+.warn { background: rgba(230,170,60,.16); color: #F0C77A; }
+.bad { background: rgba(230,90,90,.16); color: #F2A0A0; }
+.scroll { overflow-x: auto; }
+
+/* direções */
+.dir-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.dir-letter { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(4rem, 12vw, 8rem); line-height: .8; color: var(--navy-2); }
+.stage { background: radial-gradient(120% 90% at 85% 10%, var(--navy) 0%, var(--ink) 62%); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 380px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.stage .big { display: grid; place-items: center; padding: 48px; border-right: 1px solid var(--line); }
+@media (max-width: 860px) { .stage .big { border-right: 0; border-bottom: 1px solid var(--line); } }
+.stage .big svg { width: min(240px, 60vw); height: auto; }
+.stage .concept { padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; align-content: center; }
+.stage .concept .quote { font-family: var(--f-display); font-stretch: 112%; font-weight: 600; font-size: var(--s1); line-height: 1.3; }
+svg { display: block; max-width: 100%; }
+svg.sym { width: 100%; height: auto; }
+.t > svg.word { width: 100%; height: auto; }
+.t .lock { max-width: 100%; }
+.sizes > span, .sub .s, .wm, .vec, .ghost, .post .logo { display: block; }
+.sub .w svg { height: 14px; width: auto; }
+.sub .w { display: block; flex: none; }
+.tests { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.t { border: 1px solid var(--line); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.t .cap { font-family: var(--f-mono); font-size: .75rem; color: var(--mute); letter-spacing: .04em; }
+.t.light { background: var(--ice); color: var(--ink); border-color: var(--ice); }
+.t.light .cap { color: #4A5468; }
+.t.blue { background: var(--blue); border-color: var(--blue); }
+.t.blue .cap { color: rgba(243,244,246,.85); }
+.span6 { grid-column: span 6; } .span4 { grid-column: span 4; } .span3 { grid-column: span 3; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 860px) { .span6, .span4, .span3, .span8 { grid-column: span 12; } }
+@media (min-width: 540px) and (max-width: 860px) { .span3 { grid-column: span 6; } }
+.t .lock { height: 56px; width: auto; }
+.t .vlock { height: 120px; width: auto; margin-inline: auto; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.sizes svg { height: auto; }
+.mono-row { display: flex; gap: 8px; }
+.mono-row > div { flex: 1; display: grid; place-items: center; padding: 18px; }
+.mono-row svg { width: 48px; height: 48px; }
+.appicon { display: flex; gap: 14px; align-items: flex-end; }
+.appicon .ic { background: var(--ink); border-radius: 22%; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+.appicon .ic svg { width: 50%; height: 50%; }
+.appicon .ic.round { border-radius: 50%; }
+/* frame de vídeo com área de segurança e marca d'água */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background:
+  radial-gradient(60% 80% at 30% 40%, #2a3550 0%, transparent 70%),
+  radial-gradient(50% 60% at 75% 65%, #3b2f2a 0%, transparent 70%),
+  linear-gradient(160deg, #11151d, #05070b); }
+.frame .safe { position: absolute; inset: 5%; border: 1px dashed rgba(243,244,246,.22); }
+.frame .tc { position: absolute; top: 7%; left: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.7); }
+.frame .wm { position: absolute; right: 6.5%; bottom: 8%; width: 6.5%; opacity: .72; }
+.frame .fmt { position: absolute; top: 7%; right: 6.5%; font-family: var(--f-mono); font-size: .7rem; color: rgba(243,244,246,.55); }
+/* sub-marcas */
+.subs { display: grid; gap: 14px; }
+.sub { display: flex; align-items: center; gap: 12px; }
+.sub .s { width: 30px; height: 30px; flex: none; }
+.sub i { width: 1px; height: 20px; background: rgba(243,244,246,.3); flex: none; }
+.sub span { font-family: var(--f-display); font-stretch: 125%; font-weight: 500; font-size: .82rem; letter-spacing: .16em; color: var(--blue-dig); }
+/* post */
+.post { aspect-ratio: 1; max-width: 100%; position: relative; overflow: hidden; background: var(--ink); border: 1px solid var(--line); }
+.post .copy { position: absolute; left: 8%; bottom: 8%; right: 8%; display: grid; gap: 8px; }
+.post .copy b { font-family: var(--f-display); font-stretch: 125%; font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.5rem); line-height: 1.05; }
+.post .copy small { font-family: var(--f-mono); font-size: .65rem; color: var(--mute); letter-spacing: .1em; }
+.post .tag { position: absolute; top: 6%; right: 6%; font-family: var(--f-mono); font-size: .6rem; color: var(--mute); border: 1px solid var(--line); padding: 2px 6px; }
+.post .logo { position: absolute; top: 7%; left: 8%; width: 13%; }
+.post-a { background: repeating-linear-gradient(114deg, transparent 0 26px, rgba(36,89,166,.22) 26px 27px), var(--ink); }
+.post-a .vec { position: absolute; right: -6%; top: -10%; width: 62%; opacity: .95; }
+.post-b .crop { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.post-b .copy { left: 12%; bottom: 12%; right: 12%; }
+.post-b .tag { top: 9%; right: 10%; }
+.post-b .logo { top: 10%; left: 12%; }
+.post-c .ghost { position: absolute; right: -22%; top: -18%; width: 92%; opacity: .9; }
+/* leitura crítica */
+.verdict { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 8px; }
+@media (max-width: 860px) { .verdict { grid-template-columns: minmax(0, 1fr); } }
+.verdict h3 { font-size: var(--s0); font-stretch: 100%; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-dig); margin-bottom: 10px; }
+.verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.verdict li::marker { color: var(--mute); }
+/* comparativo */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+.cmp th, .cmp td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: var(--s0); }
+.cmp tbody th { font-weight: 500; color: var(--mute); width: 30%; }
+.dots { font-family: var(--f-mono); letter-spacing: .2em; color: var(--blue-dig); white-space: nowrap; }
+.dots i { font-style: normal; color: var(--navy-2); }
+.cmp td small { display: block; color: var(--mute); font-size: .8rem; line-height: 1.4; margin-top: 4px; }
+/* recomendação e perguntas */
+.rec { border: 1px solid var(--blue); background: linear-gradient(135deg, rgba(36,89,166,.16), transparent 60%); padding: clamp(24px, 4vw, 44px); display: grid; gap: 18px; }
+.qs { counter-reset: q; display: grid; gap: 18px; padding: 0; margin: 0; }
+.qs li { list-style: none; counter-increment: q; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.qs li::before { content: counter(q, decimal-leading-zero); font-family: var(--f-mono); color: var(--blue-dig); }
+footer { color: var(--mute); font-size: var(--s-1); font-family: var(--f-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .stage .big svg { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { transform: translateY(10px); opacity: .0; } to { transform: none; opacity: 1; } }
+}
+
+.doc { padding-block: clamp(32px, 6vw, 72px); }
+.doc > * + * { margin-top: 1rem; }
+.doc h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); margin-bottom: 1.5rem; }
+.doc h2 { font-size: var(--s2); margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.doc h3 { margin-top: 2.5rem; color: var(--ice); }
+.doc p, .doc li { max-width: 72ch; }
+.doc strong { color: var(--ice); font-weight: 600; }
+.doc ul, .doc ol { padding-left: 1.2em; display: grid; gap: 6px; }
+.doc li::marker { color: var(--blue-dig); }
+.doc hr { border: 0; height: 1px; background: var(--line); margin-block: 2.5rem; }
+.doc code { font-family: var(--f-mono); font-size: .88em; background: var(--navy); padding: 1px 6px; border-radius: 3px; color: var(--ice); }
+.doc em { color: var(--mute); }
+.doc a { word-break: break-word; }
+.tbl { overflow-x: auto; margin-block: 1.5rem; border: 1px solid var(--line); }
+.doc table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .9rem; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.doc thead th { font-family: var(--f-mono); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-dig); background: var(--navy); }
+.doc tbody tr:last-child td { border-bottom: 0; }
+.doc td:first-child { white-space: nowrap; }
+.doc h2 + p strong:first-child { color: var(--blue-dig); }
+.mark { width: 28px; height: 28px; }
+.bar .brand { display: flex; align-items: center; gap: 10px; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: var(--s-1); padding-block: 14px; border-bottom: 1px solid var(--line); }
+.toc a { color: var(--mute); text-decoration: none; }
+.toc a:hover { color: var(--ice); }
+.docsep { margin-top: 5rem !important; }
+</style>
+<div class="wrap">
+  <div class="bar"><span class="brand"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="FREMEX símbolo"><path fill="#F3F4F6" d="M0 0 L17 0 L17 100 L0 100ZM0 0 L73.77 0 L66.13 17 L0 17ZM0 41.5 L55.13 41.5 L47.49 58.5 L0 58.5Z"/><path fill="#2459A6" d="M79.77 0 L99.15 0 L54.23 100 L34.85 100ZM57.31 50 L76.69 50 L99.15 100 L79.77 100Z"/></svg>
+<strong>FREMEX ACADEMY</strong></span><span>Curso · Etapa 1 de 7 · Planejamento</span><span>Documento de trabalho</span></div>
+  <nav class="toc" aria-label="Seções"><a href="#s-1-leitura-da-proposta">1. Leitura da proposta</a><a href="#s-2-lacunas-e-riscos-encontrados">2. Lacunas e riscos encontrados</a><a href="#s-3-o-que-a-pesquisa-inicial-confirmou">3. O que a pesquisa inicial confirmou</a><a href="#s-4-metodologia-de-cria-para-criar">4. Metodologia: de C.R.I.A. para C.R.I.A.R.</a><a href="#s-5-arquitetura-do-produto">5. Arquitetura do produto</a><a href="#s-6-materiais-e-formatos">6. Materiais e formatos</a><a href="#s-7-padrão-de-aula">7. Padrão de aula</a><a href="#s-8-comercial-diretrizes-preliminares">8. Comercial (diretrizes preliminares)</a><a href="#s-9-plano-de-produção-e-aprovações">9. Plano de produção e aprovações</a><a href="#s-10-decisões-que-preciso-de-você">10. Decisões que preciso de você</a></nav>
+  <article class="doc"><h1>Etapa 1 — Planejamento estratégico do primeiro curso FREMEX</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Data:</strong> 11/11/2026 · <strong>Status:</strong> em avaliação</p>
+<p>Este documento analisa a proposta do curso, aponta lacunas e define a estratégia antes de qualquer produção. Nome comercial (Etapa 2) e currículo definitivo (Etapa 3) só começam depois da sua aprovação.</p>
+<hr />
+<h2 id="s-1-leitura-da-proposta">1. Leitura da proposta</h2>
+<p>O curso quer ensinar profissionais criativos a usar o Claude em dois modos, <strong>Claude Chat</strong> (pensar, planejar, escrever) e <strong>Claude Code</strong> (construir, automatizar, produzir arquivos), conectando ferramentas como Remotion, HyperFrames, ElevenLabs, Google Drive e Inkscape.</p>
+<p>A proposta tem três pontos muito fortes:</p>
+<ul>
+<li><strong>Um nicho pouco atendido.</strong> Há bastante conteúdo sobre "prompts para criativos". Quase não há conteúdo que leve um videomaker ou social media do chat até um vídeo renderizado por código.</li>
+<li><strong>Uma metodologia própria.</strong> O C.R.I.A. dá à FREMEX um método com nome, que pode virar marca registrada da escola.</li>
+<li><strong>Compromisso com honestidade técnica.</strong> Ensinar custos, limites e permissões reais é um diferencial em um mercado cheio de promessas exageradas.</li>
+</ul>
+<h2 id="s-2-lacunas-e-riscos-encontrados">2. Lacunas e riscos encontrados</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Lacuna ou risco</th>
+<th>Por que importa</th>
+<th>Como resolver</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Escopo muito amplo.</strong> Oito módulos, dez ferramentas e dois públicos.</td>
+<td>O risco é virar um curso raso em tudo.</td>
+<td>Núcleo obrigatório + trilhas. Ferramentas ensinadas dentro de projetos, não em aulas isoladas de "tour".</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Dois públicos com pontos de partida diferentes.</strong></td>
+<td>O iniciante trava na instalação. O profissional se entedia no básico.</td>
+<td>Duas trilhas (Essencial e Completa) e selos de nível em cada aula.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Custo para acompanhar o curso.</strong></td>
+<td>O Claude Code não está no plano gratuito do Claude. O plano gratuito do ElevenLabs não permite uso comercial. O Remotion exige licença paga para empresas a partir de 4 pessoas.</td>
+<td>Tabela de "custo mínimo para acompanhar" na página de vendas e na aula 0. Mostrar alternativas gratuitas sempre que existirem.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Ferramentas mudam rápido.</strong></td>
+<td>O Claude Code recebe atualizações quase toda semana. Telas, menus e nomes de recursos mudam.</td>
+<td>Separar conceitos duradouros de passos de tela. Cada aula técnica leva a data de verificação. Módulo de atualizações e revisão trimestral.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Windows é a realidade da maioria dos alunos.</strong></td>
+<td>Instalação, terminal, Node.js e FFmpeg são mais difíceis no Windows.</td>
+<td>Gravar as demonstrações principais em Windows, com notas para macOS. Kit de instalação com solução de problemas. Mostrar o app Desktop como alternativa ao terminal.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Projetos concentrados no fim (módulo 7).</strong></td>
+<td>O briefing pede que todo módulo tenha aplicação prática.</td>
+<td>Cada módulo termina com uma entrega. Um cliente fictício atravessa o curso inteiro.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Marca e vínculo com terceiros.</strong></td>
+<td>"Claude" é marca da Anthropic. Remotion, HyperFrames e ElevenLabs também têm marcas e termos próprios.</td>
+<td>O nome do curso deve ser da FREMEX. "Claude" aparece só de forma descritiva. Aviso de independência em todos os materiais. Conferir as diretrizes de marca da Anthropic antes do lançamento.</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Uso de dados de clientes reais.</strong></td>
+<td>Alunos vão subir briefings e arquivos de clientes em ferramentas de IA.</td>
+<td>Aula e checklist sobre dados sensíveis, contratos e chaves de API. Projetos do curso usam só material fictício ou próprio.</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Verificação técnica incompleta nesta etapa.</strong></td>
+<td>Nesta sessão, o acesso a remotion.dev e hyperframes.heygen.com foi bloqueado pela rede.</td>
+<td>Fontes secundárias usadas só para planejar. Verificação na fonte oficial obrigatória antes dos roteiros (Etapa 4).</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Expectativa de resultado.</strong></td>
+<td>Alunos podem esperar que a IA "faça tudo".</td>
+<td>Promessa educacional realista. O curso ensina um processo, não garante resultado.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-3-o-que-a-pesquisa-inicial-confirmou">3. O que a pesquisa inicial confirmou</h2>
+<p>Consulta feita em 11/11/2026. Detalhes, links e status de cada fonte estão em <code>11-DOCUMENTACAO/fontes-e-verificacoes_v0.1.md</code>.</p>
+<p><strong>Claude Code</strong> (documentação oficial):</p>
+<ul>
+<li>Precisa de conta Pro, Max, Ultra, Team, Enterprise ou Console. O plano gratuito não inclui Claude Code.</li>
+<li>Roda em macOS 13+, Windows 10 1809+, Ubuntu 20.04+, Debian 10+ e Alpine 3.19+, com 4 GB de RAM ou mais e internet.</li>
+<li>Instalação nativa por um comando no terminal. Há também Homebrew, WinGet e npm.</li>
+<li>Existe um app Desktop para usar o Claude Code sem terminal. Isso é decisivo para iniciantes.</li>
+<li>No Windows, o Git for Windows é opcional e recomendado.</li>
+</ul>
+<p><strong>MCP no Claude Code</strong> (documentação oficial):</p>
+<ul>
+<li>Servidores são adicionados com <code>claude mcp add</code>, em três escopos: local, projeto e usuário.</li>
+<li>A documentação alerta para confiar em cada servidor antes de conectar e para o risco de injeção de prompt.</li>
+<li>Esse alerta vira conteúdo obrigatório da aula de segurança.</li>
+</ul>
+<p><strong>Planos do Claude</strong> (página oficial de preços):</p>
+<ul>
+<li>Pro custa US$ 20/mês e inclui Claude Code e Projects.</li>
+<li>Os planos e os limites de uso mudam com frequência. O curso deve apontar para a página oficial, não fixar valores no vídeo.</li>
+</ul>
+<p><strong>Google Drive</strong> (central de ajuda do Claude):</p>
+<ul>
+<li>O conector do Drive é configurado em Personalizar › Conectores no claude.ai.</li>
+<li>Ações como compartilhar, mover ou excluir pedem aprovação.</li>
+<li>Há divergência entre fontes oficiais sobre quais planos têm acesso. Isso precisa ser verificado na Etapa 4.</li>
+</ul>
+<p><strong>Remotion</strong> (fontes secundárias, pendente de verificação oficial):</p>
+<ul>
+<li>É gratuito para indivíduos e equipes de até 3 pessoas.</li>
+<li>Empresas com 4 pessoas ou mais precisam de licença paga.</li>
+<li>Baseado em React. Exige Node.js.</li>
+</ul>
+<p><strong>HyperFrames</strong> (fontes secundárias, pendente de verificação oficial):</p>
+<ul>
+<li>Framework de código aberto da HeyGen que transforma HTML em vídeo renderizado quadro a quadro.</li>
+<li>Segundo terceiros, exige Node.js 22+ e FFmpeg.</li>
+<li>Tem skills para agentes de programação.</li>
+<li>É mais acessível que o Remotion para quem sabe só HTML e CSS.</li>
+</ul>
+<p><strong>ElevenLabs</strong> (fontes secundárias, pendente de verificação oficial):</p>
+<ul>
+<li>O plano gratuito não dá direito comercial. O plano pago mais barato com uso comercial começa por volta de US$ 6/mês, valor a confirmar.</li>
+<li>A API tem planos e créditos separados.</li>
+<li>Existe servidor MCP oficial, que confirmei por uso direto nesta sessão.</li>
+</ul>
+<p><strong>Inkscape:</strong></p>
+<ul>
+<li>Gratuito e de código aberto.</li>
+<li>Tem interface de linha de comando para exportar SVG/PNG, que o Claude Code pode acionar. A confirmar na documentação 1.x.</li>
+<li>Não encontrei MCP oficial. Não vamos ensinar um.</li>
+</ul>
+<h2 id="s-4-metodologia-de-cria-para-criar">4. Metodologia: de C.R.I.A. para C.R.I.A.R.</h2>
+<h3>Avaliação do C.R.I.A.</h3>
+<p><strong>O que funciona:</strong></p>
+<ul>
+<li>Fácil de lembrar.</li>
+<li>Em português, "cria" é verbo e substantivo, o que conversa com o público criativo.</li>
+<li>A ordem segue o fluxo real de um job: entender, planejar, produzir e revisar.</li>
+</ul>
+<p><strong>O que falta:</strong></p>
+<ul>
+<li><strong>Não diz qual ferramenta usar em cada momento.</strong> Escolher entre Chat e Code é a decisão mais importante do curso.</li>
+<li><strong>"Integrar" mistura duas coisas:</strong> construir o projeto e conectar ferramentas.</li>
+<li><strong>Não há etapa de sistematização.</strong> O módulo 8 (bibliotecas, reaproveitamento, fluxos próprios) fica sem lugar no método. É justamente o que transforma um job bem feito em um processo profissional.</li>
+<li><strong>O papel humano não aparece.</strong> Não fica claro quem decide e quem executa.</li>
+</ul>
+<h3>Proposta: método C.R.I.A.R.</h3>
+<p>Mantém as quatro letras originais e acrescenta um <strong>R final de Reaproveitar</strong>. A sigla vira <strong>CRIAR</strong>, verbo que resume a promessa da FREMEX.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Pergunta-chave</th>
+<th>Entregável</th>
+<th>Onde acontece</th>
+<th>Ponto de checagem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C — Compreender</strong></td>
+<td>O que precisa ser feito, para quem e por quê?</td>
+<td>Briefing decodificado (1 página)</td>
+<td>Claude Chat</td>
+<td>Objetivo, público, restrições e critério de sucesso estão escritos?</td>
+</tr>
+<tr>
+<td><strong>R — Roteirizar</strong></td>
+<td>Como vamos fazer?</td>
+<td>Plano de execução: roteiro, storyboard, especificação técnica, lista de arquivos</td>
+<td>Claude Chat</td>
+<td>Outra pessoa conseguiria executar só com este plano?</td>
+</tr>
+<tr>
+<td><strong>I — Integrar</strong></td>
+<td>Com quais ferramentas e em que ordem?</td>
+<td>Projeto construído: arquivos, código, áudio, animação</td>
+<td>Claude Code + ferramentas</td>
+<td>Roda, está organizado, as credenciais estão seguras?</td>
+</tr>
+<tr>
+<td><strong>A — Aprimorar</strong></td>
+<td>Está bom o bastante para entregar?</td>
+<td>Versão revisada e renderizada</td>
+<td>Claude Code + revisão humana</td>
+<td>Passou no checklist de entrega?</td>
+</tr>
+<tr>
+<td><strong>R — Reaproveitar</strong></td>
+<td>Como o próximo job começa daqui?</td>
+<td>Ativos reutilizáveis: prompts, templates, CLAUDE.md, skills</td>
+<td>Claude Chat e Code</td>
+<td>O próximo projeto parte de um modelo, não do zero?</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Princípio que atravessa as cinco etapas:</strong> <em>você dirige, o Claude propõe e executa.</em> Toda etapa termina com uma decisão humana.</p>
+<p><strong>Uso didático:</strong></p>
+<ul>
+<li>Cada aula diz em qual etapa do C.R.I.A.R. ela está.</li>
+<li>Cada projeto é documentado nas cinco etapas.</li>
+<li>O manual traz um modelo de "ficha C.R.I.A.R." para preencher em qualquer job.</li>
+</ul>
+<h2 id="s-5-arquitetura-do-produto">5. Arquitetura do produto</h2>
+<h3>Duas trilhas</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Trilha</th>
+<th>Para quem</th>
+<th>Módulos</th>
+<th>Exige terminal?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Essencial</strong></td>
+<td>Social medias, roteiristas e quem quer começar sem código</td>
+<td>0, 1, 2, 6 + projetos 1 e 2</td>
+<td>Não</td>
+</tr>
+<tr>
+<td><strong>Completa</strong></td>
+<td>Quem quer produzir com Claude Code, motion e automação</td>
+<td>Todos</td>
+<td>Sim, ensinado do zero</td>
+</tr>
+</tbody>
+</table></div>
+<p>Cada aula leva um selo de nível: <strong>Base</strong>, <strong>Prático</strong> ou <strong>Avançado</strong>.</p>
+<h3>Grade proposta (versão de trabalho, a definir na Etapa 3)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Tema</th>
+<th>Etapa do método</th>
+<th>Entrega do aluno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>00</strong></td>
+<td>Boas-vindas e preparação: custos, contas, como estudar, apresentação do cliente fictício</td>
+<td>—</td>
+<td>Ambiente pronto, checklist de setup</td>
+</tr>
+<tr>
+<td><strong>01</strong></td>
+<td>Fundamentos: IA no mercado criativo, o que é o Claude, Chat × Code × API, o que ele não faz</td>
+<td>C</td>
+<td>Mapa pessoal de uso de IA</td>
+</tr>
+<tr>
+<td><strong>02</strong></td>
+<td>Claude Chat para criativos: prompts, briefings, roteiros, análise de referências, Projects, conectores</td>
+<td>C · R</td>
+<td><strong>Projeto 1:</strong> campanha para redes sociais</td>
+</tr>
+<tr>
+<td><strong>03</strong></td>
+<td>Claude Code do zero: instalação, app Desktop, terminal básico, pastas e arquivos, CLAUDE.md, permissões, Git básico</td>
+<td>I</td>
+<td>Primeiro projeto organizado com Claude Code</td>
+</tr>
+<tr>
+<td><strong>04</strong></td>
+<td>Integrações: MCP, conectores, Google Drive, ElevenLabs, Inkscape por linha de comando, APIs, chaves e custos</td>
+<td>I</td>
+<td>Kit de integração configurado e seguro</td>
+</tr>
+<tr>
+<td><strong>05</strong></td>
+<td>Motion por código: HyperFrames (HTML → vídeo) e depois Remotion (React), renderização e revisão</td>
+<td>I · A</td>
+<td><strong>Projeto 3:</strong> animação com HyperFrames · <strong>Projeto 4:</strong> vídeo com Remotion e ElevenLabs</td>
+</tr>
+<tr>
+<td><strong>06</strong></td>
+<td>Social media e marketing: planejamento, calendário, produção em lote, organização de entregas</td>
+<td>R · I</td>
+<td><strong>Projeto 2:</strong> vídeo vertical planejado no Chat</td>
+</tr>
+<tr>
+<td><strong>07</strong></td>
+<td>Projeto integrador: fluxo completo para o cliente fictício, do briefing à entrega</td>
+<td>C.R.I.A.R.</td>
+<td><strong>Projeto 5:</strong> fluxo de trabalho de ponta a ponta</td>
+</tr>
+<tr>
+<td><strong>08</strong></td>
+<td>Sistema profissional: biblioteca de prompts, templates, skills, apresentação de entregas, atualização contínua</td>
+<td>R (final)</td>
+<td>Biblioteca pessoal pronta</td>
+</tr>
+<tr>
+<td><strong>+</strong></td>
+<td>Atualizações: aulas curtas quando ferramentas mudarem</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Mudanças em relação à estrutura inicial:</strong></p>
+<ul>
+<li>Entra o módulo 00, de preparação e custos.</li>
+<li>O HyperFrames vem antes do Remotion, porque HTML é mais acessível que React.</li>
+<li>Os projetos foram distribuídos ao longo do curso.</li>
+<li>O módulo 08 vira o "R" final do método.</li>
+<li>Entra o módulo de atualizações.</li>
+</ul>
+<h3>Cliente fictício</h3>
+<p>Todos os projetos usam a mesma marca fictícia, sempre identificada como fictícia. Exemplo: <strong>"Nova Orla"</strong>, marca de bebidas artesanais.</p>
+<p>Isso dá continuidade ao curso. O briefing do projeto 1 alimenta o vídeo do projeto 4, e o aluno termina com um portfólio coerente.</p>
+<h3>Dimensão estimada</h3>
+<ul>
+<li>9 a 10 módulos, entre 55 e 65 aulas de 8 a 15 minutos.</li>
+<li>Cerca de 10 a 12 horas de vídeo na trilha completa e 4 a 5 horas na essencial.</li>
+<li>É uma estimativa para planejar produção. O número final sai do currículo aprovado.</li>
+</ul>
+<h2 id="s-6-materiais-e-formatos">6. Materiais e formatos</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Material</th>
+<th>Formato de produção (editável)</th>
+<th>Formato do aluno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manual principal</td>
+<td>Markdown/HTML com a identidade FREMEX</td>
+<td>PDF diagramado</td>
+</tr>
+<tr>
+<td>Biblioteca de prompts</td>
+<td>Markdown organizado por finalidade</td>
+<td>PDF + arquivos .md para copiar</td>
+</tr>
+<tr>
+<td>Arquivos de projeto</td>
+<td>Pastas de projeto com código, briefings e assets</td>
+<td>ZIP por projeto</td>
+</tr>
+<tr>
+<td>Checklists</td>
+<td>Markdown</td>
+<td>PDF de 1 página</td>
+</tr>
+<tr>
+<td>Guias rápidos</td>
+<td>Markdown</td>
+<td>PDF + página web</td>
+</tr>
+<tr>
+<td>Atividades</td>
+<td>Markdown com gabarito separado</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td>Glossário</td>
+<td>Markdown</td>
+<td>PDF + seção do manual</td>
+</tr>
+<tr>
+<td>Roteiros de gravação</td>
+<td>Markdown com marcações de tela e fala</td>
+<td>Uso interno</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tudo é produzido em fontes editáveis neste repositório, versionado (<code>_v0.1</code>, <code>_v1.0</code>) e exportado para os formatos finais na Etapa 5.</p>
+<h2 id="s-7-padrão-de-aula">7. Padrão de aula</h2>
+<p>Cada aula segue os nove itens do briefing e mais quatro campos:</p>
+<ul>
+<li><strong>Etapa do C.R.I.A.R.</strong></li>
+<li><strong>Nível</strong> (Base, Prático ou Avançado)</li>
+<li><strong>Data da última verificação técnica</strong></li>
+<li><strong>O que conferir na tela</strong>: os resultados que o aluno precisa ver para saber que deu certo</li>
+</ul>
+<p>Os roteiros serão escritos para fala natural, com marcações separadas para tela, corte e demonstração.</p>
+<h2 id="s-8-comercial-diretrizes-preliminares">8. Comercial (diretrizes preliminares)</h2>
+<ul>
+<li><strong>Nome:</strong> o nome principal deve ser da FREMEX. "Claude" entra no subtítulo, de forma descritiva. As três opções saem na Etapa 2.</li>
+<li><strong>Promessa:</strong> realista. Exemplo de direção: <em>"aprender um método para planejar, produzir e entregar projetos criativos usando Claude Chat e Claude Code"</em>. Sem promessa de ganho, viralização ou resultado garantido.</li>
+<li><strong>Transparência:</strong> custo mínimo para acompanhar, requisitos de computador e aviso de independência visíveis antes da compra.</li>
+<li><strong>Plataforma:</strong> pacote independente da plataforma (vídeos, PDFs, ZIPs, textos de página). O que muda entre Cakto, Kiwify e Hotmart é tratado na Etapa 7.</li>
+<li><strong>Provas sociais:</strong> nenhuma inventada. No lançamento, use o que for real: demonstrações, projetos de exemplo e aulas gratuitas.</li>
+</ul>
+<h2 id="s-9-plano-de-produção-e-aprovações">9. Plano de produção e aprovações</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Entrega</th>
+<th>Aprovação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 · Planejamento</td>
+<td>Este documento</td>
+<td><strong>Agora</strong></td>
+</tr>
+<tr>
+<td>2 · Posicionamento</td>
+<td>3 opções de nome, subtítulo e proposta de valor</td>
+<td>Antes do currículo</td>
+</tr>
+<tr>
+<td>3 · Currículo</td>
+<td>Grade definitiva com aulas, objetivos e projetos</td>
+<td>Antes dos roteiros</td>
+</tr>
+<tr>
+<td>4 · Conteúdo</td>
+<td>Roteiros módulo a módulo, com verificação técnica</td>
+<td>Por módulo</td>
+</tr>
+<tr>
+<td>5 · Materiais</td>
+<td>Manual, prompts, checklists, guias, glossário</td>
+<td>Por material</td>
+</tr>
+<tr>
+<td>6 · Projetos</td>
+<td>Arquivos dos 5 projetos testados de ponta a ponta</td>
+<td>Por projeto</td>
+</tr>
+<tr>
+<td>7 · Comercialização</td>
+<td>Página de vendas, descrição, oferta, requisitos de publicação</td>
+<td>Final</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-10-decisões-que-preciso-de-você">10. Decisões que preciso de você</h2>
+<ol>
+<li><strong>Quem apresenta as aulas?</strong> Você na câmera, voz em off com tela ou os dois? Isso muda o estilo dos roteiros.</li>
+<li><strong>Sistema operacional das demonstrações:</strong> posso gravar em Windows como padrão, com notas para macOS?</li>
+<li><strong>Duas trilhas (Essencial e Completa) ou um curso único?</strong></li>
+<li><strong>Requisito de assinatura:</strong> posso deixar explícito que a trilha completa exige pelo menos o plano Pro do Claude, que é pago?</li>
+<li><strong>Tamanho do curso:</strong> completo, com cerca de 10 a 12 horas, ou uma primeira versão menor para lançar antes?</li>
+<li><strong>Cliente fictício "Nova Orla":</strong> aprova a ideia, ou prefere outro segmento?</li>
+<li><strong>Rede da sessão:</strong> para verificar a documentação oficial na Etapa 4, preciso que os sites remotion.dev, hyperframes.heygen.com, elevenlabs.io, inkscape.org e support.claude.com sejam liberados nas configurações de rede do ambiente.</li>
+</ol>
+<p><em>Material independente. A FREMEX não tem vínculo oficial com a Anthropic nem com os fabricantes das ferramentas citadas.</em></p><div class="docsep"></div><h1>Fontes e verificações</h1>
+<p><strong>Versão:</strong> 0.1 · <strong>Consulta:</strong> 11/11/2026</p>
+<p>Legenda de status:
+- <strong>Oficial ✓</strong> — lido diretamente na documentação oficial.
+- <strong>Secundária</strong> — fonte de terceiros. Serve para planejar e precisa de verificação oficial antes de entrar em aula.
+- <strong>Bloqueado</strong> — o site oficial não abriu nesta sessão, porque não está liberado na rede do ambiente.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Fonte</th>
+<th>Status</th>
+<th>O que foi usado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Code: requisitos, instalação, autenticação</td>
+<td>https://code.claude.com/docs/en/setup</td>
+<td>Oficial ✓</td>
+<td>Sistemas suportados, 4 GB de RAM, comandos de instalação, planos com acesso (Pro, Max, Ultra, Team, Enterprise, Console), app Desktop, Git for Windows opcional</td>
+</tr>
+<tr>
+<td>Claude Code: MCP</td>
+<td>https://code.claude.com/docs/en/mcp</td>
+<td>Oficial ✓</td>
+<td><code>claude mcp add</code>, escopos local/projeto/usuário, <code>.mcp.json</code>, <code>/mcp</code>, alertas de segurança e de injeção de prompt</td>
+</tr>
+<tr>
+<td>Planos do Claude</td>
+<td>https://claude.com/pricing</td>
+<td>Oficial (resumo de busca)</td>
+<td>Pro a US$ 20/mês inclui Claude Code e Projects. Limites de uso variam e há divergência entre páginas</td>
+</tr>
+<tr>
+<td>Google Drive no Claude</td>
+<td>https://support.claude.com/en/articles/10166901-use-google-workspace-connectors</td>
+<td>Oficial (resumo de busca)</td>
+<td>Configuração em Personalizar › Conectores, aprovação para compartilhar, mover ou excluir. Planos com acesso divergem entre fontes</td>
+</tr>
+<tr>
+<td>Remotion: licença</td>
+<td>https://www.remotion.dev/docs/license</td>
+<td>Bloqueado · Secundária</td>
+<td>Grátis para indivíduos e equipes de até 3 pessoas. Licença de empresa a partir de 4</td>
+</tr>
+<tr>
+<td>HyperFrames</td>
+<td>https://hyperframes.heygen.com/introduction</td>
+<td>Bloqueado · Secundária</td>
+<td>Código aberto da HeyGen, HTML → vídeo, Node.js 22+ e FFmpeg (segundo terceiros), skills para agentes, renderização local ou em nuvem</td>
+</tr>
+<tr>
+<td>ElevenLabs: planos</td>
+<td>https://elevenlabs.io/pricing</td>
+<td>Secundária</td>
+<td>Plano gratuito sem uso comercial, plano pago mais barato com uso comercial. Valores a confirmar</td>
+</tr>
+<tr>
+<td>ElevenLabs: MCP</td>
+<td>Uso direto nesta sessão</td>
+<td>Observado</td>
+<td>Existe servidor MCP da ElevenLabs. Documentação oficial a consultar</td>
+</tr>
+<tr>
+<td>Inkscape: linha de comando</td>
+<td>https://inkscape.org</td>
+<td>A verificar</td>
+<td>Exportação de SVG/PNG por linha de comando (Inkscape 1.x)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s-pendências-para-a-etapa-4">Pendências para a Etapa 4</h2>
+<ul>
+<li>[ ] Ler as páginas oficiais do Remotion: licença, requisitos e renderização.</li>
+<li>[ ] Ler as páginas oficiais do HyperFrames: quickstart, requisitos e comandos da CLI.</li>
+<li>[ ] Confirmar os planos e o uso comercial do ElevenLabs, a API e o MCP oficial.</li>
+<li>[ ] Confirmar os planos com acesso aos conectores do Google Drive e as diferenças entre o claude.ai e o Claude Code.</li>
+<li>[ ] Confirmar a documentação de linha de comando do Inkscape 1.x.</li>
+<li>[ ] Ler as diretrizes de uso de marca da Anthropic (nome do curso e materiais).</li>
+<li>[ ] Verificar a disponibilidade atual de Projects, Skills e artifacts por plano.</li>
+</ul></article>
+</div>
