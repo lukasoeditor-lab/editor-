@@ -7,7 +7,7 @@
 No terminal:
 
 ```bash
-claude plugin marketplace add lukasoeditor-lab/editor-
+claude plugin marketplace add lukasoeditor-lab/fremex-plugin
 claude plugin install fremex@fremex
 ```
 
@@ -36,7 +36,7 @@ O Claude assiste o material, monta o plano de edição, pede seu ok, executa, re
 | `/fremex:briefing` | Organiza o pedido do cliente e cria a ficha do cliente (marca, cores, tom), lida em todo job |
 | `/fremex:roteiro` | Roteiros de reels: ganchos, narração com tempo, cenas e legenda do post |
 | `/fremex:analisar-referencia` | Assiste um vídeo de referência e transforma o estilo num guia aplicável |
-| `/fremex:watch` | Assiste vídeos (link ou arquivo): quadros e transcrição. Componente de terceiros, licença MIT |
+| `/fremex:watch` | Assiste vídeos (link ou arquivo): quadros e transcrição. Criado por Bradley Bonanno, licença MIT |
 | `/fremex:cortes` | Remove silêncios e pausas, tira erros, seleciona os melhores trechos e monta o gancho |
 | `/fremex:reenquadrar` | 16:9 ↔ 9:16 ↔ 4:5 ↔ 1:1, com fundo desfocado, corte ou barras |
 | `/fremex:audio` | Limpa a voz, adiciona trilha com ducking e normaliza em -14 LUFS |

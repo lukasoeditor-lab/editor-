@@ -121,7 +121,7 @@ claude mcp add --transport http --scope user voicestudio http://localhost:3900/m
 ```
 O VoiceStudio precisa estar aberto para o Claude usar a voz. Antes de baixar qualquer modelo, informe o tamanho e a licença e peça autorização.
 
-**Watch (assistir vídeos):** rode a configuração da própria skill e siga as perguntas dela:
+**Watch (assistir vídeos):** rode a configuração da skill incluída no plugin e siga as perguntas dela:
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/../watch/scripts/setup.py" --json
 ```

@@ -34,7 +34,9 @@ Rode `ffmpeg -version` e `python3 --version` (Windows: `python --version`). Se f
      briefing.md  pedido, decisões e status
    ```
 2. Inspecione cada arquivo com `ffprobe -v error -show_entries format=duration:stream=codec_type,width,height,r_frame_rate -of compact "<arquivo>"`.
-3. **Assista o material** com a skill `watch` (motor local) para entender o conteúdo: quem fala, o que acontece, trechos bons e ruins, ruídos e silêncios.
+3. **Assista o material** para entender o conteúdo: quem fala, o que acontece, trechos bons e ruins, ruídos e silêncios.
+   - Se a skill `watch` estiver instalada, use-a com o motor local.
+   - Sem ela, extraia quadros e examine as imagens: `ffmpeg -i <arquivo> -vf "fps=24/<duração>,scale=320:-1,tile=6x4" -frames:v 1 trabalho/quadros.jpg`. Depois transcreva a fala localmente: `python3 "${CLAUDE_SKILL_DIR}/../legendas/scripts/legendas.py" <arquivo> --so-arquivos`, que gera um .srt com os tempos.
 4. Se existir `cliente.md` na pasta (skill `briefing`), leia e respeite: marca, cores, tom e restrições.
 5. Se o usuário mandou uma referência ("quero igual a este"), use a skill `analisar-referencia`.
 6. Complete o `briefing.md`: objetivo, plataforma, duração, formato, estilo, CTA e prazo.
