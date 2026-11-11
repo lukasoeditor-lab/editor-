@@ -65,6 +65,7 @@ def main():
     p.add_argument("--cor-destaque", default="6A96DE")
     p.add_argument("--maiusculas", action="store_true")
     p.add_argument("--so-arquivos", action="store_true")
+    p.add_argument("--sem-pulo", dest="pulo", action="store_false", help="desliga o pulo de escala da palavra falada")
     a = p.parse_args()
 
     w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
@@ -98,7 +99,10 @@ def main():
             partes = []
             for j, (_, _, txt) in enumerate(bloco):
                 cor = destaque if j == i else (branco if j < i else apagado)
-                partes.append("{\\c" + cor + "}" + txt)
+                if j == i and a.pulo:  # a palavra falada "pula": cresce e volta ao tamanho normal
+                    partes.append("{\\c" + cor + "\\fscx114\\fscy114\\t(0,120,\\fscx100\\fscy100)}" + txt + "{\\fscx100\\fscy100}")
+                else:
+                    partes.append("{\\c" + cor + "}" + txt)
             pop = "{\\fscx108\\fscy108\\t(0,90,\\fscx100\\fscy100)}" if i == 0 else ""
             ass.append(f"Dialogue: 0,{ts_ass(ini)},{ts_ass(ate)},FREMEX,,0,0,0,,{{\\pos({w // 2},{y})}}{pop}" + " ".join(partes))
         srt += [str(n), f"{ts_srt(bloco[0][0])} --> {ts_srt(fim_bloco)}", " ".join(t for _, _, t in bloco), ""]

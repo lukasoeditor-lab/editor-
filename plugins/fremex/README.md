@@ -25,7 +25,7 @@ Coloque os vídeos numa pasta, abra o Claude Code nela e diga o que quer:
 /fremex:editar transforma esse vídeo em reels de 30 segundos, corta as pausas e coloca legenda
 ```
 
-O Claude assiste o material, monta o plano de edição, pede seu ok, executa, revisa e entrega.
+O Claude assiste o material, monta o plano de edição, pede seu ok, executa, revisa e entrega. Toda edição sai **dinâmica**: zoom e punch, legendas animadas, motion graphics e efeitos sonoros.
 
 ## Habilidades (skills)
 
@@ -33,6 +33,7 @@ O Claude assiste o material, monta o plano de edição, pede seu ok, executa, re
 |---|---|
 | `/fremex:setup` | Configura o computador: Node.js, FFmpeg, Git, Python, yt-dlp, plugins do Remotion e do HyperFrames, VoiceStudio, Watch e contas |
 | `/fremex:editar` | **Ponto de entrada.** Recebe o vídeo e o pedido e coordena todas as outras skills |
+| `/fremex:dinamico` | **Padrão de toda edição:** zoom a cada corte e punch nas palavras fortes, legendas animadas, motion graphics (título, destaques, lista, lower third, círculo, progresso, CTA) e efeitos sonoros próprios |
 | `/fremex:briefing` | Organiza o pedido do cliente e cria a ficha do cliente (marca, cores, tom), lida em todo job |
 | `/fremex:roteiro` | Roteiros de reels: ganchos, narração com tempo, cenas e legenda do post |
 | `/fremex:analisar-referencia` | Assiste um vídeo de referência e transforma o estilo num guia aplicável |

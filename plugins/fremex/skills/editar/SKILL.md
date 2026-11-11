@@ -43,6 +43,8 @@ Rode `ffmpeg -version` e `python3 --version` (Windows: `python --version`). Se f
 
 ## 2 · Roteirizar (plano de edição) · aprovação
 
+O padrão FREMEX é **edição dinâmica** (skill `dinamico`). Diga isso no plano e indique a intensidade escolhida: alta, média ou baixa.
+
 Escreva o plano em `briefing.md` e mostre ao usuário em forma de lista:
 
 | Etapa | Skill | Decisão |
@@ -53,7 +55,8 @@ Escreva o plano em `briefing.md` e mostre ao usuário em forma de lista:
 | Narração | `narracao` | ex.: não precisa, já tem fala |
 | Áudio | `audio` | ex.: limpar voz, trilha com ducking, -14 LUFS |
 | Legendas | `legendas` | ex.: palavra por palavra, 3 palavras, azul FREMEX |
-| Grafismos | `motion` | ex.: título animado na abertura |
+| Estilo dinâmico (padrão) | `dinamico` | ex.: zoom a cada corte, punch em 4 palavras, título do gancho, 2 destaques, CTA, efeitos sonoros |
+| Grafismos extras | `motion` | ex.: vinheta de abertura da marca |
 | Capa | `capa` | ex.: quadro de 00:03 com título |
 | Exportação | `exportar` | ex.: Reels + TikTok |
 
@@ -67,8 +70,8 @@ Execute na ordem abaixo, porque cada etapa depende da anterior. Salve cada saíd
 2. **Formato** (`reenquadrar`).
 3. **Narração**, se houver (`narracao`).
 4. **Áudio**: limpeza, trilha e volume (`audio`).
-5. **Legendas** (`legendas`), sempre depois dos cortes, para o tempo bater.
-6. **Grafismos** (`motion`), se houver.
+5. **Edição dinâmica** (`dinamico`), **padrão em todo vídeo**: zoom a cada corte e punch nas palavras fortes, legendas animadas, motion graphics e efeitos sonoros. Só pule se o usuário pedir uma edição "limpa".
+6. **Grafismos extras** (`motion`), se houver (vinheta, abertura da marca).
 7. **Capa** (`capa`).
 
 Leia a `SKILL.md` de cada skill antes de usá-la. Os scripts ficam em `${CLAUDE_SKILL_DIR}/../<skill>/scripts/`.

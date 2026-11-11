@@ -25,6 +25,7 @@ Gera `video.ass` (legenda animada), `video.srt` (legenda simples) e o vídeo com
 | `--fonte` | Arial Black | a fonte precisa estar instalada no computador |
 | `--cor-destaque` | 6A96DE | cor da marca do cliente, em hexadecimal sem # |
 | `--maiusculas` | não | estilo mais "impacto" |
+| `--sem-pulo` | não | desliga o "pulo" de escala da palavra falada (edições mais sóbrias) |
 | `--so-arquivos` | não | só gerar .ass/.srt, sem gravar no vídeo |
 | `--modelo` | small | `medium` se a transcrição errar muitos nomes (mais lento) |
 
