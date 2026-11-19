@@ -64,3 +64,9 @@
 
 - O cliente pediu o trecho do altar/voto do corte 3 "em ótima qualidade". Funcionou: recorte cru do trecho (sem ampliar), **realesr-general-x4v3** (spandrel + torch, CPU, ~4,8 s por quadro), mistura **55% IA + 45% lanczos** (só IA fica com cara de pintura/plástico), depois unsharp leve + grão fino (noise=4). Exemplo: `scripts/video/corte_pregacao/exemplo_ampliar_ia.py`. Peso: github.com/xinntao/Real-ESRGAN releases v0.2.5.0.
 - Só vale para trechos curtos de vídeo (9 s = ~22 min). Cartões não precisam. Render final com `-q delivery`.
+
+## 2026-11-19: câmera do corte vertical (fonte horizontal)
+
+- O Lukas quer **câmera parada**: em cada trecho o recorte vertical fica fixo, centrado onde o pregador passa a maior parte do tempo. Se ele sair do quadro, a imagem **não** vai atrás dele; ele volta. Nada de câmera deslizando.
+- Para achar o pregador de paletó claro: máscara de cor clara + exclusão do que fica parado no mesmo lugar (púlpito, telão); amostra a 4 quadros/s.
+- O ffmpeg do contêiner novo (6.1) recusa opção errada de filtro com "Option not found" na lista global: confira o nome dos parâmetros (no `colorbalance` o meio-tom é `rm/gm/bm`, não `ms`).
