@@ -70,3 +70,5 @@
 - O Lukas quer **câmera parada**: em cada trecho o recorte vertical fica fixo, centrado onde o pregador passa a maior parte do tempo. Se ele sair do quadro, a imagem **não** vai atrás dele; ele volta. Nada de câmera deslizando.
 - Para achar o pregador de paletó claro: máscara de cor clara + exclusão do que fica parado no mesmo lugar (púlpito, telão); amostra a 4 quadros/s.
 - O ffmpeg do contêiner novo (6.1) recusa opção errada de filtro com "Option not found" na lista global: confira o nome dos parâmetros (no `colorbalance` o meio-tom é `rm/gm/bm`, não `ms`).
+- **Fonte com áudio mais curto que o vídeo:** confira `ffprobe` do stream de áudio. No corte "Betânia" o áudio acabava em 83,4 s, no meio de "coração". Solução: emendar a mesma palavra dita antes pelo pregador (isolada e conferida com o Whisper), mantendo o vídeo do trecho final. Avise o Lukas quando fizer isso.
+- **Fim do gancho:** termine o trecho no silêncio real depois da última palavra (vale de energia), senão entra o começo da palavra seguinte.
