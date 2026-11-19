@@ -74,3 +74,9 @@
 - **Fim do gancho:** termine o trecho no silêncio real depois da última palavra (vale de energia), senão entra o começo da palavra seguinte.
 - **Pregador que anda muito (Pr. Wilton):** o quadro fica parado e, quando ele se afasta do centro, corta seco para um quadro novo centrado nele (como os cortes de plano da referência R7). Nada de câmera deslizando. Pedido do cliente: só esmaecimento preto entre cenas e **sem efeito sonoro** (`"sem_sfx": true` e evento `escurece` no roteiro).
 - **Disco:** renders longos encheram o disco do contêiner. Antes de renderizar, apague projetos e quadros antigos em /tmp/work e o cache do pip/uv.
+
+## 2026-11-19: voz natural nas emendas (corte "Cuidado")
+
+- O Lukas **não quer** a pausa de leitura depois dos cartões (a voz parava e ficava estranho). Padrão agora: **sem pausa**, o cartão fica enquanto ele fala.
+- O fim de cada trecho vem do **silêncio real da voz** (energia abaixo do limiar por 120 ms) + 0,12 s de rabo natural, nunca do fim da palavra do Whisper. Gritos ("cuidado!") duram bem mais do que o Whisper marca: confira a energia e estenda.
+- Depois de montar, rode a checagem de emenda: nível da voz nos 80 ms antes de cada corte que não é contínuo; se estiver alto, a fala foi cortada.
