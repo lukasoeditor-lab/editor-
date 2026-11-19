@@ -488,6 +488,11 @@ window.__timelines["type"] = tl;
             elif not e.get("no_fim"):
                 fo = float(e.get("fade_out", 0.3))
                 fx_js.append(f'tl.to("#{idc}",{{opacity:0,duration:{fo},ease:"power1.inOut"}},{max(b - 0.05, a + 0.2):.3f});')
+        elif e["tipo"] == "escurece":
+            # troca de cena pelo preto (esmaecimento curto), sem som
+            f = float(e.get("fade", 0.22))
+            fx_js += [f'tl.to("#fpreto",{{opacity:1,duration:{f},ease:"power2.in"}},{t - f:.3f});',
+                      f'tl.to("#fpreto",{{opacity:0,duration:{f * 1.3:.3f},ease:"power2.out"}},{t:.3f});']
         elif e["tipo"] == "pb":
             # esmaece para preto, a tela vira preto e branco; no fim esmaece para preto de novo e a cor volta
             a, b, f = tm(e["t0"]), tm(e["t1"]), float(e.get("fade", 0.45))
@@ -529,6 +534,8 @@ window.__timelines["type"] = tl;
     sfx_tags, usados = [], set()
 
     def sfx(idn, categoria, t_evento, vol_extra=1.0, dur=None, indice=0, fade_out=0.0):
+        if roteiro.get("sem_sfx"):  # o cliente pediu sem efeito sonoro
+            return
         esc = escolher_sfx(categoria, indice)
         if not esc:
             return

@@ -72,3 +72,5 @@
 - O ffmpeg do contêiner novo (6.1) recusa opção errada de filtro com "Option not found" na lista global: confira o nome dos parâmetros (no `colorbalance` o meio-tom é `rm/gm/bm`, não `ms`).
 - **Fonte com áudio mais curto que o vídeo:** confira `ffprobe` do stream de áudio. No corte "Betânia" o áudio acabava em 83,4 s, no meio de "coração". Solução: emendar a mesma palavra dita antes pelo pregador (isolada e conferida com o Whisper), mantendo o vídeo do trecho final. Avise o Lukas quando fizer isso.
 - **Fim do gancho:** termine o trecho no silêncio real depois da última palavra (vale de energia), senão entra o começo da palavra seguinte.
+- **Pregador que anda muito (Pr. Wilton):** o quadro fica parado e, quando ele se afasta do centro, corta seco para um quadro novo centrado nele (como os cortes de plano da referência R7). Nada de câmera deslizando. Pedido do cliente: só esmaecimento preto entre cenas e **sem efeito sonoro** (`"sem_sfx": true` e evento `escurece` no roteiro).
+- **Disco:** renders longos encheram o disco do contêiner. Antes de renderizar, apague projetos e quadros antigos em /tmp/work e o cache do pip/uv.
