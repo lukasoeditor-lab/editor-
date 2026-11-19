@@ -44,6 +44,9 @@ ESTILOS = {
     # F: guia "cartões + legenda de 1 palavra" (LC Frames e referências de 28/10): minúscula, 1 palavra por vez no peito
     "F": dict(cap_peso=800, cap_tam=58, cap_margem=8, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88,
               basico=True, minuscula=True, cap_top=0.50),
+    # R: referência R7 (Ortunho): frase pequena que se monta palavra a palavra, palavra-chave em serifa itálica, 2 linhas
+    "R": dict(cap_peso=600, cap_tam=54, cap_margem=0, lead_tam=58, frase_tam=72, frase_peso=800, frase_track="-0.04em", frase_lh=0.88,
+              basico=True, minuscula=True, cap_top=0.58, quebra=True),
     "B": dict(cap_peso=300, cap_tam=60, cap_margem=34, lead_tam=56, frase_tam=54, frase_peso=300, frase_track="-0.01em", frase_lh=1.05),
 }
 # nível de cada tipo de efeito (volume relativo à biblioteca, que já está nivelada)
@@ -221,8 +224,14 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
         cor = f' style="color:{amarelo}"' if e.get("cor") == "amarelo" else ""
         if k == "cap":
             sp = ""
-            for j, (txt, ts) in enumerate(e["w"]):
+            for j, wv in enumerate(e["w"]):
+                txt, ts = wv[0], wv[1]
                 gr = ' style="font-size:1.55em;line-height:1"' if e.get("grande") else ""
+                if len(wv) > 2 and wv[2] == "s":  # palavra-chave em serifa itálica, na mesma linha
+                    gr = ' class="w sr"'
+                    sp += f'<span id="{cid}w{j}"{gr}>{txt}</span>'
+                    anims.append(pop(f"{cid}w{j}", max(tm(ts) - 0.02, t0)))
+                    continue
                 sp += f'<span class="w" id="{cid}w{j}"{cor or gr}>{txt}</span>'
                 anims.append(pop(f"{cid}w{j}", max(tm(ts) - 0.02, t0)))
             inner = f'<div class="cap">{sp}</div>'
@@ -364,6 +373,9 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   .w {{ display:inline-block; }}
   .cap {{ position:absolute; left:0; right:0; top:{int(A * est.get('cap_top', 0.531))}px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:{'-0.035em' if est.get('basico') else '-0.01em'}; line-height:1.15; {('text-transform:' + ('none' if est.get('minuscula') else 'uppercase') + '; text-shadow:0 3px 14px rgba(0,0,0,.45);') if est.get('basico') else CHROMA} }}
   .cap .w {{ margin:0 {est['cap_margem']}px; }}
+  .cap .w + .w {{ margin-left:{'.22em' if est.get('quebra') else '0'}; }}
+  {(".cap { white-space:normal; left:14%; right:14%; line-height:1.08; letter-spacing:-0.045em; }") if est.get('quebra') else ''}
+  .cap .sr {{ font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:1.32em; letter-spacing:-0.03em; line-height:.9; }}
   .lead {{ position:absolute; left:0; right:0; top:860px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['lead_tam']}px; letter-spacing:-0.01em; {CHROMA} }}
   .lead .w {{ margin:0 10px; }}
   .serif {{ position:absolute; left:0; right:0; top:930px; text-align:center; white-space:nowrap; font-family:'Playfair Display',serif; font-style:italic; font-weight:700; line-height:1.05; letter-spacing:-0.025em; {CHROMA} }}
