@@ -373,7 +373,7 @@ def montar(roteiro: dict, preparo: Path, saida: Path, hf: str) -> None:
   .w {{ display:inline-block; }}
   .cap {{ position:absolute; left:0; right:0; top:{int(A * est.get('cap_top', 0.531))}px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['cap_tam']}px; letter-spacing:{'-0.035em' if est.get('basico') else '-0.01em'}; line-height:1.15; {('text-transform:' + ('none' if est.get('minuscula') else 'uppercase') + '; text-shadow:0 3px 14px rgba(0,0,0,.45);') if est.get('basico') else CHROMA} }}
   .cap .w {{ margin:0 {est['cap_margem']}px; }}
-  .cap .w + .w {{ margin-left:{'.22em' if est.get('quebra') else '0'}; }}
+  {(".cap .w + .w { margin-left:.22em; }") if est.get('quebra') else ''}
   {(".cap { white-space:normal; left:14%; right:14%; line-height:1.08; letter-spacing:-0.045em; }") if est.get('quebra') else ''}
   .cap .sr {{ font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:1.32em; letter-spacing:-0.03em; line-height:.9; }}
   .lead {{ position:absolute; left:0; right:0; top:860px; text-align:center; white-space:nowrap; font-weight:{est['cap_peso']}; font-size:{est['lead_tam']}px; letter-spacing:-0.01em; {CHROMA} }}
