@@ -57,6 +57,7 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 - **Cor com sentido:** vermelho (#DC2427) só em título; amarelo (#F7D903) só na fala do "outro" em P&B.
 - **Um efeito sonoro por causa visível**, no nível da fala: impacto na palavra-chave, whoosh na troca, notificação no popup. Música 14 dB abaixo da voz.
 - **Marca:** @pregue.oficial embaixo (36% da largura) e "ALÉM DO PÚLPITO" no topo; nada de assinatura de terceiros.
+- **Cores dos cartões = identidade do vídeo** (pedido do Lukas em 20/11): fundo e texto dos cartões de frase (os que entram com desfoque para cima, não a legenda) usam a cor que predomina no vídeo, de preferência a da roupa do pregador, e combinam com o ambiente. Tire a cor de um quadro (mediana da camisa), use um tom escuro dela no cartão escuro (texto claro) e um tom bem claro e neutro no cartão claro (texto na cor escura). Ex.: camisa verde-oliva → #3E5530 e #E9EDE0. O lavanda/azul do estilo F só vale quando combina com o vídeo.
 - Confira de **ouvido** os dois primeiros cortes: as medições não substituem.
 
 ## O que dá errado (já aconteceu)

@@ -94,8 +94,8 @@ n = len(segs)
 fc.append('[0:v]fps=30,split=' + str(n) + ''.join(f'[f{i}]' for i in range(n)))
 for i, ((a, b), q) in enumerate(zip(segs, pausas)):
     pad = f',tpad=stop_mode=clone:stop_duration={q:.2f}' if q > 0 else ''
-    fc.append(f'[f{i}]trim={a:.3f}:{b:.3f},setpts=PTS-STARTPTS,crop=964:1714:58:0,scale=1080:1920:flags=lanczos,'
-              f'unsharp=7:7:0.9:5:5:0.0,eq=contrast=1.04:saturation=1.06{pad}[v{i}]')
+    fc.append(f'[f{i}]trim={a:.3f}:{b:.3f},setpts=PTS-STARTPTS,crop=964:1714:58:0,scale=1080:1920:flags=lanczos'
+              f'{pad}[v{i}]')
 fc.append(''.join(f'[v{i}]' for i in range(n)) + f'concat=n={n}:v=1:a=0[vo]')
 (OUT / 'fc.txt').write_text(';'.join(fc))
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(G / 'src.mp4'), '-filter_complex_script', str(OUT / 'fc.txt'), '-map', '[vo]', '-an',

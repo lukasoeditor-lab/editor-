@@ -80,3 +80,9 @@
 - O Lukas **não quer** a pausa de leitura depois dos cartões (a voz parava e ficava estranho). Padrão agora: **sem pausa**, o cartão fica enquanto ele fala.
 - O fim de cada trecho vem do **silêncio real da voz** (energia abaixo do limiar por 120 ms) + 0,12 s de rabo natural, nunca do fim da palavra do Whisper. Gritos ("cuidado!") duram bem mais do que o Whisper marca: confira a energia e estenda.
 - Depois de montar, rode a checagem de emenda: nível da voz nos 80 ms antes de cada corte que não é contínuo; se estiver alto, a fala foi cortada.
+
+## 2026-11-20: cor dos cartões vem do vídeo (corte "Cuidado")
+
+- O cliente achou que a imagem parecia IA: era o filtro de nitidez e cor que eu aplicava. O Lukas mandou a fonte limpa. **Regra:** não aplicar nitidez, contraste ou saturação no vídeo do pregador; só recorte e escala.
+- Os cartões de frase (fundo + texto que entram com desfoque para cima) passam a usar a **cor predominante do vídeo**, normalmente a roupa do pregador. Aqui a camisa verde-oliva virou #3E5530 (cartão escuro, texto #E9EDE0) e #E9EDE0 (cartão claro, texto #3E5530).
+- Música: o cliente pediu mais alto duas vezes; neste corte ficou ~6 dB acima do −14 dB padrão (volume 2,0 na faixa da música).
