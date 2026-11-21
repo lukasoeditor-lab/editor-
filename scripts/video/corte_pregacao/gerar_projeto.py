@@ -673,6 +673,9 @@ window.__timelines["type"] = tl;
     (saida / "index.html").write_text(index)
     print(f"projeto em {saida}: {len(html)} eventos de texto, {len(sfx_tags)} efeitos, {TOTAL:.1f} s")
     # cor de cinema no vídeo (único jeito aceito pelo HyperFrames para grade em footage)
+    if roteiro.get("grade") is False:  # vídeo limpo, sem cor/grão/vinheta (pedido do Lukas: filtro deixa com cara de IA)
+        print("cor de cinema: desligada (vídeo limpo)")
+        return
     grade = roteiro.get("grade", {"preset": "deep-contrast", "intensity": 0.7, "adjust": {"saturation": 0.16, "vibrance": 0.12},
                                    "wheels": {"shadows": {"hue": 215, "amount": 0.12, "level": 0}, "highlights": {"hue": 32, "amount": 0.1, "level": 0}},
                                    "details": {"vignette": 0.24, "vignetteFeather": 0.7, "grain": 0.12, "grainSize": 0.22, "grainRoughness": 0.55}})

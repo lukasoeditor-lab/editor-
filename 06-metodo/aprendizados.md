@@ -86,3 +86,9 @@
 - O cliente achou que a imagem parecia IA: era o filtro de nitidez e cor que eu aplicava. O Lukas mandou a fonte limpa. **Regra:** não aplicar nitidez, contraste ou saturação no vídeo do pregador; só recorte e escala.
 - Os cartões de frase (fundo + texto que entram com desfoque para cima) passam a usar a **cor predominante do vídeo**, normalmente a roupa do pregador. Aqui a camisa verde-oliva virou #3E5530 (cartão escuro, texto #E9EDE0) e #E9EDE0 (cartão claro, texto #3E5530).
 - Música: o cliente pediu mais alto duas vezes; neste corte ficou ~6 dB acima do −14 dB padrão (volume 2,0 na faixa da música).
+
+## 2026-11-21: fonte de celular com sala cheia de eco (corte "A graça", Pr. Wilton)
+
+- Vídeo filmado da plateia (464×832): a voz isolada nunca chega a silêncio de verdade (eco da sala). Com o limiar padrão (p95 × 0,07) o "fim no silêncio" falha. Use **p95 × 0,2** e silêncio de 80 ms, e confira os cortes não contínuos olhando a energia a cada 10–20 ms; quando o Whisper erra o tempo ("fora" / "A graça"), transcreva só aquele pedaço de novo.
+- O roteiro antigo tinha `grade` (contraste, grão, vinheta) aplicada no vídeo. Isso também é filtro: agora `"grade": false` desliga (vídeo limpo).
+- Cores: ambiente roxo/ameixa e camisa cinza-arroxeada → cartão escuro #3B2D4A (texto #EEE9F0), cartão claro #EEE9F0 (texto #3B2D4A).
