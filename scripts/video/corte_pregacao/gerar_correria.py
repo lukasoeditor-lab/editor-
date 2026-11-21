@@ -103,9 +103,11 @@ def main(rot_path, saida):
         fim = min(float(b["fim"]), dur_video)
         lado = b.get("lado", "esq")
         y = float(b.get("y", 0.52))
-        cor = AMARELO if b.get("amarelo") else "#ffffff"
+        cor = r.get("cor_destaque", AMARELO) if b.get("amarelo") else "#ffffff"
         uma = len(b["linhas"]) == 1 and len(b["linhas"][0]) <= 3 and b.get("espalhar", True)
-        if lado == "esq":
+        if "x" in b:  # posição livre: x = borda esquerda do bloco (fração da largura)
+            pos = f"left:{int(float(b['x']) * L)}px; text-align:left;"
+        elif lado == "esq":
             pos = "left:64px; text-align:left;"
         elif lado == "dir":
             pos = "right:64px; text-align:right;"
@@ -162,10 +164,18 @@ def main(rot_path, saida):
         html_ass = (f'<div id="handle" class="clip" data-start="0" data-duration="{dur_video:.3f}" data-track-index="4">{r["handle"]}</div>' + html_ass)
 
     sfx_tags = []
+    import numpy as _np
+    picos = {}
+    for k in r["sfx"]:
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(saida / "assets" / "sfx" / f"{k}.wav"), "-ac", "1", "-ar", "44100", "-f", "f32le", "-"],
+                             capture_output=True).stdout
+        x = _np.frombuffer(raw, _np.float32)
+        picos[k] = float(_np.argmax(_np.convolve(x ** 2, _np.ones(441), "same")) / 44100)
     vol = float(r.get("sfx_vol", 0.6))  # medido: 0,6 iguala o efeito da referência
     for ti, tr in enumerate(r.get("transicoes", [])):
         k = tr["tipo"]
-        sfx_tags.append(f'<audio id="sx{ti}" src="assets/sfx/{k}.wav" data-start="{max(0, float(tr["t"]) - 0.06):.3f}" '
+        ini = max(0.0, float(tr["t"]) - 0.04 - picos[k])  # pico do efeito 0,04 s antes do corte, junto com o clarão
+        sfx_tags.append(f'<audio id="sx{ti}" src="assets/sfx/{k}.wav" data-start="{ini:.3f}" '
                         f'data-duration="{dur_de(saida / "assets" / "sfx" / (k + ".wav")):.3f}" data-volume="{vol}"></audio>')
 
     css = f"""
