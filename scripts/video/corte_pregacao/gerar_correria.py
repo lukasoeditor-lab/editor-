@@ -16,7 +16,7 @@ roteiro.json:
 {
   "base": "prep/base.mp4", "voz": "prep/voz.wav", "dur": 61.2,
   "musica": "kit/musica_correria.wav", "musica_abaixo_db": 2.5,
-  "sfx": {"queima": "kit/sfx_queima.wav", "flash": "kit/sfx_flash.wav"}, "sfx_vol": 0.9,
+  "sfx": {"queima": "kit/sfx_queima.wav", "flash": "kit/sfx_flash.wav"}, "sfx_vol": 0.6,
   "fontes": {"legenda": "NimbusSansNarrow-Regular.otf", "assinatura": "MrsSaintDelafield-Regular.ttf"},
   "blocos": [{"lado": "esq|centro|dir", "y": 0.52, "amarelo": false, "fim": 3.4,
               "linhas": [[["gaste", 0.0], ["um", 0.32], ["tempo", 0.46]]]}],
@@ -160,7 +160,7 @@ def main(rot_path, saida):
         html_ass = ""
 
     sfx_tags = []
-    vol = float(r.get("sfx_vol", 0.9))
+    vol = float(r.get("sfx_vol", 0.6))  # medido: 0,6 iguala o efeito da referência
     for ti, tr in enumerate(r.get("transicoes", [])):
         k = tr["tipo"]
         sfx_tags.append(f'<audio id="sx{ti}" src="assets/sfx/{k}.wav" data-start="{max(0, float(tr["t"]) - 0.06):.3f}" '
