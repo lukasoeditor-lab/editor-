@@ -92,3 +92,12 @@
 - Vídeo filmado da plateia (464×832): a voz isolada nunca chega a silêncio de verdade (eco da sala). Com o limiar padrão (p95 × 0,07) o "fim no silêncio" falha. Use **p95 × 0,2** e silêncio de 80 ms, e confira os cortes não contínuos olhando a energia a cada 10–20 ms; quando o Whisper erra o tempo ("fora" / "A graça"), transcreva só aquele pedaço de novo.
 - O roteiro antigo tinha `grade` (contraste, grão, vinheta) aplicada no vídeo. Isso também é filtro: agora `"grade": false` desliga (vídeo limpo).
 - Cores: ambiente roxo/ameixa e camisa cinza-arroxeada → cartão escuro #3B2D4A (texto #EEE9F0), cartão claro #EEE9F0 (texto #3B2D4A).
+
+## 2026-11-21: primeiro corte no estilo correria (Pr. Alexandre, "O que é fé")
+
+- **Fonte horizontal com o pregador de corpo inteiro:** não há espaço acima da cabeça. Quadro "aberto" = recorte 608×1080 (corpo todo), "fechado" = 468×832 (até a coxa); alternam a cada trecho, como na referência.
+- **Pregador que anda:** além do recorte por trecho, um corte seco recentraliza quando ele sai mais de 6% da largura por 0,75 s (`planos()` em `exemplo_correria_build.py`). A voz não é cortada nesses recortes (só a imagem), senão aparece um "buraco" de 24 ms.
+- **Trechos colados na fonte não podem se sobrepor:** a borda pela energia pode recuar até antes do fim da palavra anterior do Whisper. Depois de calcular, force o encontro no meio, senão o áudio repete um pedacinho.
+- **Fundo de telão branco:** legenda branca nas laterais some. Neste fundo, todo bloco vai centralizado sobre a camisa escura, com sombra escura forte (`sombra` no roteiro do `gerar_correria.py`). O amarelo do P&B precisa da mesma sombra.
+- **Quebra de linha:** até ~17 letras por linha, vírgula fecha a linha e a linha não termina em palavra fraca ("que", "de", "uma"…); blocos divididos por igual (4 linhas = 2+2).
+- O Whisper às vezes **duplica uma frase** com todas as palavras no mesmo instante ("eu creio que Deus vai fazer" ×2 a 102,34 s). Transcreva o pedaço de novo antes de achar que é repetição.

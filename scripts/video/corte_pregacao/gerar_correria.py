@@ -158,6 +158,8 @@ def main(rot_path, saida):
             js.append(f'tl.fromTo("#assub",{{opacity:0}},{{opacity:0.85,duration:0.5,ease:"power1.out"}},{t0 + 1.7:.3f});')
     else:
         html_ass = ""
+    if r.get("handle"):  # @ do pregador durante o vídeo (pedido do Lukas), pequeno, embaixo
+        html_ass = (f'<div id="handle" class="clip" data-start="0" data-duration="{dur_video:.3f}" data-track-index="4">{r["handle"]}</div>' + html_ass)
 
     sfx_tags = []
     vol = float(r.get("sfx_vol", 0.6))  # medido: 0,6 iguala o efeito da referência
@@ -174,7 +176,7 @@ def main(rot_path, saida):
       #root {{ position:relative; width:100%; height:100%; overflow:hidden; }}
       #base {{ position:absolute; left:0; top:0; width:{L}px; height:{A}px; object-fit:cover; }}
       .blk {{ position:absolute; z-index:20; font-family:'Leg',sans-serif; font-size:{tam}px; line-height:.98; letter-spacing:-0.02em;
-              -webkit-text-stroke:0.6px currentColor; text-shadow:0 2px 14px rgba(0,0,0,.28); white-space:nowrap; }}
+              -webkit-text-stroke:0.6px currentColor; text-shadow:{r.get('sombra', '0 2px 14px rgba(0,0,0,.28)')}; white-space:nowrap; }}
       .blk .w {{ display:inline-block; transform-origin:50% 100%; margin-right:.22em; }}
       .blk .w:last-child {{ margin-right:0; }}
       .blk .ln.sp .w {{ margin-right:.55em; }}
@@ -194,6 +196,7 @@ def main(rot_path, saida):
       #fimpreto {{ position:absolute; inset:0; z-index:30; background:#000; }}
       .assn {{ position:absolute; left:0; right:0; top:{int(A * 0.43)}px; text-align:center; color:#fff; font-family:'Ass',cursive; font-size:{int(r.get('assinatura_tam', 150))}px; line-height:1.3; }}
       .assn span {{ display:inline-block; padding:0 40px; }}
+      #handle {{ position:absolute; left:0; right:0; top:{int(A * float(r.get('handle_y', 0.80)))}px; text-align:center; color:#fff; font-family:'Leg',sans-serif; font-size:40px; letter-spacing:.04em; z-index:21; opacity:.92; text-shadow:0 1px 10px rgba(0,0,0,.55); }}
       .assub {{ position:absolute; left:0; right:0; top:{int(A * 0.56)}px; text-align:center; color:#fff; font-family:'Leg',sans-serif; font-size:40px; letter-spacing:.06em; opacity:0; }}
 """
     index = f"""<!doctype html>
