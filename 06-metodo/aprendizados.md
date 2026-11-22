@@ -118,3 +118,11 @@
 - O som cru da igreja vem muito alto (−8,7 LUFS): nivele o trecho "antes" em −15 LUFS para não pular de volume.
 - HyperFrames: `<video>` com `data-start` não pode ficar dentro de um `div` que também tem `data-start` (o quadro sai errado); deixe os vídeos na raiz.
 - Gerador: `scripts/video/promo/antes_depois_gerar.py` (lê `timeline.json` montado a partir do `fc.txt`, do `index.html` e dos áudios do corte).
+
+## 2026-11-22: estilo R8 num depoimento (barbearia, "estourei minha bolha")
+
+- Gancho pedido pelo Lukas: a frase de impacto vai **primeiro** ("tudo isso foi capaz quando eu tomei a decisão, estourei minha BOLHA") e a história começa depois.
+- O Whisper ouviu "misturei" onde ele diz "estourei": o Lukas confirmou. Use `FIX` no roteiro.
+- O Whisper esticou o "e" depois de "bolha" (11,06–11,92) num silêncio: a borda tirada só do Whisper cortaria "bolha". Conferir a energia: a voz acabou em 11,1 e voltou em 11,9.
+- **Ambiente branco** (parede e camisa brancas): ligue `sombra_forte` no `gerar_r8.py` (halo escuro em todo texto), senão a legenda branca e o bege somem.
+- Fonte vertical em 4K: "aberto" = quadro inteiro, "fechado" = recorte de 72% centrado no rosto (posição medida segundo a segundo nos quadros; o cv2 não está instalado).

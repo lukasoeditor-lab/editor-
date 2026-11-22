@@ -250,6 +250,7 @@ def main(rot, saida):
       .luz .la {{ position:absolute; inset:-20%; background:radial-gradient(55% 60% at 35% 50%, #fff2d0 0%, {r.get("cor_luz", "#ff9a3c")} 35%, rgba(255,60,20,.75) 65%, rgba(0,0,0,0) 100%); }}
       #fimbox {{ position:absolute; inset:0; z-index:45; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; }}
       #cor {{ opacity:0; }}
+      {(".cap, .digw, .sat, .cit, .forte, .cs, .ser, .pil, .gra {{ text-shadow:0 0 30px rgba(0,0,0,.7), 0 0 10px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.5) !important; }}") if r.get("sombra_forte") else ""}
       #fimtxt {{ font-family:'cond'; font-size:60px; color:#fff; letter-spacing:.01em; opacity:0; }}
 """
     hdl = (f'<div id="handle" class="clip" data-start="0" data-duration="{DV:.3f}" data-track-index="4" '
