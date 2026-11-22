@@ -195,7 +195,7 @@ def main(rot, saida):
         else:
             a, b = e["t0"], e["t1"]
             # o quadro vira um cartão largo de cantos redondos (mostra o palco aberto) no meio da tela preta
-            js += [f'tl.fromTo("#vwrap",{{scale:1,clipPath:"inset(0% 0% 0% 0% round 0px)"}},{{scale:0.9,clipPath:"inset(36% 1% 36% 1% round 64px)",duration:0.16,ease:"power3.out"}},{a:.3f});',
+            js += [f'tl.fromTo("#vwrap",{{scale:1,clipPath:"inset(0% 0% 0% 0% round 0px)"}},{{scale:0.9,clipPath:"inset({r.get('cartao_inset', 36)}% 1% {r.get('cartao_inset', 36)}% 1% round 64px)",duration:0.16,ease:"power3.out"}},{a:.3f});',
                    f'tl.to("#vwrap",{{scale:1,clipPath:"inset(0% 0% 0% 0% round 0px)",duration:0.16,ease:"power3.in"}},{b - 0.16:.3f});']
             som("cartao", a - 0.02)
 
@@ -228,7 +228,7 @@ def main(rot, saida):
       #base {{ position:absolute; left:0; top:0; width:{L}px; height:{A}px; object-fit:cover; }}
       .ev {{ position:absolute; inset:0; z-index:20; color:#fff; pointer-events:none; }}
       .sombra {{ text-shadow:0 2px 12px rgba(0,0,0,.35); }}
-      .cap {{ position:absolute; left:0; right:0; text-align:center; font-family:'cond'; font-size:{TAM}px; letter-spacing:-0.02em; text-shadow:0 2px 10px rgba(0,0,0,.4); }}
+      .cap {{ position:absolute; left:0; right:0; text-align:center; font-family:'cond'; font-size:{int(r.get('cap_tam', TAM))}px; letter-spacing:-0.02em; text-shadow:0 2px 10px rgba(0,0,0,.45); }}
       .cap .w {{ display:inline-block; }}
       .dig {{ position:absolute; left:0; right:0; text-align:center; }}
       .digw {{ position:relative; display:inline-block; font-family:'cond'; font-size:{int(TAM * 3.1)}px; line-height:1; letter-spacing:-0.025em; text-transform:uppercase; text-shadow:0 4px 18px rgba(0,0,0,.35); }}
@@ -253,7 +253,7 @@ def main(rot, saida):
       #fimtxt {{ font-family:'cond'; font-size:60px; color:#fff; letter-spacing:.01em; opacity:0; }}
 """
     hdl = (f'<div id="handle" class="clip" data-start="0" data-duration="{DV:.3f}" data-track-index="4" '
-           f'style="position:absolute;left:0;right:0;top:{int(A * 0.86)}px;text-align:center;z-index:21;font-family:cond;font-size:34px;color:#fff;opacity:.85;text-shadow:0 1px 8px rgba(0,0,0,.6)">{r["handle"]}</div>') if r.get("handle") else ""
+           f'style="position:absolute;left:0;right:0;top:{int(A * float(r.get('handle_y', 0.86)))}px;text-align:center;z-index:21;font-family:cond;font-size:34px;color:#fff;opacity:.85;text-shadow:0 1px 8px rgba(0,0,0,.6)">{r["handle"]}</div>') if r.get("handle") else ""
     idx = f"""<!doctype html>
 <html lang="pt-BR" data-resolution="portrait">
   <head>

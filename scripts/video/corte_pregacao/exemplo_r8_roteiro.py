@@ -96,6 +96,6 @@ r = {'base': 'prep/base.mp4', 'voz': 'prep/voz.wav', 'dur': round(DUR + 0.6, 3),
      'sfx': {k: f'kit/{k}.wav' for k in ('clique', 'whoosh', 'glitch', 'cartao', 'fim')},
      'fontes': {'cond': 'kit/Archivo.ttf', 'serif': 'kit/DMSerifDisplay-Italic.ttf'},
      'cores': {'destaque': '#F6C453', 'quente': '#E8963F', 'forte': '#D9672B'}, 'cor_luz': '#ffb347',
-     'handle': '@alexandrealmeida.ofc', 'fim': {'texto': '@alexandrealmeida.ofc', 'dur': 2.8}, 'eventos': ev}
+     'handle': '@alexandrealmeida.ofc', 'handle_y': 0.79, 'cap_tam': 68, 'cartao_inset': 34.6, 'fim': {'texto': '@alexandrealmeida.ofc', 'dur': 2.8}, 'eventos': ev}
 json.dump(r, open('/tmp/work/j1/roteiro.json', 'w'), ensure_ascii=False, indent=1)
 print(len(ev), 'eventos')

@@ -67,6 +67,7 @@ xs = np.load(G / 'xs.npy')
 def x_med(a, b):
     v = xs[int(a * 4):max(int(a * 4) + 1, int(b * 4))]
     return float(np.median(v))
+LARGO = {20}  # trecho do cartão ("O que Deus estava falando para Ezequiel")
 QUADROS = {'aberto': (608, 1080, 0), 'fechado': (468, 832, 0)}
 
 pecas, out_t = [], 0.0
@@ -132,7 +133,10 @@ for k, s in enumerate(segs):
     cw, ch, cy = QUADROS[s['quadro']]
     cx = int(min(max(s['x'] * 1920 - cw / 2, 0), 1920 - cw))
     pb = {'pb': ',hue=s=0', 'duo': ',hue=s=0,eq=contrast=1.25:brightness=-0.03,colorchannelmixer=rr=1.0:gg=0.62:bb=0.16'}.get(s['pb'], '')
-    fc.append(f"[s{k}]trim={s['a']:.3f}:{s['b']:.3f},setpts=PTS-STARTPTS,crop={cw}:{ch}:{cx}:{cy},scale=1080:1920:flags=lanczos{pb},setsar=1[v{k}]")
+    if s['n'] in LARGO:  # cartão: o palco inteiro (quadro horizontal) no meio da tela preta
+        fc.append(f"[s{k}]trim={s['a']:.3f}:{s['b']:.3f},setpts=PTS-STARTPTS,scale=1080:608:flags=lanczos,pad=1080:1920:0:656:black{pb},setsar=1[v{k}]")
+    else:
+        fc.append(f"[s{k}]trim={s['a']:.3f}:{s['b']:.3f},setpts=PTS-STARTPTS,crop={cw}:{ch}:{cx}:{cy},scale=1080:1920:flags=lanczos{pb},setsar=1[v{k}]")
 fc.append(''.join(f'[v{k}]' for k in range(len(segs))) + f'concat=n={len(segs)}:v=1:a=0[vo]')
 (OUT / 'fc.txt').write_text(';'.join(fc))
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(G / 'src.mp4'), '-filter_complex_script', str(OUT / 'fc.txt'), '-map', '[vo]', '-an',

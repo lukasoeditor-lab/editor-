@@ -109,3 +109,4 @@
 - **Fundo dourado + texto dourado:** o brilho e a serifa precisam de uma sombra escura curta antes do brilho, senão somem no telão.
 - **Música:** a referência usa um "pad" quase inaudível; para este, instrumental de "Purifícame" (louvor de teclado) a 12 dB abaixo da voz.
 - **Roteiro por índice de palavra** (`exemplo_r8_roteiro.py`): `seg(a, b, especiais)` cria a legenda simples sozinha e encaixa os textos especiais (digita, combo, serif, pilha, brilho, citação) nas palavras certas.
+- **Retorno do Lukas (v1 → v2):** (1) no **cartão**, nada de recorte vertical encolhido (mostrava a barriga): o cartão mostra **o palco inteiro** (quadro horizontal 1080×608 no meio da tela preta, `LARGO` no build; `cartao_inset` 34,6 no roteiro) ou o rosto; (2) a **legenda simples** estava pequena: `cap_tam` 68 (antes 50); (3) o **@** subiu para 79% da altura (`handle_y`).
