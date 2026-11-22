@@ -211,12 +211,12 @@ def main(rot, saida):
         som("fim", DV + 0.15)
 
     pk = {k: pico(saida / "assets" / "sfx" / f"{k}.wav") for k in r["sfx"]}
-    vol = r.get("sfx_vol", {})
+    vol = r.get("sfx_vol", {})  # padrão medido contra a referência (22/11)
     tags = []
     for i, (k, t, v) in enumerate(sfx):
         ini = max(0.0, t - pk[k] + 0.02)
         tags.append(f'<audio id="sx{i}" src="assets/sfx/{k}.wav" data-start="{ini:.3f}" data-duration="{dur_de(saida / "assets" / "sfx" / f"{k}.wav"):.3f}" '
-                    f'data-volume="{v if v is not None else vol.get(k, 0.6)}"></audio>')
+                    f'data-volume="{v if v is not None else vol.get(k, {"clique": 1.5, "whoosh": 1.3, "glitch": 0.8, "cartao": 0.7, "fim": 0.8}.get(k, 0.6))}"></audio>')
 
     TAM = int(r.get("legenda_tam", 50))
     css = f"""{ff}
