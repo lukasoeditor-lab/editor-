@@ -102,3 +102,10 @@
 - **Quebra de linha:** até ~17 letras por linha, vírgula fecha a linha e a linha não termina em palavra fraca ("que", "de", "uma"…); blocos divididos por igual (4 linhas = 2+2).
 - O Whisper às vezes **duplica uma frase** com todas as palavras no mesmo instante ("eu creio que Deus vai fazer" ×2 a 102,34 s). Transcreva o pedaço de novo antes de achar que é repetição.
 - **Retorno do Lukas (v1 → v2):** (1) a legenda tem que **mudar de lugar** a cada frase, como na referência (esquerda, direita, centro, diagonal, alturas diferentes, às vezes a última linha pulando para o outro lado), e não ficar só no meio; (2) o amarelo era só da referência: **a cor de destaque vem da identidade do vídeo** (aqui, o lilás do LED do palco, #9A78FF); (3) havia efeito sonoro demais e ele chegava **depois** do texto. Agora: transição comum só a cada 12 s ou mais (as do P&B ficam), o **pico do efeito cai 0,04 s antes do corte** (junto com o clarão, calculado pelo `gerar_correria.py`) e a primeira palavra do bloco seguinte só aparece depois do clarão.
+
+## 2026-11-22: primeiro corte no estilo R8 (Pr. Alexandre, "Deus tem um plano")
+
+- **Cores da identidade:** telão dourado/marrom do vale de ossos → brilho dourado #F6C453, serifa e citação âmbar #E8963F, palavra forte cobre #D9672B. A "tela vermelha" da referência virou **tela dourada e preta** (`hue=s=0,eq=contrast=1.25,colorchannelmixer=rr=1:gg=.62:bb=.16`).
+- **Fundo dourado + texto dourado:** o brilho e a serifa precisam de uma sombra escura curta antes do brilho, senão somem no telão.
+- **Música:** a referência usa um "pad" quase inaudível; para este, instrumental de "Purifícame" (louvor de teclado) a 12 dB abaixo da voz.
+- **Roteiro por índice de palavra** (`exemplo_r8_roteiro.py`): `seg(a, b, especiais)` cria a legenda simples sozinha e encaixa os textos especiais (digita, combo, serif, pilha, brilho, citação) nas palavras certas.

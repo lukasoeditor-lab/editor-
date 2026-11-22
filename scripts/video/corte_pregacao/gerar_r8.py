@@ -238,10 +238,10 @@ def main(rot, saida):
       .combo {{ position:absolute; left:0; right:0; text-align:center; }}
       .cw {{ position:relative; display:inline-block; }}
       .forte {{ position:relative; z-index:2; display:inline-block; font-family:'cond'; font-size:{int(TAM * 2.4)}px; letter-spacing:-0.03em; line-height:1; text-shadow:0 3px 14px rgba(0,0,0,.35); }}
-      .cs {{ position:absolute; z-index:1; left:-2%; top:62%; font-family:'serif'; font-size:{int(TAM * 1.5)}px; line-height:1; white-space:nowrap; }}
-      .ser {{ position:absolute; font-family:'serif'; font-size:{int(TAM * 1.3)}px; line-height:.88; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.4); white-space:nowrap; }}
+      .cs {{ position:absolute; z-index:1; left:-2%; top:62%; font-family:'serif'; font-size:{int(TAM * 1.5)}px; line-height:1; white-space:nowrap; text-shadow:0 2px 8px rgba(0,0,0,.5); }}
+      .ser {{ position:absolute; font-family:'serif'; font-size:{int(TAM * 1.45)}px; line-height:.88; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.55), 0 0 22px rgba(0,0,0,.45); white-space:nowrap; }}
       .bri {{ position:absolute; left:0; right:0; text-align:center; font-family:'cond'; font-size:{int(TAM * 1.9)}px; letter-spacing:-0.02em;
-              text-shadow:0 0 10px var(--g), 0 0 28px var(--g), 0 0 60px var(--g); }}
+              text-shadow:0 2px 6px rgba(0,0,0,.6), 0 0 10px var(--g), 0 0 28px var(--g), 0 0 60px var(--g); }}
       .bri.big {{ font-size:{int(TAM * 2.3)}px; text-transform:uppercase; }}
       .bri span, .gra span {{ display:inline-block; }}
       .gra {{ position:absolute; left:0; right:0; text-align:center; font-family:'cond'; font-size:{int(TAM * 2.2)}px; letter-spacing:-0.02em; text-transform:uppercase; text-shadow:0 3px 16px rgba(0,0,0,.4); }}
