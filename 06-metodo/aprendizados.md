@@ -134,3 +134,11 @@
 - Áudio pouco claro: o Whisper errou "mandei", "fiz", "desfiz", "viu". Corrija com `FIXW` e pule (`PULAR`) as palavras incertas em vez de inventar.
 - Sem música: gere com a música e ponha `data-volume="0"` na faixa `music` antes de mixar.
 - Vídeo de celular em 4K com rotação (3840×2160, rotação −90): o ffmpeg já gira sozinho; o quadro "fechado" usa recorte de 72% com o rosto a ~32% da altura.
+
+## 2026-11-22: estilo 8 (R8) escolhendo o trecho ("não desistir", aluno da barbearia)
+
+- Numeração que o Lukas usa: **estilo 8 = R8** (`gerar_r8.py`); o estilo do Filipe Levak = correria.
+- Link do Drive privado baixa a página de login (HTML de ~900 KB, "moov atom not found"). Peça para ele mudar para "qualquer pessoa com o link"; o conector do Drive não serve para vídeo grande.
+- De uma conversa de 2 min, o corte de 31 s junta só as falas do aluno (sem as perguntas do entrevistador): gancho "o segredo… é NÃO DESISTIR" e fecho "é PRATICANDO que a gente chega".
+- "Gravatar" no Whisper = **Gravataí** (cidade).
+- Clientes da barbearia: sem música de fundo (pedido repetido duas vezes).
