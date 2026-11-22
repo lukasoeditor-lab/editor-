@@ -126,3 +126,11 @@
 - O Whisper esticou o "e" depois de "bolha" (11,06–11,92) num silêncio: a borda tirada só do Whisper cortaria "bolha". Conferir a energia: a voz acabou em 11,1 e voltou em 11,9.
 - **Ambiente branco** (parede e camisa brancas): ligue `sombra_forte` no `gerar_r8.py` (halo escuro em todo texto), senão a legenda branca e o bege somem.
 - Fonte vertical em 4K: "aberto" = quadro inteiro, "fechado" = recorte de 72% centrado no rosto (posição medida segundo a segundo nos quadros; o cv2 não está instalado).
+
+## 2026-11-22: estilo correria num depoimento (barbearia, 59 s → 39,7 s)
+
+- Os nomes dos estilos para o Lukas: "estilo do Filipe Levak" = **correria** (`gerar_correria.py`); "o último estilo do Alexandre" = **R8** (`gerar_r8.py`). Quando ele disser um número ("estilo 6", "estilo 7"), confirme qual é antes de baixar o vídeo.
+- Pausas **dentro** das frases também saem (`sem_pausas()`: silêncio de 0,24 s ou mais, 0,07 s de margem; também no começo e no fim do trecho). Sem isso sobravam pausas de 0,3–0,7 s.
+- Áudio pouco claro: o Whisper errou "mandei", "fiz", "desfiz", "viu". Corrija com `FIXW` e pule (`PULAR`) as palavras incertas em vez de inventar.
+- Sem música: gere com a música e ponha `data-volume="0"` na faixa `music` antes de mixar.
+- Vídeo de celular em 4K com rotação (3840×2160, rotação −90): o ffmpeg já gira sozinho; o quadro "fechado" usa recorte de 72% com o rosto a ~32% da altura.
