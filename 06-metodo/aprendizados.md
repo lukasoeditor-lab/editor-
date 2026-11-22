@@ -110,3 +110,11 @@
 - **Música:** a referência usa um "pad" quase inaudível; para este, instrumental de "Purifícame" (louvor de teclado) a 12 dB abaixo da voz.
 - **Roteiro por índice de palavra** (`exemplo_r8_roteiro.py`): `seg(a, b, especiais)` cria a legenda simples sozinha e encaixa os textos especiais (digita, combo, serif, pilha, brilho, citação) nas palavras certas.
 - **Retorno do Lukas (v1 → v2):** (1) no **cartão**, nada de recorte vertical encolhido (mostrava a barriga): o cartão mostra **o palco inteiro** (quadro horizontal 1080×608 no meio da tela preta, `LARGO` no build; `cartao_inset` 34,6 no roteiro) ou o rosto; (2) a **legenda simples** estava pequena: `cap_tam` 68 (antes 50); (3) o **@** subiu para 79% da altura (`handle_y`).
+
+## 2026-11-22: vídeo "antes e depois" para o perfil da Pregue
+
+- Estrutura (28 s, 9:16): "ANTES" (título 1 s) → vídeo bruto horizontal com o som original (6,6 s) → flash + "DEPOIS" (0,9 s) → corte editado em cima + **timeline de editor embaixo** com as faixas reais (vídeo aberto/fechado, textos com os especiais em dourado, efeitos, onda da voz e da música; agulha fixa e conteúdo correndo) → CTA "Quer isso / *no seu vídeo?* / LINK NA BIO / @pregue.oficial".
+- Identidade usada (a Pregue não tinha cores definidas no projeto): preto #0B0B0C, off-white #F4F1EA, dourado #E8B04B, Archivo condensada + DM Serif Display Italic. Confirmar com o Lukas.
+- O som cru da igreja vem muito alto (−8,7 LUFS): nivele o trecho "antes" em −15 LUFS para não pular de volume.
+- HyperFrames: `<video>` com `data-start` não pode ficar dentro de um `div` que também tem `data-start` (o quadro sai errado); deixe os vídeos na raiz.
+- Gerador: `scripts/video/promo/antes_depois_gerar.py` (lê `timeline.json` montado a partir do `fc.txt`, do `index.html` e dos áudios do corte).
