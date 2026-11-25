@@ -154,7 +154,7 @@ def main(rot, saida):
             inner = (f'<div class="combo" style="top:{int(A * e.get("y", Y - 0.03))}px"><span class="cw"><span id="{c}f" class="forte" style="font-size:{cabe([fw], int(TAMB * 2.4), 0.45)}px">{fw}</span>'
                      f'<span id="{c}s" class="cs" style="color:{cor};font-size:{cabe([sw], int(TAMB * 1.5), 0.42, 0.80)}px">{sw}</span></span></div>')
             js.append(f'tl.fromTo("#{c}f",{{opacity:0,scale:1.06,filter:"blur(6px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.12}},{max(ft - 0.03, t0):.3f});')
-            js.append(f'tl.fromTo("#{c}s",{{opacity:0,y:-14,filter:"blur(6px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.16}},{st - 0.03:.3f});')
+            js.append(f'tl.fromTo("#{c}s",{{opacity:0,xPercent:-50,y:-14,filter:"blur(6px)"}},{{opacity:1,xPercent:-50,y:0,filter:"blur(0px)",duration:0.16}},{st - 0.03:.3f});')
             som("clique", st - 0.03)
         elif k == "serif":
             lado = e.get("lado", "esq")
@@ -248,7 +248,7 @@ def main(rot, saida):
       .combo {{ position:absolute; left:0; right:0; text-align:center; }}
       .cw {{ position:relative; display:inline-block; }}
       .forte {{ position:relative; z-index:2; display:inline-block; font-family:'cond'; font-size:{int(TAM * 2.4)}px; letter-spacing:-0.03em; line-height:1; text-shadow:0 3px 14px rgba(0,0,0,.35); }}
-      .cs {{ position:absolute; z-index:1; left:-2%; top:62%; font-family:'serif'; font-size:{int(TAM * 1.5)}px; line-height:1; white-space:nowrap; text-shadow:0 2px 8px rgba(0,0,0,.5); }}
+      .cs {{ position:absolute; z-index:1; left:50%; top:62%; font-family:'serif'; font-size:{int(TAM * 1.5)}px; line-height:1; white-space:nowrap; text-shadow:0 2px 8px rgba(0,0,0,.5); }}
       .ser {{ position:absolute; font-family:'serif'; font-size:{int(TAM * 1.45)}px; line-height:.88; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.55), 0 0 22px rgba(0,0,0,.45); white-space:nowrap; }}
       .bri {{ position:absolute; left:0; right:0; text-align:center; font-family:'cond'; font-size:{int(TAM * 1.9)}px; letter-spacing:-0.02em;
               text-shadow:0 2px 6px rgba(0,0,0,.6), 0 0 10px var(--g), 0 0 28px var(--g), 0 0 60px var(--g); }}
