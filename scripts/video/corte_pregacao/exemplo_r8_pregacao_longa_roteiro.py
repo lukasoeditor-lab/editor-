@@ -47,6 +47,6 @@ r = {'base': 'prep/base.mp4', 'voz': 'prep/voz.wav', 'dur': round(DUR + 0.5, 3),
      'fontes': {'cond': 'kit/Archivo.ttf', 'serif': 'kit/DMSerifDisplay-Italic.ttf'},
      'cores': {'destaque': '#A6D86A', 'quente': '#E6C48F', 'forte': '#D99A4E'}, 'cor_luz': '#ffd08a',
      'cap_tam': 68, 'sombra_forte': True, 'handle': '@alexandrealmeida.ofc', 'handle_y': 0.79,
-     'fim': {'texto': '@alexandrealmeida.ofc', 'dur': 2.8}, 'eventos': ev}
+     'eventos': ev}
 json.dump(r, open('/tmp/work/a3/roteiro.json', 'w'), ensure_ascii=False, indent=1)
 print(len(ev), 'eventos')

@@ -113,6 +113,11 @@ def main(rot, saida):
     def som(k, t, vol=None):
         sfx.append((k, t, vol))
     Y = float(r.get("legenda_y", 0.50))
+    TAMB = int(r.get("legenda_tam", 50))
+    def cabe(textos, base, larg_letra, util=0.84):
+        """tamanho em px para a linha mais longa caber na largura útil (larg_letra = largura média de uma letra em em)"""
+        n = max(len(x) for x in textos) or 1
+        return int(min(base, util * L / (n * larg_letra)))
     for ei, e in enumerate(txt):
         k = e["tipo"]; c = f"e{ei}"; t0, t1 = e["_t0"], e["_t1"]
         inner = ""
@@ -128,7 +133,7 @@ def main(rot, saida):
             for j, (w, t, onde) in enumerate(e.get("sat", [])):
                 sats += f'<span id="{c}s{j}" class="sat" style="{pos[onde]}">{w}</span>'
                 js.append(f'tl.fromTo("#{c}s{j}",{{opacity:0,y:8,filter:"blur(4px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.1}},{max(t - 0.03, t0):.3f});')
-            inner = f'<div class="dig" style="top:{int(A * e.get("y", Y - 0.04))}px"><div class="digw">{letras}{sats}</div></div>'
+            inner = f'<div class="dig" style="top:{int(A * e.get("y", Y - 0.04))}px"><div class="digw" style="font-size:{cabe([e["texto"]], int(TAMB * 3.1), 0.55)}px">{letras}{sats}</div></div>'
             n = len(e["texto"]); dd = float(e.get("dur_digita", 0.7))
             for j in range(n):
                 tj = e["t"] + dd * j / n
@@ -141,12 +146,13 @@ def main(rot, saida):
                 tl_ = linha[0][1]
                 js.append(f'tl.fromTo("#{c}q{li}",{{opacity:0,x:-90,filter:"blur(10px)"}},{{opacity:1,x:0,filter:"blur(0px)",duration:0.2,ease:"power3.out"}},{max(tl_ - 0.05, t0):.3f});')
                 som("clique", tl_ - 0.03)
-            inner = f'<div class="cit" style="left:{int(L * e.get("x", 0.10))}px;top:{int(A * e.get("y", 0.50))}px;color:{cor}">{ls}</div>'
+            fs_ = cabe([" ".join(w for w, t in l) for l in e["linhas"]], int(TAMB * 2.7), 0.43, 0.86 - e.get("x", 0.10))
+            inner = f'<div class="cit" style="left:{int(L * e.get("x", 0.10))}px;top:{int(A * e.get("y", 0.50))}px;color:{cor};font-size:{fs_}px">{ls}</div>'
         elif k == "combo":
             cor = cores.get(e.get("cor", "quente"), "#fff")
             (fw, ft), (sw, st) = e["forte"], e["serif"]
-            inner = (f'<div class="combo" style="top:{int(A * e.get("y", Y - 0.03))}px"><span class="cw"><span id="{c}f" class="forte">{fw}</span>'
-                     f'<span id="{c}s" class="cs" style="color:{cor}">{sw}</span></span></div>')
+            inner = (f'<div class="combo" style="top:{int(A * e.get("y", Y - 0.03))}px"><span class="cw"><span id="{c}f" class="forte" style="font-size:{cabe([fw], int(TAMB * 2.4), 0.45)}px">{fw}</span>'
+                     f'<span id="{c}s" class="cs" style="color:{cor};font-size:{cabe([sw], int(TAMB * 1.5), 0.42, 0.80)}px">{sw}</span></span></div>')
             js.append(f'tl.fromTo("#{c}f",{{opacity:0,scale:1.06,filter:"blur(6px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.12}},{max(ft - 0.03, t0):.3f});')
             js.append(f'tl.fromTo("#{c}s",{{opacity:0,y:-14,filter:"blur(6px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.16}},{st - 0.03:.3f});')
             som("clique", st - 0.03)
@@ -158,16 +164,19 @@ def main(rot, saida):
                 js.append(f'tl.fromTo("#{c}r{li}",{{opacity:0,y:10,filter:"blur(6px)"}},{{opacity:1,y:0,filter:"blur(0px)",duration:0.15}},{max(linha[0][1] - 0.03, t0):.3f});')
                 som("clique", linha[0][1] - 0.03)
             pos = "left:9%;text-align:left;" if lado == "esq" else "right:9%;text-align:right;"
-            inner = f'<div class="ser" style="{pos}top:{int(A * e.get("y", 0.47))}px">{ls}</div>'
+            fs_ = cabe([" ".join(w for w, t in l) for l in e["linhas"]], int(TAMB * 1.45), 0.42, 0.80)
+            inner = f'<div class="ser" style="{pos}top:{int(A * e.get("y", 0.47))}px;font-size:{fs_}px">{ls}</div>'
         elif k == "brilho":
             cor = cores.get("destaque", "#3fd9e8")
             w, t = e["w"][0]
-            inner = f'<div class="bri{" big" if e.get("grande") else ""}" style="top:{int(A * e.get("y", Y - 0.02))}px;color:{cor};--g:{cor}"><span id="{c}b">{w}</span></div>'
+            fs_ = cabe([w], int(TAMB * (2.3 if e.get("grande") else 1.9)), 0.52 if e.get("grande") else 0.45)
+            inner = f'<div class="bri{" big" if e.get("grande") else ""}" style="top:{int(A * e.get("y", Y - 0.02))}px;color:{cor};--g:{cor};font-size:{fs_}px"><span id="{c}b">{w}</span></div>'
             js.append(f'tl.fromTo("#{c}b",{{opacity:0,scaleY:2.2,y:60,filter:"blur(8px)"}},{{opacity:1,scaleY:1,y:0,filter:"blur(0px)",duration:0.18,ease:"power2.out"}},{max(t - 0.05, t0):.3f});')
             if e.get("som", True): som("glitch", t - 0.05)
         elif k == "grande":
             w, t = e["w"][0]
-            inner = f'<div class="gra" style="top:{int(A * e.get("y", Y - 0.04))}px"><span id="{c}g">{w}</span></div>'
+            fs_ = cabe([w], int(TAMB * 2.2), 0.52)
+            inner = f'<div class="gra" style="top:{int(A * e.get("y", Y - 0.04))}px;font-size:{fs_}px"><span id="{c}g">{w}</span></div>'
             js.append(f'tl.fromTo("#{c}g",{{opacity:0,scale:1.12,filter:"blur(8px)"}},{{opacity:1,scale:1,filter:"blur(0px)",duration:0.12}},{max(t - 0.03, t0):.3f});')
         elif k == "pilha":
             ls = ""
@@ -176,7 +185,8 @@ def main(rot, saida):
                 ls += f'<div id="{c}p{j}" style="color:{cor}">{w}</div>'
                 js.append(f'tl.fromTo("#{c}p{j}",{{opacity:0,x:-40,filter:"blur(10px)"}},{{opacity:1,x:0,filter:"blur(0px)",duration:0.14}},{max(t - 0.04, t0):.3f});')
                 som("clique", t - 0.04)
-            inner = f'<div class="pil" style="left:{int(L * e.get("x", 0.10))}px;top:{int(A * e.get("y", 0.43))}px">{ls}</div>'
+            fs_ = cabe([w for w, t in e["w"]], int(TAMB * 2.4), 0.43, 0.86 - e.get("x", 0.10))
+            inner = f'<div class="pil" style="left:{int(L * e.get("x", 0.10))}px;top:{int(A * e.get("y", 0.43))}px;font-size:{fs_}px">{ls}</div>'
         html.append(f'<div class="ev clip" data-layout-allow-overlap id="{c}" data-start="{t0:.3f}" data-duration="{t1 - t0:.3f}" data-track-index="{2 + ei % 2}">{inner}</div>')
 
     # efeitos no vídeo

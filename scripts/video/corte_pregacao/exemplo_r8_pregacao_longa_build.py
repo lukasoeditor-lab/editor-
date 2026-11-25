@@ -25,18 +25,29 @@ V = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', str(next((G / '
 mono = np.abs(V).mean(1); hop = SR // 100
 rms = np.sqrt(np.convolve(mono ** 2, np.ones(hop) / hop, 'same'))[::hop]
 THR = np.percentile(rms, 95) * 0.12
-voz = rms > THR
+voz = rms > np.percentile(rms, 95) * 0.05  # silêncio de verdade: abaixo de -26 dB
+sm = np.convolve(rms, np.ones(5) / 5, 'same')
 def q(t): return not voz[min(len(voz) - 1, max(0, int((t - A0) * 100)))]
 def limites(i, j):
+    """começo e fim pelo ponto mais quieto entre as palavras (o Whisper erra as bordas)"""
     a, b = idx[i][1], idx[j][2]
     ant = idx[i - 1][2]; prox = idx[j + 1][1]
-    t = a + 0.04
-    while t > max(ant, a - 0.5) and not all(q(t - k / 100) for k in range(1, 7)): t -= 0.01
-    s = max(t - 0.02, ant)
-    t = b - 0.05
-    while t < min(prox, b + 0.6) and not all(q(t + k / 100) for k in range(6)): t += 0.01
-    return round(s, 3), round(min(t + 0.04, prox - 0.02), 3)
-def sem_pausas(a, b, minimo=0.24, margem=0.07):
+    def vale(x0, x1):
+        k0, k1 = int((x0 - A0) * 100), max(int((x0 - A0) * 100) + 1, int((x1 - A0) * 100))
+        seg = sm[k0:k1]; return A0 + (k0 + int(np.argmin(seg))) / 100, seg.min()
+    # fim: primeiro silêncio de verdade depois da última palavra; se ele emenda a próxima, o vale entre as duas
+    t = b - 0.05; e = None
+    while t < b + 0.7:
+        if all(q(t + k / 100) for k in range(4)): e = t + 0.08; break
+        t += 0.01
+    if e is None: e = vale(b - 0.08, max(prox + 0.25, b + 0.15))[0] + 0.01
+    t = a + 0.03; s = None
+    while t > a - 0.6:
+        if all(q(t - k / 100) for k in range(1, 5)): s = t - 0.06; break
+        t -= 0.01
+    if s is None: s = vale(min(ant - 0.2, a - 0.15), a + 0.05)[0]
+    return round(s, 3), round(e, 3)
+def sem_pausas(a, b, minimo=0.30, margem=0.12):
     i0, i1 = int((a - A0) * 100), int((b - A0) * 100); v = voz[i0:i1]
     out, ini, k = [], a, 0
     while k < len(v):
@@ -99,7 +110,7 @@ segs = [(a_, b_, p) for p in pecas for a_, b_ in p['subs']]
 fc = ['[0:v:0]fps=30,split=%d%s' % (len(segs), ''.join(f'[s{k}]' for k in range(len(segs))))]
 for k, (a_, b_, p) in enumerate(segs):
     cw, ch = (608, 1080) if p['quadro'] == 'aberto' else (500, 888)
-    cx = int(min(max(xm(a_, b_) * 1920 - cw / 2, 0), 1920 - cw))
+    cx = int(min(max(xm(p['subs'][0][0], p['subs'][-1][1]) * 1920 - cw / 2, 0), 1920 - cw))
     pb = ',hue=s=0' if p['pb'] == 'pb' else ''
     fc.append(f"[s{k}]trim={a_ - A0:.3f}:{b_ - A0:.3f},setpts=PTS-STARTPTS,crop={cw}:{ch}:{cx}:0,scale=1080:1920:flags=lanczos{pb},setsar=1[v{k}]")
 fc.append(''.join(f'[v{k}]' for k in range(len(segs))) + f'concat=n={len(segs)}:v=1:a=0[vo]')

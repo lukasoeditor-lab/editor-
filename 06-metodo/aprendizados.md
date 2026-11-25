@@ -142,3 +142,10 @@
 - De uma conversa de 2 min, o corte de 31 s junta só as falas do aluno (sem as perguntas do entrevistador): gancho "o segredo… é NÃO DESISTIR" e fecho "é PRATICANDO que a gente chega".
 - "Gravatar" no Whisper = **Gravataí** (cidade).
 - Clientes da barbearia: sem música de fundo (pedido repetido duas vezes).
+
+## 2026-11-25: retorno do Lukas no corte "Muda o teu ponto de vista" (v1 → v2)
+
+- **Palavras cortadas antes de terminar:** o limiar de "silêncio" estava alto (p95 × 0,12, −18 dB) e o `sem_pausas` cortava o rabo baixo das palavras como se fosse pausa. Agora silêncio = abaixo de **−26 dB** (p95 × 0,05), pausa mínima de 0,30 s e 0,12 s de margem; o fim de cada trecho vai até o primeiro silêncio de verdade e, quando ele emenda na próxima palavra, até o **vale de energia** entre as duas (não pelo tempo do Whisper).
+- **Tela tremendo:** o recorte vertical era recalculado em cada pedacinho entre pausas, então o quadro pulava várias vezes por frase. O quadro agora fica **fixo por trecho**.
+- **Texto fora da tela:** o `gerar_r8.py` calcula o tamanho de cada texto especial (citação, pilha, serifa, combo, grande, brilho, digitada) para a linha mais longa caber na largura (`cabe()`).
+- **Fecho com coração e @:** o Lukas não quer. Não use `fim` no roteiro do R8.
