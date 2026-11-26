@@ -62,8 +62,8 @@ def main(rot, saida):
     DV = float(r["dur"])
     shutil.copy(P(r["base"]), saida / "assets" / "base.mp4")
     shutil.copy(P(r["voz"]), saida / "assets" / "voice.wav")
-    fontes = {"sans": FONTES / "PlusJakartaSans-700.woff2", "sansb": FONTES / "PlusJakartaSans-800.woff2",
-              "serif": FONTES / "InstrumentSerif-Italic.woff2", **{k: P(v) for k, v in r.get("fontes", {}).items()}}
+    fontes = {"sans9": FONTES / "PlusJakartaSans-700.ttf", "sansb9": FONTES / "PlusJakartaSans-800.ttf",
+              "serif9": FONTES / "InstrumentSerif-Italic.ttf", **{k: P(v) for k, v in r.get("fontes", {}).items()}}
     for k, v in fontes.items():
         shutil.copy(v, saida / "assets" / "fonts" / f"{k}{Path(v).suffix}")
     fmt = {".otf": "opentype", ".ttf": "truetype", ".woff2": "woff2", ".woff": "woff"}
@@ -145,9 +145,9 @@ def main(rot, saida):
       .pag {{ position:absolute; left:0; right:0; z-index:20; text-align:center; pointer-events:none; }}
       .blk {{ display:inline-block; text-align:left; max-width:{int(L * 0.86)}px; }}
       .ln {{ white-space:nowrap; line-height:1.0; }}
-      .ws {{ display:inline-block; font-family:'sans'; letter-spacing:-0.06em; margin-right:0.2em;
+      .ws {{ display:inline-block; font-family:'sans9'; letter-spacing:-0.06em; margin-right:0.2em;
              text-shadow:0 0 18px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.35); }}
-      .wi {{ display:inline-block; font-family:'serif'; font-size:{KS:.2f}em; line-height:0.82; letter-spacing:-0.015em; margin-right:0.14em;
+      .wi {{ display:inline-block; font-family:'serif9'; font-size:{KS:.2f}em; line-height:0.82; letter-spacing:-0.015em; margin-right:0.14em;
              text-shadow:0 0 10px rgba(255,255,255,.55), 0 0 26px rgba(255,255,255,.28), 0 2px 6px rgba(0,0,0,.35); }}
       #handle {{ position:absolute; left:0; right:0; z-index:21; display:flex; justify-content:center; align-items:center; gap:16px; }}
       .avw {{ position:relative; width:96px; height:96px; }}
@@ -155,8 +155,8 @@ def main(rot, saida):
       .av img {{ width:100%; height:100%; border-radius:50%; object-fit:cover; border:3px solid #111; display:block; }}
       .selo {{ position:absolute; right:-4px; top:-2px; width:34px; height:34px; }}
       .ht {{ text-align:left; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.6); }}
-      .hn {{ font-family:'sansb'; font-size:34px; letter-spacing:-0.01em; line-height:1.05; }}
-      .ha {{ font-family:'sans'; font-size:23px; letter-spacing:0; opacity:.92; line-height:1.1; }}
+      .hn {{ font-family:'sansb9'; font-size:34px; letter-spacing:-0.01em; line-height:1.05; }}
+      .ha {{ font-family:'sans9'; font-size:23px; letter-spacing:0; opacity:.92; line-height:1.1; }}
       #preto {{ position:absolute; inset:0; z-index:50; background:#000; opacity:0; pointer-events:none; }}
 """
     idx = f"""<!doctype html>

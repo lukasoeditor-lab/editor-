@@ -47,7 +47,7 @@
 
 As duas fontes estão em `05-biblioteca/fontes/`:
 
-- `PlusJakartaSans-700.woff2` e `-800.woff2`, licença OFL, baixadas do npm `@fontsource/plus-jakarta-sans`.
-- `InstrumentSerif-Italic.woff2`, licença OFL, do npm `@fontsource/instrument-serif`.
+- `PlusJakartaSans-700.ttf` e `-800.ttf`, licença OFL, baixadas do npm `@fontsource/plus-jakarta-sans`.
+- `InstrumentSerif-Italic.ttf`, licença OFL, do npm `@fontsource/instrument-serif`.
 
 A serifa bate com a da referência. A sans original pode ser outra geométrica parecida, mas a Jakarta foi a mais próxima entre as testadas: Instrument Sans, Inter Tight, Manrope e Jakarta.
