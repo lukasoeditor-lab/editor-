@@ -15,14 +15,14 @@ PAG = """296-299 | 300*
 318 | 319-321
 30 31* | 32-34
 35 36 37*
+38-40 | 41 42
+43-45 46*
+47 48 49*
+50-52 | 53-55
+56 57
 58-60 | 61 62
 63-65 66*
 67 68 | 69*
-78-80
-81 82* | 83-86
-87-90
-145-148 149*
-150-152 | 153 154*
 184-186 | 187 188
 189-192 | 193 194 195*
 196-197 | 198 199*
@@ -60,10 +60,9 @@ for o in out:
     if pb['o0'] <= o['linhas'][0][0][1] < P['pecas'][2]['o0']: o['estilo'] = 'grande'
 o0 = [p['o0'] for p in P['pecas']]
 r = {'dur': P['dur'], 'base': 'prep/base.mp4', 'voz': 'prep/voz.wav',
-     'handle': {'nome': 'PR. ALEXANDRE ALMEIDA', 'arroba': '@alexandrealmeida.ofc', 'foto': 'foto.jpg'},
-     'abre': 1.0,
-     'escuro': [[o0[1] - 0.3, o0[1], o0[1] + 0.6], [o0[2] - 0.5, o0[2], o0[2] + 0.8],
-                [o0[5] - 0.4, o0[5], o0[5] + 0.7], [o0[6] - 0.3, o0[6], o0[6] + 0.45]],
+     'handle': {'nome': 'PR. ALEXANDRE ALMEIDA', 'arroba': '@alexandrealmeida.ofc', },
+     'abre': 1.6,
+     'escuro': [[o0[1] - 0.45, o0[1], o0[1] + 0.9]] + [[o0[k] - 1.5, o0[k], o0[k] + 1.6] for k in range(2, len(o0))],
      'paginas': out}
 json.dump(r, open('/tmp/work/t9/roteiro.json', 'w'), ensure_ascii=False, indent=1)
 for o in out: print(o.get('estilo', ''), ' / '.join(' '.join(p[0] + ('*' if len(p) > 2 else '') for p in l) for l in o['linhas']))

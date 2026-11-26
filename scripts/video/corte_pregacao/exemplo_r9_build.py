@@ -6,10 +6,9 @@ G = Path('/tmp/work/t9'); OUT = G / 'prep'; OUT.mkdir(exist_ok=True)
 W = json.load(open(G / 'words.json')); idx = dict(enumerate(W))
 T = [((296, 306),),                                   # GANCHO: se ele faz eu adoro, se ele não faz eu adoro
      ((307, 321), 'pb'),                                # eco P&B: se ele faz eu glorifico ... da mesma maneira
-     ((30, 37), (58, 69)),                              # milagre é transitório, passageiro / o objetivo de Deus não é os milagres
-     ((78, 90), (145, 154)),                            # na eternidade não vai haver choro ... ruas de ouro, muros de cristais
+     ((30, 69),),                                       # milagre é transitório ... milagres são benefícios
      ((184, 211),),                                     # aquele que não recebeu um milagre ... se era cego, ele vê
-     ((235, 248), (249, 263)),                          # o primordial é a salvação ... a vida é outra, irmão
+     ((235, 263),),                                     # o primordial é a salvação ... a vida é outra, irmão
      ((372, 397),)]                                     # quem me separará do amor de Deus ... nada e ninguém
 SR = 44100
 A0, A1 = 0.0, 145.0   # janela da fonte usada
@@ -44,7 +43,7 @@ def limites(i, j):
         t -= 0.01
     if s is None: s = vale(min(ant - 0.2, a - 0.15), a + 0.05)[0]
     return round(s, 3), round(e, 3)
-def sem_pausas(a, b, minimo=0.30, margem=0.12):
+def sem_pausas(a, b, minimo=0.70, margem=0.15):  # estilo 9: só pausas longas (o resto respira, sem corte seco)
     i0, i1 = int((a - A0) * 100), int((b - A0) * 100); v = voz[i0:i1]
     out, ini, k = [], a, 0
     while k < len(v):
