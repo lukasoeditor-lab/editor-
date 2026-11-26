@@ -149,3 +149,11 @@
 - **Tela tremendo:** o recorte vertical era recalculado em cada pedacinho entre pausas, então o quadro pulava várias vezes por frase. O quadro agora fica **fixo por trecho**.
 - **Texto fora da tela:** o `gerar_r8.py` calcula o tamanho de cada texto especial (citação, pilha, serifa, combo, grande, brilho, digitada) para a linha mais longa caber na largura (`cabe()`).
 - **Fecho com coração e @:** o Lukas não quer. Não use `fim` no roteiro do R8.
+
+## 2026-11-26 · Estilo 9 ("Íntimos de Deus") e serifa do combo no R8
+
+- **Combo do R8 fora da tela ("o menino de 17 anos"):** a serifa começava na borda esquerda da palavra forte, então frase longa debaixo de palavra curta passava da borda. Agora ela fica centrada sob a palavra forte (`left:50%` + `xPercent:-50` no GSAP).
+- **Estilo 9 = `gerar_r9.py`:** legenda palavra a palavra com fade + desfoque; sans Plus Jakarta 700 apertada (−0,06 em) e uma palavra-chave por página em Instrument Serif Italic 1,6× com brilho branco. O bloco fica centrado e alinhado à esquerda em y 0,60. Páginas de até 2 linhas, feitas à mão por frase (a divisão automática deixava palavra sozinha).
+- **Estilo 9, o resto:** eco do gancho em P&B com legenda creme maior; assinatura com foto redonda tirada do próprio vídeo; mergulhos no preto entre os trechos. A referência não tem música nem efeito sonoro.
+- **Container novo apaga /tmp/work:** reinstalar `audio-separator[cpu]`, `faster-whisper` e o modelo UVR (github), o Whisper turbo (`mobiuslabsgmbh/faster-whisper-large-v3-turbo`) e o HyperFrames 0.8.206 em `/tmp/work/hfinit` com o wrapper `/tmp/work/hf.sh`. O faster-whisper novo falha ao abrir arquivo (`metadata_errors`): passe o áudio como array (soundfile, 16 kHz mono).
+- **Pegar só um trecho da pregação do Drive:** `ffmpeg -ss <ini> -t <dur> -i "https://drive.usercontent.google.com/download?id=ID&export=download&confirm=t" -c copy` baixa só a janela (segundos, em vez de 2 GB).
