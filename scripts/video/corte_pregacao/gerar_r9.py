@@ -134,9 +134,11 @@ def main(rot, saida):
 
     # preto: abertura e mergulhos
     abre = float(r.get("abre", 2.4))
-    js.append(f'tl.set("#preto",{{opacity:{1 if abre else 0}}},0);')
+    segura = float(r.get("abre_segura", 0.0))   # fica no preto (só a legenda aparece) até este tempo, depois acende
+    # a abertura usa uma camada própria abaixo da legenda: a frase do gancho aparece no preto
+    js.append(f'tl.set("#preto",{{opacity:0}},0); tl.set("#abre",{{opacity:{1 if abre else 0}}},0);')
     if abre:
-        js.append(f'tl.to("#preto",{{opacity:0,duration:{abre:.3f},ease:"none"}},0);')
+        js.append(f'tl.to("#abre",{{opacity:0,duration:{abre:.3f},ease:"none"}},{segura:.3f});')
     for a, b, c in escuro:
         js.append(f'tl.to("#preto",{{opacity:1,duration:{b - a:.3f},ease:"none"}},{a:.3f});')
         js.append(f'tl.to("#preto",{{opacity:0,duration:{c - b:.3f},ease:"none"}},{b:.3f});')
@@ -179,6 +181,7 @@ def main(rot, saida):
       .ht {{ text-align:left; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.6); }}
       .hn {{ font-family:'sansb9'; font-size:34px; letter-spacing:-0.01em; line-height:1.05; }}
       .ha {{ font-family:'sans9'; font-size:23px; letter-spacing:0; opacity:.92; line-height:1.1; }}
+      #abre {{ position:absolute; inset:0; z-index:19; background:#000; pointer-events:none; }}
       #preto {{ position:absolute; inset:0; z-index:50; background:#000; opacity:0; pointer-events:none; }}
 """
     idx = f"""<!doctype html>
@@ -195,6 +198,7 @@ def main(rot, saida):
       <div id="grad"></div>
       {chr(10).join(html)}
       {hdl}
+      <div id="abre"></div>
       <div id="preto"></div>
       <audio id="voice" src="assets/voice.wav" data-start="0" data-duration="{dur_de(saida / 'assets' / 'voice.wav'):.3f}" data-volume="1"></audio>
       {musica}
