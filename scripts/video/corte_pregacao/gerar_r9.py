@@ -79,6 +79,8 @@ def main(rot, saida):
         shutil.rmtree(saida)
     (saida / "assets" / "fonts").mkdir(parents=True)
     DV = float(r["dur"])
+    cta = r.get("cta") or {}
+    TOTAL = round(DV + (float(cta.get("dur", 2.5)) if cta else 0.0), 3)
     shutil.copy(P(r["base"]), saida / "assets" / "base.mp4")
     shutil.copy(P(r["voz"]), saida / "assets" / "voice.wav")
     fontes = {"sans9": FONTES / "PlusJakartaSans-700.ttf", "sansb9": FONTES / "PlusJakartaSans-800.ttf",
@@ -95,10 +97,10 @@ def main(rot, saida):
     musica = ""
     if r.get("musica"):
         alvo = -16 - float(r.get("musica_abaixo_db", 14))
-        rodar(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-i", P(r["musica"]), "-t", f"{DV:.3f}", "-af",
-               f"afade=t=in:d=1.5,afade=t=out:st={max(0, DV - 2.5):.3f}:d=2.5,loudnorm=I={alvo}:TP=-6:LRA=7",
+        rodar(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-ss", f'{float(r.get("musica_ini", 0)):.3f}', "-i", P(r["musica"]), "-t", f"{TOTAL:.3f}", "-af",
+               f"afade=t=in:d=1.5,afade=t=out:st={max(0, TOTAL - 2.5):.3f}:d=2.5,loudnorm=I={alvo}:TP=-6:LRA=7",
                "-ar", "48000", "-ac", "2", saida / "assets" / "music.wav"])
-        musica = f'<audio id="music" src="assets/music.wav" data-start="0" data-duration="{DV:.3f}" data-volume="1"></audio>'
+        musica = f'<audio id="music" src="assets/music.wav" data-start="0" data-duration="{TOTAL:.3f}" data-volume="1"></audio>'
 
     # caixa fixa da referência: de 25,4% a 75% da largura; a linha mais longa da página enche a caixa
     # (até um teto, quando a frase é curta e o bloco fica centrado); centro do bloco em y 0,62
@@ -114,7 +116,8 @@ def main(rot, saida):
         if fim is None:
             prox = pags[n + 1]["linhas"][0][0][1] - 0.06 if n + 1 < len(pags) else DV
             pretos = [b for a, b, c in escuro if b > t0 + 0.3]
-            fim = min([prox] + pretos)
+            cards_ = [float(c["t0"]) for c in r.get("cartoes", []) if float(c["t0"]) > t0 + 0.1]   # o cartão cobre a legenda
+            fim = min([prox] + pretos + cards_)
         grande = pg.get("estilo") == "grande"
         maxw = max(largura(l, fontes, KS, grande) for l in pg["linhas"])
         fs = min(TETO * (1.15 if grande else 1.0), CAIXA * (1.06 if grande else 1.0) / maxw)
@@ -145,6 +148,55 @@ def main(rot, saida):
     fe = float(r.get("fecha", 0.0))
     if fe:
         js.append(f'tl.to("#preto",{{opacity:1,duration:{fe:.3f},ease:"none"}},{DV - fe:.3f});')
+
+    # imagens de apoio (B-roll): vídeo pronto em 1080x1920 que entra e sai por fusão, por cima do pregador
+    brolls = []
+    for i, b in enumerate(r.get("broll", [])):
+        shutil.copy(P(b["arq"]), saida / "assets" / f"broll{i}.mp4")
+        t0, t1 = float(b["t0"]), float(b["t1"]); en, sa = float(b.get("entra", 1.2)), float(b.get("sai", 1.2))
+        brolls.append(f'<video id="br{i}" class="clip broll" src="assets/broll{i}.mp4" data-start="{t0:.3f}" data-duration="{t1 - t0:.3f}" '
+                      f'data-track-index="{10 + i}" muted playsinline></video>')
+        js.append(f'tl.set("#br{i}",{{opacity:0}},0);')
+        js.append(f'tl.to("#br{i}",{{opacity:1,duration:{en:.3f},ease:"none"}},{t0:.3f});' if en > 0 else f'tl.set("#br{i}",{{opacity:1}},{t0:.3f});')
+        js.append(f'tl.to("#br{i}",{{opacity:0,duration:{sa:.3f},ease:"none"}},{t1 - sa:.3f});' if sa > 0 else f'tl.set("#br{i}",{{opacity:0}},{t1:.3f});')
+
+    # cartão digitado: fundo liso, texto em caixa-alta letra a letra no tempo da fala, com cursor
+    for i, c in enumerate(r.get("cartoes", [])):
+        t0, t1 = float(c["t0"]), float(c["t1"])
+        linhas = ""; prev = None
+        for li, linha in enumerate(c["linhas"]):          # linha = [[palavra, início, fim], ...]
+            ch = ""
+            for wi, (w, a, b) in enumerate(linha):
+                txt = w.upper() + (" " if wi < len(linha) - 1 else "")
+                dt = max(0.03, min(0.09, (b - a) / max(1, len(txt))))
+                for k, letra in enumerate(txt):
+                    cid = f"c{i}_{li}_{wi}_{k}"
+                    ch += f'<span id="{cid}" class="cc">{"&nbsp;" if letra == " " else letra}</span>'
+                    tt = min(max(t0 + 0.05, a + k * dt), t1 - 0.3)   # termina de digitar antes do cartão sair
+                    js.append(f'tl.set("#{cid}",{{opacity:1,attr:{{class:"cc cur"}}}},{tt:.3f});')
+                    if prev: js.append(f'tl.set("#{prev}",{{attr:{{class:"cc"}}}},{tt:.3f});')
+                    prev = cid
+            linhas += f'<div class="cl">{ch}</div>'
+        # tamanho da letra: a linha mais longa cabe em 85% da largura
+        mb = medidor(str(fontes["sansb9"]))
+        larg = max(mb(" ".join(w.upper() for w, a, b in linha)) - 0.035 * len(" ".join(w for w, a, b in linha)) for linha in c["linhas"])
+        fsc = min(float(r.get("cartao_tam", 66)), 0.85 * L / max(larg, 0.1))
+        html.append(f'<div class="clip cartao" data-start="{t0:.3f}" data-duration="{t1 - t0:.3f}" data-track-index="30" '
+                    f'style="background:{c.get("fundo", "#AAAAA3")};color:{c.get("cor", "#2A2A28")}"><div class="ctx" style="font-size:{fsc:.0f}px">{linhas}</div></div>')
+
+    # troca com clarão de luz + flash branco (a imagem troca no meio do branco)
+    for t in r.get("clarao", []):
+        js += [f'tl.to("#leak",{{opacity:1,duration:0.10,ease:"none"}},{t - 0.12:.3f});',
+               f'tl.to("#flash",{{opacity:1,duration:0.10,ease:"none"}},{t - 0.02:.3f});',
+               f'tl.to("#leak",{{opacity:0,duration:0.35,ease:"none"}},{t + 0.20:.3f});',
+               f'tl.to("#flash",{{opacity:0,duration:0.40,ease:"power1.in"}},{t + 0.45:.3f});']
+
+    # chamada final no preto
+    ctah = ""
+    if cta:
+        js += [f'tl.to("#preto",{{opacity:1,duration:{float(cta.get("escurece", 1.8)):.3f},ease:"none"}},{DV - float(cta.get("escurece", 1.8)):.3f});',
+               f'tl.fromTo("#cta",{{opacity:0}},{{opacity:1,duration:0.4,ease:"none"}},{DV + 0.25:.3f});']
+        ctah = f'<div id="cta">{cta.get("texto", "COMENTE<br>EU CREIO")}</div>'
 
     h = r.get("handle")
     hdl = ""
@@ -182,6 +234,19 @@ def main(rot, saida):
       .hn {{ font-family:'sansb9'; font-size:34px; letter-spacing:-0.01em; line-height:1.05; }}
       .ha {{ font-family:'sans9'; font-size:23px; letter-spacing:0; opacity:.92; line-height:1.1; }}
       #abre {{ position:absolute; inset:0; z-index:19; background:#000; pointer-events:none; }}
+      .broll {{ position:absolute; left:0; top:0; width:{L}px; height:{A}px; object-fit:cover; z-index:2; opacity:0; }}
+      .cartao {{ position:absolute; inset:0; z-index:30; }}
+      .ctx {{ position:absolute; left:{int(L * 0.085)}px; right:{int(L * 0.05)}px; top:{int(A * 0.43)}px; font-family:'sansb9'; font-size:{int(r.get("cartao_tam", 66))}px;
+              line-height:1.12; letter-spacing:-0.035em; }}
+      .cl {{ white-space:nowrap; }}
+      .cc {{ opacity:0; position:relative; }}
+      .cur::after {{ content:''; position:absolute; right:-0.12em; top:0.08em; bottom:0.06em; width:0.07em; background:currentColor; opacity:.75; }}
+      #leak {{ position:absolute; inset:-10%; z-index:40; opacity:0; pointer-events:none; mix-blend-mode:screen;
+              background:radial-gradient(60% 50% at 30% 35%, #fff6c8 0%, #ffb347 35%, rgba(255,110,90,.85) 60%, rgba(255,80,120,0) 100%),
+                         radial-gradient(50% 45% at 75% 75%, #ffe9a8 0%, rgba(255,150,80,.8) 45%, rgba(0,0,0,0) 100%); }}
+      #flash {{ position:absolute; inset:0; z-index:41; background:#fffdf8; opacity:0; pointer-events:none; }}
+      #cta {{ position:absolute; left:0; right:0; top:{int(A * 0.47)}px; z-index:51; text-align:center; color:#fff; font-family:'sansb9';
+              font-size:{int(r.get("cta_tam", 46))}px; line-height:1.05; letter-spacing:-0.01em; opacity:0; }}
       #preto {{ position:absolute; inset:0; z-index:50; background:#000; opacity:0; pointer-events:none; }}
 """
     idx = f"""<!doctype html>
@@ -193,13 +258,17 @@ def main(rot, saida):
     <style>{css}</style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="{DV:.3f}" data-width="{L}" data-height="{A}">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{TOTAL:.3f}" data-width="{L}" data-height="{A}">
       <video id="base" class="clip" src="assets/base.mp4" data-start="0" data-duration="{DV:.3f}" data-track-index="0" muted playsinline></video>
+      {chr(10).join(brolls)}
       <div id="grad"></div>
       {chr(10).join(html)}
       {hdl}
       <div id="abre"></div>
+      <div id="leak"></div>
+      <div id="flash"></div>
       <div id="preto"></div>
+      {ctah}
       <audio id="voice" src="assets/voice.wav" data-start="0" data-duration="{dur_de(saida / 'assets' / 'voice.wav'):.3f}" data-volume="1"></audio>
       {musica}
     </div>
@@ -207,7 +276,7 @@ def main(rot, saida):
       window.__timelines = window.__timelines || {{}};
       const tl = gsap.timeline({{ paused: true }});
       {chr(10).join('      ' + j for j in js)}
-      tl.set({{}}, {{}}, {DV:.3f});
+      tl.set({{}}, {{}}, {TOTAL:.3f});
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
@@ -217,7 +286,8 @@ def main(rot, saida):
     (saida / "index.html").write_text(idx, encoding="utf-8")
     (saida / "hyperframes.json").write_text(json.dumps({"paths": {"assets": "assets"}, "media": {"autoProxy": True}}, indent=2))
     (saida / "meta.json").write_text(json.dumps({"id": saida.name, "name": saida.name}))
-    print(f"projeto em {saida}: {len(pags)} páginas de legenda, {len(escuro)} mergulhos no preto, {DV:.1f} s")
+    print(f"projeto em {saida}: {len(pags)} páginas de legenda, {len(escuro)} mergulhos no preto, {len(brolls)} imagens de apoio, "
+          f"{len(r.get('cartoes', []))} cartões, {len(r.get('clarao', []))} clarões, {TOTAL:.1f} s")
 
 
 if __name__ == "__main__":

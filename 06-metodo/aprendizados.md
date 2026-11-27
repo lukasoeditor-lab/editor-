@@ -167,3 +167,11 @@
 ## 2026-11-27 · Critério do Pr. Alexandre para escolher o trecho
 
 - O Pr. Alexandre mandou dois áudios: os cortes falam com quem **não é crente** e está passando por uma dor ou precisa de motivação. A linguagem tem que ser de esperança, amor, justiça, provisão, sabedoria e alegria, nada de Golias, Saul, azeite, unção ou varão. A referência são os cortes de Cláudio Duarte, Tiago Brunet e Hernandes Dias Lopes. A regra está em `corte-de-pregacao/SKILL.md` § "Que trecho vira corte". O corte "Muda o teu ponto de vista" (Davi, Golias, espias, gafanhotos) **não** segue essa regra.
+
+## 2026-11-27 · Estilo 10 e 3 cortes da pregação de 2 Reis 5
+
+- **Estilo 10** = estilo 9 + imagens de apoio + cartão digitado + clarão + sépia + "COMENTE EU CREIO". Os 3 cortes foram escolhidos pelo critério do Pr. Alexandre (dor e motivação para quem não é crente), sem "Namã", "lepra", "Isaías", "dízimo" nem "mergulhar".
+- **Fala baixinha no fim da frase** ("…de maneira diferente", −30 dB) foi cortada como pausa. Confira transcrevendo de novo o `voz.wav` editado de cada corte, e force o fim no `ovs.json` (o build não corta mais a cauda quando há fim forçado).
+- **Cartão digitado:** o tamanho da letra se ajusta para a linha mais longa caber; a digitação termina 0,3 s antes de o cartão sair; o cartão sai antes da próxima fala e no corte para o trecho seguinte; a página de legenda termina quando o cartão começa.
+- **Imagem de apoio:** confira o recorte 9:16 de cada uma (o x do centro). A pessoa pode ficar fora do quadro. Evite imagens que passem outra mensagem (meditação/yoga, rituais).
+- **Render em segundo plano:** `nohup … &` dentro de um comando que termina é cancelado (`render_cancelled_parent_exited`). Use o modo de segundo plano da ferramenta.
