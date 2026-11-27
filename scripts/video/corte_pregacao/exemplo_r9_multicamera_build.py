@@ -5,11 +5,10 @@ from pathlib import Path
 G = Path('/tmp/work/c9'); OUT = G / 'prep'; OUT.mkdir(exist_ok=True)
 W = json.load(open(G / 'words.json')); idx = dict(enumerate(W))
 T = [((0, 15),),                                       # GANCHO: não sonhe com a mente na sua limitação, sonhe com a mente do altar de Deus
-     ((16, 30),),                                       # sabe por quê? eu tenho algumas notícias. a primeira: o céu nunca entra em crise
-     ((36, 41), 'pb'),                                  # eco P&B: o céu nunca entra em crise
+     ((16, 24),),                                       # sabe por quê? eu tenho algumas notícias. a primeira:
+     ((36, 41), 'pb'),                                  # P&B: o céu nunca entra em crise (dita uma vez só)
      ((42, 96),),                                       # no céu não tem fracasso ... pedi e dar-se-vos-á ... as portas vão se abrir
-     ((97, 130),),                                      # mas hoje Deus está chamando alguém ... as bênçãos te alcançarão
-     ((149, 152),)]                                     # as bênçãos te alcançarão (repete)
+     ((97, 130),)]                                      # mas hoje Deus está chamando alguém ... as bênçãos te alcançarão
 SR = 44100
 A0, A1 = 0.0, 71.9   # janela da fonte usada
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(A0), '-t', str(A1 - A0), '-i', str(G / 'vert.mp4'), '-map', '0:a:0', '-vn', '-ac', '2', '-ar', str(SR), str(G / 'janela.wav')], check=True)

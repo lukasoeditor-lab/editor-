@@ -8,8 +8,7 @@ PAG = """0-4 | 5 6 7*
 8-11 | 12 13* 14 15
 16-18
 19-21 | 22*
-23 24 | 25 26* 27
-28 29 30*
+23 24*
 36-38 | 39-41
 42-45 | 46*
 47-50 | 51*
@@ -25,8 +24,7 @@ PAG = """0-4 | 5 6 7*
 109-112
 113-116 | 117 118 119*
 120-122 | 123 124* 125 126
-127 128 | 129 130*
-149 150* | 151 152"""
+127 128 | 129 130*"""
 def faixa(tok):
     serif = tok.endswith('*'); tok = tok.rstrip('*')
     a, _, b = tok.partition('-'); return list(range(int(a), int(b or a) + 1)), serif
@@ -51,9 +49,8 @@ o0 = [p['o0'] for p in P['pecas']]
 volta = tk[8][1] - 0.5          # ele volta ao palco em "Sonhe com a mente..."
 r = {'dur': P['dur'], 'base': 'prep/base.mp4', 'voz': 'prep/voz.wav', 'musica': 'musica.wav', 'musica_abaixo_db': 6,
      'handle': {'nome': 'PR. WILTON SANTOS', 'arroba': '@prwiltonsantos'},
-     'abre': 1.4, 'abre_segura': round(volta, 3),
-     'escuro': [[o0[2] - 1.0, o0[2], o0[2] + 0.5], [o0[3] - 0.5, o0[3], o0[3] + 1.4],
-                [o0[4] - 1.5, o0[4], o0[4] + 1.6], [o0[5] - 1.5, o0[5], o0[5] + 1.4]],
+     'abre': 0.8,
+     'escuro': [[o0[2] - 0.35, o0[2], o0[2] + 0.45], [o0[3] - 0.6, o0[3], o0[3] + 1.4], [o0[4] - 1.5, o0[4], o0[4] + 1.6]],
      'paginas': out}
 json.dump(r, open('/tmp/work/c9/roteiro.json', 'w'), ensure_ascii=False, indent=1)
 print('volta', round(volta, 2), 'o0', o0)
