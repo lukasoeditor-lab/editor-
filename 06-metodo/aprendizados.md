@@ -163,3 +163,7 @@
 - **Pr. Wilton v2:** o Lukas não gostou da abertura segurando no preto ("quebrou tudo"). Prefere a imagem desde o início, mesmo com o pregador fora do quadro. Fala repetida em seguida (a mesma frase duas vezes, mesmo como eco em P&B ou como fecho) conta como erro: cada fala entra uma vez só. O eco em P&B só vale se a frase vier com palavras diferentes, como na referência.
 - **Fala repetida na emenda ("altar de Deus" duas vezes):** quando dois trechos estão colados na fonte, o fim de um (que vai até o silêncio ou o vale) e o começo do outro (que volta até 0,6 s antes) se sobrepunham, e o pedaço do meio tocava duas vezes. Agora o build calcula as bordas de todas as faixas antes e, se a próxima começa antes de a anterior acabar, corta as duas no ponto mais quieto entre as palavras (`emenda` no log). Confira transcrevendo de novo o `voz.wav` editado.
 - **Foto do perfil (estilo 9):** foto quadrada de cabeça e ombros, 256 px, com anel degradê e `verificado: true` para o selo azul.
+
+## 2026-11-27 · Critério do Pr. Alexandre para escolher o trecho
+
+- O Pr. Alexandre mandou dois áudios: os cortes falam com quem **não é crente** e está passando por uma dor ou precisa de motivação. A linguagem tem que ser de esperança, amor, justiça, provisão, sabedoria e alegria, nada de Golias, Saul, azeite, unção ou varão. A referência são os cortes de Cláudio Duarte, Tiago Brunet e Hernandes Dias Lopes. A regra está em `corte-de-pregacao/SKILL.md` § "Que trecho vira corte". O corte "Muda o teu ponto de vista" (Davi, Golias, espias, gafanhotos) **não** segue essa regra.

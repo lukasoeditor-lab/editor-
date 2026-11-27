@@ -30,6 +30,15 @@ description: Faz cortes de pregação para Reels, TikTok e Shorts da Pregue – 
 | Cartões de cor + legenda de 1 palavra (pedido de 28/10, guia de LC Frames) | **F**: pregador alternando com cartões de cor cheia (evento `cartao`), `cap` com 1 palavra minúscula, palavra gigante (`cartao` com `modo: gigante`), fecho "Compartilhe" (`cartao` com `no_fim`) | [guia](../../../03-referencias/analises/2026-10-28-guia-de-estilo-cartoes-e-legenda.md) |
 | Dica, aula, bastidor | **D**: palavras em todos os tamanhos, Grid Cut, flash branco | [r3](../../../03-referencias/analises/2026-10-27-r3-gridcut.md) |
 
+## Que trecho vira corte (pedido do Pr. Alexandre, 26/11)
+
+Quem vê o corte quase nunca é da igreja. Imagine alguém que **não é crente** (pode ser católico, espírita, sem religião) e está passando por uma dor ou precisa de motivação: dificuldade, traição, desânimo, dúvida, fraqueza, culpa, injustiça, falta de dinheiro, uma decisão difícil, solidão, ansiedade.
+
+- **Escolha trechos com mensagem que serve para qualquer pessoa:** esperança, amor, justiça, provisão, sabedoria, força, ânimo, alegria, recomeço, propósito, perdão, enfrentar o medo.
+- **Evite linguagem de dentro da igreja**, que o público de fora não entende: Golias, Saul, Davi, espias, gafanhotos, samaritana, azeite, unção, "derramar", varão, "cheio da graça", explicação teológica do texto, história bíblica longa. Se o trecho bom passa por um nome bíblico, corte o nome e fique com o princípio ("não existe futuro de sucesso com pendência no passado", sem Zaqueu).
+- **Modelo:** os cortes que viralizam de Cláudio Duarte, Tiago Brunet, Hernandes Dias Lopes e André Fernandes, que são mensagens curtas, de aplicação na vida, que trazem gente de fora para perto do evangelho.
+- **Teste antes de propor:** "uma pessoa que nunca abriu a Bíblia entenderia e se sentiria falada?" Se não, o trecho fica de fora.
+
 ## O fluxo (cada passo tem um comando)
 
 1. **Ter o vídeo.** O YouTube costuma bloquear o download na nuvem; peça o arquivo (Drive com link público baixa por `curl`, ver `references/pipeline.md`).
