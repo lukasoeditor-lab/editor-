@@ -64,6 +64,20 @@ xs = np.load(G / 'xs.npy')
 def xm(a, b):
     v = xs[int((a - A0) * 4):max(int((a - A0) * 4) + 1, int((b - A0) * 4))]
     return float(np.median(v))
+# bordas de todas as faixas antes; quando a próxima começa antes de a anterior terminar (falas coladas na fonte),
+# as duas cortam no ponto mais quieto entre a última palavra de uma e a primeira da outra: nada toca duas vezes
+FX = [f for tr in T for f in tr if not isinstance(f, str)]
+LIM = {}
+for (i, j) in FX:
+    s_, e_ = limites(i, j)
+    o_ = OVS.get(f'{i}-{j}', [None, None]); LIM[(i, j)] = [o_[0] or s_, o_[1] or e_]
+for (i0, j0), (i1, j1) in zip(FX, FX[1:]):
+    if i1 == j0 + 1 and LIM[(i1, j1)][0] < LIM[(i0, j0)][1]:
+        a, b = idx[j0][2], idx[i1][1]
+        k0 = int((a - A0) * 100); k1 = max(k0 + 1, int((b - A0) * 100))
+        c = round(A0 + (k0 + int(np.argmin(sm[k0:k1]))) / 100, 3)
+        print(f'emenda {j0}/{i1}: sobrepunha {LIM[(i0, j0)][1] - LIM[(i1, j1)][0]:.2f} s, corta em {c}')
+        LIM[(i0, j0)][1] = c; LIM[(i1, j1)][0] = c
 pecas, out = [], 0.0
 for n, tr in enumerate(T):
     ef = tr[-1] if isinstance(tr[-1], str) else ''
@@ -71,8 +85,7 @@ for n, tr in enumerate(T):
     quadro = 'fechado'
     subs, ws = [], []
     for (i, j) in faixas:
-        s_, e_ = limites(i, j)
-        o_ = OVS.get(f'{i}-{j}', [None, None]); s_ = o_[0] or s_; e_ = o_[1] or e_
+        s_, e_ = LIM[(i, j)]
         partes_ = sem_pausas(s_, e_)
         for k in range(i, j + 1):
             tw = idx[k][1]; base = out + sum(b - a for a, b in subs); acc = 0.0; tt = None

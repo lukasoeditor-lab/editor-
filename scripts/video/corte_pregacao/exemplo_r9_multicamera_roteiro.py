@@ -48,7 +48,7 @@ for o in out:
 o0 = [p['o0'] for p in P['pecas']]
 volta = tk[8][1] - 0.5          # ele volta ao palco em "Sonhe com a mente..."
 r = {'dur': P['dur'], 'base': 'prep/base.mp4', 'voz': 'prep/voz.wav', 'musica': 'musica.wav', 'musica_abaixo_db': 6,
-     'handle': {'nome': 'PR. WILTON SANTOS', 'arroba': '@prwiltonsantos'},
+     'handle': {'nome': 'PR. WILTON SANTOS', 'arroba': '@prwiltonsantos', 'foto': 'foto.jpg', 'verificado': True},
      'abre': 0.8,
      'escuro': [[o0[2] - 0.35, o0[2], o0[2] + 0.45], [o0[3] - 0.6, o0[3], o0[3] + 1.4], [o0[4] - 1.5, o0[4], o0[4] + 1.6]],
      'paginas': out}
