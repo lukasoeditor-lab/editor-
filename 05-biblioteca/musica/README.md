@@ -7,6 +7,9 @@
 | Arquivo | Clima | Origem | Usada em | Nível |
 |---|---|---|---|---|
 | `cinematica/deep-pain_voxelsbeats.m4a` | piano/cinemático, emotivo, calmo | vídeo do TikTok @voxelsbeats, enviado pelo Lukas em 26/11 (sem a vinheta final do TikTok, 88 s) | Pr. Wilton "Não sonhe com a mente na sua limitação" (estilo 9) | 6 dB abaixo da voz |
+| `mixkit 614` Silent Descent (Eugenio Mininni) | piano cinematográfico, reflexivo, cresce devagar | Mixkit (licença livre), `assets.mixkit.co/music/614/614.mp3` | Corte 1 Pr. Alexandre "Nenhum problema começa grande" (estilo 10) | 7 dB abaixo da voz, desde 0 s |
+| `mixkit 598` We Will Get It | emotiva, cresce da tensão para a esperança | Mixkit, `assets.mixkit.co/music/598/598.mp3` | Corte 2 "Quando não acontece do seu jeito" | 7 dB abaixo, a partir de 8 s |
+| `mixkit 846` I Won't Surrender | trilha de filme firme, perseverança | Mixkit, `assets.mixkit.co/music/846/846.mp3` | Corte 3 "Não desista no meio do caminho" | 7 dB abaixo, desde 0 s |
 
 ## Usadas antes e perdidas no reinício da máquina (27/11)
 
@@ -16,3 +19,7 @@ Peça de novo ao Lukas se forem precisar:
 - **Música épica que o cliente pediu** (áudio `AUD-WA0001`). Corte: Pr. Alexandre "Deus tem um plano".
 - **Instrumental da referência correria** (estilo Filipe Levak), 2,5 dB abaixo da voz. Corte: Pr. Alexandre "Fé" (correria).
 - **"Purifica-me"**, versão com voz, depois trocada a pedido do cliente. Corte: "Deus tem um plano".
+
+## Onde buscar mais
+
+O Mixkit tem música grátis com licença livre. Para buscar, baixe `https://mixkit.co/free-stock-music/mood/<sad|emotional|romantic|beautiful>/` ou `/tag/<cinematic|motivational>/` e `/instrument/piano/`, e leia os `MusicRecording` (nome, gênero, duração, url do mp3) no JSON-LD da página.
