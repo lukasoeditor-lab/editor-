@@ -14,3 +14,18 @@
 | 6 | Entrou samaritana, saiu missionária | 61:26–62:08 | "Ela entrou com um papel comum, mas saiu com uma função extraordinária" |
 | 7 | Do lado de dentro só Deus trabalha | 55:52–56:30 | "Do lado externo o médico, o psicólogo trabalham, mas lá dentro só Deus" |
 | 8 | Milagre é passageiro, salvação é eterna | 6:00–8:10 | "Se ele faz eu adoro, se ele não faz eu adoro" |
+
+## Revisão de 27/11 com o critério do Pr. Alexandre (público de fora da igreja)
+
+O pastor pediu cortes para quem não é crente e está passando por uma dor ou precisa de motivação, sem linguagem de igreja. Pela transcrição, os trechos que servem são estes, do mais forte para o mais fraco:
+
+| # | Tema / dor que toca | Tempo na fonte | Frase-gancho |
+|---|---|---|---|
+| A | **Enfrentar o medo, parar de fugir** (desânimo, medo) | 17:10–18:20 | "É necessário você enfrentar o seu medo… muitas vezes a gente foge porque não consegue enfrentar" |
+| B | **Quando falam de você, você se isola** (rejeição, julgamento, solidão) | 27:10–28:15 + 47:25–47:50 | "Eu prefiro estar sozinha do que estar num ambiente em que estão falando de mim" / "não discriminou, não apontou, não julgou: deu o que estava vazio dentro do coração dela" |
+| C | **Maturidade é fazer pelo compromisso, não pela vontade** (disciplina, trabalho) | 16:20–17:30 | "Quem é maduro não faz o que quer, faz pela responsabilidade que tem… nem todo dia você acorda com vontade de trabalhar" |
+| D | **Sem resolver o passado não tem futuro** (culpa, recomeço) | 40:30–41:00 | "Não existe um futuro de sucesso com pendência no passado" (sem o nome Zaqueu) |
+| E | **Paz por dentro** (ansiedade, vazio) | 55:52–56:30 | "Do lado de fora o médico, o psicólogo trabalham, mas lá dentro só Deus" |
+| F | **Se Ele faz, eu adoro** (fé quando a resposta não vem) | 7:32–7:50 | já feito no estilo 9; serve com ressalva: tem "glorificar" e "Paulo" |
+
+Ficam de fora por usar linguagem de igreja: "Muda o teu ponto de vista" (Davi, Golias, espias, gafanhotos, **já entregue**), "Encontro com Deus muda o andar" (Jacó, Zaqueu), "Entrou samaritana, saiu missionária" e "Ou quente ou frio".
