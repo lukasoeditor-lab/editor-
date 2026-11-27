@@ -39,7 +39,8 @@ with tempfile.TemporaryDirectory() as d:
 # ---------- timeline ----------
 PX = 120                                  # px por segundo
 LAB = 170                                 # coluna dos nomes das faixas
-TR = [('VÍDEO', 74), ('TEXTO', 74), ('TRANSIÇÃO', 40), ('ASSINATURA', 40), ('VOZ', 66), ('MÚSICA', 66)]
+TR = [('VÍDEO', 74)] + ([('APOIO', 58)] if r.get('broll') else []) + [('TEXTO', 74)] + ([('CARTÃO', 44)] if r.get('cartoes') else []) + \
+     [('TRANSIÇÃO', 40), ('ASSINATURA', 40), ('VOZ', 66), ('MÚSICA', 66)]
 RUL = 44
 TOP = 96; VH = 1010; TBY = TOP + 40 + VH + 18; PANH0 = A - (TBY + 74) - 26
 esc = (PANH0 - RUL - 10 - 8 * len(TR)) / sum(h for _, h in TR)   # faixas enchem o painel
@@ -59,6 +60,13 @@ for n, ty, h in rows:
             cor = {'pb': '#5A5A60', 'sepia': '#8A6A3E'}.get(pb, '#2E5BB8' if i % 2 == 0 else '#3B6FD9')
             bloco(o0[i], o0[i + 1], ty, h, cor, f'trecho {i + 1}' + (' · P&amp;B' if pb == 'pb' else ' · sépia' if pb == 'sepia' else ''),
                   extra='background-image:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0))')
+    elif n == 'APOIO':
+        for b in r['broll']:
+            nm = Path(b['arq']).stem.split('_')[-1]
+            bloco(b['t0'], b['t1'], ty, h, '#0F8F86', f'mixkit {nm}', extra='background-image:linear-gradient(90deg,rgba(255,255,255,.18),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,.18))')
+    elif n == 'CARTÃO':
+        for c in r['cartoes']:
+            bloco(c['t0'], c['t1'], ty, h, '#AAAAA3', ' '.join(w[0].upper() for l in c['linhas'] for w in l), '#2A2A28')
     elif n == 'TEXTO':
         pags = sorted(r['paginas'], key=lambda q: q['linhas'][0][0][1])
         for j, pg in enumerate(pags):
@@ -70,6 +78,10 @@ for n, ty, h in rows:
         for a, b, c in r.get('escuro', []):
             bloco(a, c, ty, h, 'rgba(244,241,234,.14)', 'fade preto', OFF, 'border:1px solid rgba(244,241,234,.25)')
         bloco(0, r.get('abre', 0.8), ty, h, 'rgba(244,241,234,.14)', '', OFF)
+        for t in r.get('clarao', []):
+            bloco(t - 0.15, t + 0.85, ty, h, '#F2B35A', 'clarão', '#1a1206')
+        if r.get('cta'):
+            dvv = float(r['dur']); bloco(dvv - float(r['cta'].get('escurece', 1.6)), dvv + float(r['cta'].get('dur', 2.5)), ty, h, 'rgba(244,241,234,.14)', 'fim + COMENTE EU CREIO', OFF)
     elif n == 'ASSINATURA':
         hd = r.get('handle', {})
         bloco(0, DUR, ty, h, '#C2416C', f'{hd.get("nome", "")}  {hd.get("arroba", "")}')
@@ -147,11 +159,10 @@ html, body {{ width:{L}px; height:{A}px; overflow:hidden; background:{BG}; }}
     <div class="it">pregação.mp4<small>fonte 1920×1080</small></div>
     <div class="it">voz isolada.wav<small>sem ruído</small></div>
     <div class="it">{r.get('musica_nome', Path(r.get('musica', 'música')).stem.replace('_', ' '))}<small>trilha em loop</small></div>
-    <div class="it">foto do perfil<small>assinatura</small></div>
+    <div class="it">foto do perfil<small>assinatura</small></div>{''.join(f'<div class="it">apoio {Path(b["arq"]).stem.split("_")[-1]}<small>Mixkit · fusão</small></div>' for b in r.get('broll', [])[:2])}
     <h4 style="margin-top:26px">CORTE</h4>
     <div class="it">{len(P['pecas'])} trechos<small>pausas cortadas</small></div>
     <div class="it">{len(r['paginas'])} legendas<small>palavra a palavra</small></div>
-    <div class="it">1080×1920<small>9:16 · 30 fps</small></div>
   </div>
   <div class="side" style="right:20px" id="sr"><h4>LEGENDA</h4>
     <div class="it">Plus Jakarta Sans<small>700 · −0,06 em</small></div>
@@ -159,9 +170,12 @@ html, body {{ width:{L}px; height:{A}px; overflow:hidden; background:{BG}; }}
     <div class="it"><span class="sw" style="background:#fff"></span>branco<small>caixa fixa 50%</small></div>
     <h4 style="margin-top:26px">EFEITOS</h4>
     <div class="it">fade no preto<small>{len(r.get('escuro', []))} transições</small></div>
-    <div class="it">preto e branco<small>trecho de eco</small></div>
-    <div class="it">degradê<small>base escura</small></div>
-    <div class="it">assinatura<small>foto + verificado</small></div>
+    {'<div class="it">imagens de apoio<small>' + str(len(r['broll'])) + ' cenas</small></div>' if r.get('broll') else ''}
+    {'<div class="it">cartão digitado<small>letra a letra</small></div>' if r.get('cartoes') else ''}
+    {'<div class="it">clarão de luz<small>' + str(len(r['clarao'])) + ' trocas</small></div>' if r.get('clarao') else ''}
+    <div class="it">{'sépia' if any(p.get('pb') == 'sepia' for p in P['pecas']) else 'preto e branco'}<small>trecho de destaque</small></div>
+    {'' if r.get('broll') else '<div class="it">degradê<small>base escura</small></div>'}
+    <div class="it">assinatura<small>{'foto + verificado' if r.get('handle', {}).get('verificado') else 'foto + @'}</small></div>
   </div>
   <div id="mon"></div>
   <video id="corte" class="clip" src="assets/corte.mp4" data-start="{T0}" data-duration="{DUR:.3f}" data-track-index="0" muted playsinline></video>
