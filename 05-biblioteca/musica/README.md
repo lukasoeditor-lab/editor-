@@ -6,7 +6,7 @@
 
 | Arquivo | Clima | Origem | Usada em | Nível |
 |---|---|---|---|---|
-| `cinematica/deep-pain_voxelsbeats.m4a` | piano/cinemático, emotivo, calmo | vídeo do TikTok @voxelsbeats, enviado pelo Lukas em 26/11 (sem a vinheta final do TikTok, 88 s) | Pr. Wilton "Não sonhe com a mente na sua limitação" (estilo 9) | 6 dB abaixo da voz |
+| `cinematica/deep-pain_voxelsbeats.m4a` | piano/cinemático, emotivo, calmo | vídeo do TikTok @voxelsbeats, enviado pelo Lukas em 26/11 (sem a vinheta final do TikTok, 88 s) | Pr. Wilton "Não sonhe com a mente na sua limitação" (estilo 9); Pr. Alexandre corte 1 "Nenhum problema começa grande" (estilo 10, no lugar da Silent Descent: o cliente quis mais motivacional) | 6 dB abaixo da voz |
 | `mixkit 614` Silent Descent (Eugenio Mininni) | piano cinematográfico, reflexivo, cresce devagar | Mixkit (licença livre), `assets.mixkit.co/music/614/614.mp3` | Corte 1 Pr. Alexandre "Nenhum problema começa grande" (estilo 10) | 7 dB abaixo da voz, desde 0 s |
 | `mixkit 598` We Will Get It | emotiva, cresce da tensão para a esperança | Mixkit, `assets.mixkit.co/music/598/598.mp3` | Corte 2 "Quando não acontece do seu jeito" | 7 dB abaixo, a partir de 8 s |
 | `mixkit 846` I Won't Surrender | trilha de filme firme, perseverança | Mixkit, `assets.mixkit.co/music/846/846.mp3` | Corte 3 "Não desista no meio do caminho" | 7 dB abaixo, desde 0 s |
