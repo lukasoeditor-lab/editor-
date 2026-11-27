@@ -13,7 +13,7 @@
 | Interstellar, Main Theme (Hans Zimmer), versão estendida, 775 s | órgão e cordas que crescem devagar, épico | enviada pelo Lukas em 27/11 | Corte 2 Pr. Alexandre "Quando não acontece do seu jeito" | começa em 20 s (pedido do Lukas); ~5 dB abaixo da voz |
 | Can't Forget You (Vybeq), 130 s | instrumental motivacional, forte | enviada pelo Lukas em 27/11 | Corte 3 "Não desista no meio do caminho" | desde 0 s; ~5 dB abaixo da voz |
 | Lovely (instrumental), 202 s | emotiva, calma | enviada pelo Lukas em 27/11 | reserva | — |
-| I Know I'm God Son, 65 s | tem voz falada ("Lord, I know my heart") | enviada pelo Lukas em 27/11 | não usada: o cliente não quer fundo com voz | — |
+| I Know I'm God Son, 65 s | tem voz falada ("Lord, I know my heart") | enviada pelo Lukas em 27/11 | Pr. Wilton "Quanto mais impossível for, maior será o milagre" (estilo 9). Ele aceita música com voz | em loop até o fim, 7 dB abaixo da voz |
 | Purifícame (Lucerito), 43 s | cantada em espanhol | enviada pelo Lukas em 27/11 | não usada: tem voz | — |
 
 ## Usadas antes e perdidas no reinício da máquina (27/11)
