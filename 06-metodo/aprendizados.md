@@ -176,3 +176,4 @@
 - **Imagem de apoio:** confira o recorte 9:16 de cada uma (o x do centro). A pessoa pode ficar fora do quadro. Evite imagens que passem outra mensagem (meditação/yoga, rituais).
 - **Render em segundo plano:** `nohup … &` dentro de um comando que termina é cancelado (`render_cancelled_parent_exited`). Use o modo de segundo plano da ferramenta.
 - **Preferências de música por cliente:** o Pr. Wilton aceita fundo com voz ("I Know I'm God Son", em loop até o fim). O Pr. Alexandre prefere fundo sem voz, no estilo da "Deep Pain".
+- **Vídeo "tela do editor" (promo da Pregue):** `scripts/video/promo/tela_editor_gerar.py <pasta do corte> <final.mp4> <saída> "<projeto>"`. Mostra o corte pronto num monitor, com painéis de mídia e legenda dos lados e a timeline correndo embaixo, montada com os dados reais do corte (trechos, legendas, fades, assinatura, voz e música). A marca da Pregue entra em texto até chegar o arquivo da logo.
